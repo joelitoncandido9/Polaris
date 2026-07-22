@@ -11,7 +11,6 @@
 <link rel="apple-touch-icon" href="/icon-192.svg">
 <title>Polaris — Sua Estrela do Norte</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -390,8 +389,6 @@ const API_URL = 'https://polaris-backend-747y.onrender.com/api';
 const SUPABASE_URL = 'https://ebojkulgfrnpwkdznjbx.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_VMCJV4weArj93usA8dAFCQ_ZdhqdX1Y';
 
-const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-
 let sessionToken = null;
 let currentUser = null;
 let currentCategory = '';
@@ -400,163 +397,117 @@ let isWaitingResponse = false;
 let trialTimer = null;
 
 // ==========================================
-// SUPABASE - AUTENTICAÇÃO
+// SUPABASE - AUTENTICAÇÃO VIA REST API
 // ==========================================
 
-// Verificar sessão ao carregar
+const AUTH_URL = `${SUPABASE_URL}/auth/v1`;
+
+async function sbAuth(path, opts = {}) {
+  const hdrs = { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json', ...opts.headers };
+  const res = await fetch(`${AUTH_URL}${path}`, { ...opts, headers: hdrs });
+  const d = await res.json();
+  if (!res.ok) throw new Error(d.error_description || d.msg || d.error || 'Erro de autenticação');
+  return d;
+}
+
+function saveSession(s) {
+  if (s) localStorage.setItem('polaris_session', JSON.stringify({ access_token: s.access_token, user: s.user, exp: Date.now() + 3600000 }));
+  else localStorage.removeItem('polaris_session');
+}
+function loadSession() {
+  try {
+    const d = JSON.parse(localStorage.getItem('polaris_session'));
+    return d && d.exp > Date.now() ? d : (localStorage.removeItem('polaris_session'), null);
+  } catch { return null; }
+}
+
 async function checkSession() {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session) {
-    sessionToken = session.access_token;
-    currentUser = session.user;
-    document.getElementById('btnStart').onclick = () => showScreen('categories');
-    startTrialTimer();
-    return true;
+  const saved = loadSession();
+  if (saved && saved.access_token) {
+    try {
+      const user = await sbAuth('/user', { headers: { 'Authorization': `Bearer ${saved.access_token}` } });
+      sessionToken = saved.access_token; currentUser = user;
+      document.getElementById('btnStart').onclick = () => showScreen('categories');
+      startTrialTimer(); return true;
+    } catch { localStorage.removeItem('polaris_session'); }
   }
-  // Se não tiver sessão, "COMEÇAR AGORA" vai pra tela de login
   document.getElementById('btnStart').onclick = () => showScreen('login');
   return false;
 }
 
-// Login com email/senha
 async function handleLogin() {
   const email = document.getElementById('loginEmail').value;
   const password = document.getElementById('loginPassword').value;
-  const errorDiv = document.getElementById('loginError');
-
-  if (!email || !password) {
-    errorDiv.textContent = 'Preencha email e senha';
-    errorDiv.style.display = 'block';
-    return;
-  }
-
-  document.getElementById('btnLogin').disabled = true;
-  document.getElementById('btnLogin').textContent = 'Entrando...';
-
+  const e = document.getElementById('loginError'); e.style.display = 'none';
+  if (!email || !password) { e.textContent = 'Preencha email e senha'; e.style.display = 'block'; return; }
+  document.getElementById('btnLogin').disabled = true; document.getElementById('btnLogin').textContent = 'Entrando...';
   try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-
-    if (error) {
-      errorDiv.textContent = error.message === 'Invalid login credentials'
-        ? 'Email ou senha incorretos'
-        : error.message;
-      errorDiv.style.display = 'block';
-      return;
-    }
-
-    sessionToken = data.session.access_token;
-    currentUser = data.user;
+    const d = await sbAuth('/token?grant_type=password', { method: 'POST', body: JSON.stringify({ email, password }) });
+    sessionToken = d.access_token; currentUser = d.user;
+    saveSession({ access_token: d.access_token, user: d.user });
     await loginSuccess();
-  } catch (e) {
-    errorDiv.textContent = 'Erro ao conectar. Tente novamente.';
-    errorDiv.style.display = 'block';
-  } finally {
-    document.getElementById('btnLogin').disabled = false;
-    document.getElementById('btnLogin').textContent = 'ENTRAR';
-  }
+  } catch (err) { e.textContent = err.message.includes('Invalid') ? 'Email ou senha incorretos' : err.message; e.style.display = 'block'; }
+  finally { document.getElementById('btnLogin').disabled = false; document.getElementById('btnLogin').textContent = 'ENTRAR'; }
 }
 
-// Cadastro
 async function handleSignup() {
   const name = document.getElementById('signupName').value;
   const email = document.getElementById('signupEmail').value;
   const password = document.getElementById('signupPassword').value;
-  const errorDiv = document.getElementById('signupError');
-
-  if (!name || !email || !password) {
-    errorDiv.textContent = 'Preencha todos os campos';
-    errorDiv.style.display = 'block';
-    return;
-  }
-  if (password.length < 6) {
-    errorDiv.textContent = 'Senha deve ter no mínimo 6 caracteres';
-    errorDiv.style.display = 'block';
-    return;
-  }
-
-  document.getElementById('btnSignup').disabled = true;
-  document.getElementById('btnSignup').textContent = 'Criando...';
-
+  const e = document.getElementById('signupError'); e.style.display = 'none'; e.style.color = '#ef4444';
+  if (!name || !email || !password) { e.textContent = 'Preencha todos os campos'; e.style.display = 'block'; return; }
+  if (password.length < 6) { e.textContent = 'Senha deve ter no mínimo 6 caracteres'; e.style.display = 'block'; return; }
+  document.getElementById('btnSignup').disabled = true; document.getElementById('btnSignup').textContent = 'Criando...';
   try {
-    const { data, error } = await supabase.auth.signUp({
-      email,
-      password,
-      options: { data: { full_name: name } }
-    });
-
-    if (error) {
-      errorDiv.textContent = error.message;
-      errorDiv.style.display = 'block';
-      return;
-    }
-
-    // Pega o token da sessão
-    if (data.session) {
-      sessionToken = data.session.access_token;
-      currentUser = data.user;
+    const d = await sbAuth('/signup', { method: 'POST', body: JSON.stringify({ email, password, data: { full_name: name } }) });
+    if (d.access_token) {
+      sessionToken = d.access_token; currentUser = d.user || d;
+      saveSession({ access_token: d.access_token, user: d.user || d });
       await loginSuccess();
-    } else {
-      // Email confirmation needed
-      errorDiv.textContent = '📧 Conta criada! Verifique seu email para confirmar.';
-      errorDiv.style.display = 'block';
-      errorDiv.style.color = '#4ade80';
-    }
-  } catch (e) {
-    errorDiv.textContent = 'Erro ao criar conta.';
-    errorDiv.style.display = 'block';
-  } finally {
-    document.getElementById('btnSignup').disabled = false;
-    document.getElementById('btnSignup').textContent = 'CRIAR CONTA GRÁTIS';
-  }
+    } else { e.textContent = '📧 Conta criada! Verifique seu email.'; e.style.color = '#4ade80'; e.style.display = 'block'; }
+  } catch (err) { e.textContent = err.message || 'Erro ao criar conta.'; e.style.display = 'block'; }
+  finally { document.getElementById('btnSignup').disabled = false; document.getElementById('btnSignup').textContent = 'CRIAR CONTA GRÁTIS'; }
 }
 
-// Login com Google
 async function handleGoogleLogin() {
-  try {
-    const { data, error } = await supabase.auth.signInWithOAuth({
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin + '/auth/callback'
-      }
-    });
-    if (error) throw error;
-    // A página vai redirecionar para o Google
-  } catch (e) {
-    showError(e.message);
-  }
+  window.location.href = `${AUTH_URL}/authorize?provider=google&redirect_to=${encodeURIComponent(window.location.origin)}`;
 }
 
-// Logout
 async function handleLogout() {
-  await supabase.auth.signOut();
-  sessionToken = null;
-  currentUser = null;
-  clearTrialTimer();
-  document.getElementById('userMenu').classList.remove('active');
-  showScreen('onboarding');
-  document.getElementById('btnStart').onclick = () => showScreen('login');
+  try { if (sessionToken) await sbAuth('/logout', { method: 'POST', headers: { 'Authorization': `Bearer ${sessionToken}` } }); } catch {}
+  sessionToken = null; currentUser = null; saveSession(null); clearTrialTimer();
+  document.getElementById('userMenu')?.classList.remove('active');
+  showScreen('onboarding'); document.getElementById('btnStart').onclick = () => showScreen('login');
 }
 
-// Callback do OAuth (quando volta do Google)
 async function handleAuthCallback() {
-  const { data: { session } } = await supabase.auth.getSession();
-  if (session) {
-    sessionToken = session.access_token;
-    currentUser = session.user;
-    await loginSuccess();
+  const saved = loadSession();
+  if (saved && saved.access_token) {
+    try {
+      const user = await sbAuth('/user', { headers: { 'Authorization': `Bearer ${saved.access_token}` } });
+      sessionToken = saved.access_token; currentUser = user; await loginSuccess(); return;
+    } catch {}
+  }
+  const hash = window.location.hash.substring(1);
+  const token = new URLSearchParams(hash).get('access_token');
+  if (token) {
+    try {
+      const user = await sbAuth('/user', { headers: { 'Authorization': `Bearer ${token}` } });
+      sessionToken = token; currentUser = user; saveSession({ access_token: token, user });
+      await loginSuccess(); window.location.hash = '';
+    } catch {}
   }
 }
 
-// Após login bem-sucedido
+// ==========================================
+// LOGIN - PÓS SUCESSO
+// ==========================================
+
 async function loginSuccess() {
   document.getElementById('btnStart').onclick = () => showScreen('categories');
-
-  // Definir nome do usuário
   const userName = currentUser?.user_metadata?.full_name || currentUser?.email?.split('@')[0] || 'Felipe';
   document.getElementById('greetingMsg').innerHTML = `Bom dia <strong>${userName}</strong> 🌅<br><span style="color:var(--soft-gray);font-size:13px;">O que você gostaria de compartilhar hoje?</span>`;
   document.getElementById('menuEmail').textContent = currentUser?.email || '';
-
-  // Iniciar trial se for a primeira vez
   await startTrial();
   startTrialTimer();
   showScreen('categories');

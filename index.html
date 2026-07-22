@@ -11,6 +11,7 @@
 <link rel="apple-touch-icon" href="/icon-192.svg">
 <title>Polaris — Sua Estrela do Norte</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
   :root {
@@ -36,18 +37,46 @@
   @keyframes pulse-glow { 0%,100% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; } }
   .polaris-name { font-size: 36px; font-weight: 800; color: var(--star-white); letter-spacing: 3px; margin-bottom: 6px; }
   .polaris-sub { font-size: 13px; color: var(--accent-gold); font-weight: 500; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px; }
-  .free-badge { display: inline-block; background: rgba(212,168,83,0.15); color: var(--accent-gold); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 20px; border: 1px solid rgba(212,168,83,0.2); }
   .tagline { font-size: 17px; color: var(--soft-gray); line-height: 1.7; margin-bottom: 36px; max-width: 300px; }
   .tagline strong { color: var(--star-white); font-weight: 600; }
   .btn-primary { background: var(--gradient-gold); color: #0a0e27; border: none; padding: 16px 48px; border-radius: 50px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; font-family: 'Inter', sans-serif; width: 100%; max-width: 300px; }
   .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,168,83,0.3); }
+  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
   .btn-outline { background: transparent; color: var(--star-white); border: 1px solid rgba(212,168,83,0.3); padding: 14px 48px; border-radius: 50px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; font-family: 'Inter', sans-serif; width: 100%; max-width: 300px; margin-top: 12px; }
   .btn-outline:hover { border-color: var(--accent-gold); background: rgba(212,168,83,0.05); }
+  .btn-google { background: transparent; color: var(--star-white); border: 1px solid rgba(255,255,255,0.15); padding: 14px 16px; border-radius: 50px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; font-family: 'Inter', sans-serif; width: 100%; max-width: 300px; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 12px; }
+  .btn-google:hover { border-color: var(--accent-gold); background: rgba(255,255,255,0.03); }
+  .btn-google svg { width: 20px; height: 20px; }
+  .free-badge { display: inline-block; background: rgba(212,168,83,0.15); color: var(--accent-gold); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 20px; border: 1px solid rgba(212,168,83,0.2); }
+
+  /* Login / Signup */
+  #screen-login, #screen-signup { display: none; padding: 30px 20px; height: 100%; flex-direction: column; align-items: center; justify-content: center; }
+  .auth-title { color: var(--star-white); font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+  .auth-subtitle { color: var(--soft-gray); font-size: 14px; margin-bottom: 30px; text-align: center; }
+  .auth-divider { display: flex; align-items: center; gap: 16px; width: 100%; max-width: 300px; margin: 16px 0; color: var(--soft-gray); font-size: 12px; }
+  .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
+  .input-group { width: 100%; max-width: 300px; margin-bottom: 14px; text-align: left; }
+  .input-group label { color: var(--soft-gray); font-size: 12px; font-weight: 500; display: block; margin-bottom: 6px; }
+  .input-group input { width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: var(--star-white); font-size: 14px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.3s; }
+  .input-group input:focus { border-color: var(--accent-gold); }
+  .input-group input::placeholder { color: var(--soft-gray); }
+  .auth-error { color: #ef4444; font-size: 13px; max-width: 300px; text-align: center; margin-bottom: 12px; display: none; }
+  .auth-link { color: var(--soft-gray); font-size: 13px; margin-top: 16px; }
+  .auth-link a { color: var(--accent-gold); text-decoration: none; cursor: pointer; }
+  .auth-link a:hover { text-decoration: underline; }
+
+  /* Categories */
   #screen-categories { display: none; padding: 16px 4px; height: 100%; }
   .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 20px; }
   .top-bar h2 { color: var(--star-white); font-size: 22px; font-weight: 700; }
   .top-bar .gold { color: var(--accent-gold); }
-  .user-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--gradient-gold); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #0a0e27; }
+  .user-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--gradient-gold); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #0a0e27; cursor: pointer; position: relative; }
+  .user-menu { display: none; position: absolute; top: 48px; right: 0; background: var(--mid-blue); border: 1px solid rgba(212,168,83,0.15); border-radius: 12px; padding: 8px; min-width: 160px; z-index: 50; }
+  .user-menu.active { display: block; }
+  .user-menu button { background: none; border: none; color: var(--star-white); padding: 10px 14px; width: 100%; text-align: left; font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer; border-radius: 8px; }
+  .user-menu button:hover { background: rgba(255,255,255,0.05); }
+  .user-menu .menu-email { color: var(--soft-gray); font-size: 11px; padding: 8px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 4px; }
+
   .greeting { color: var(--soft-gray); font-size: 14px; margin-bottom: 24px; }
   .greeting strong { color: var(--star-white); }
   .categories-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
@@ -63,6 +92,8 @@
   .test-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--mid-blue); display: flex; align-items: center; justify-content: center; font-size: 13px; }
   .test-name { color: var(--star-white); font-size: 13px; font-weight: 500; }
   .test-label { color: var(--accent-gold); font-size: 11px; }
+
+  /* Chat */
   #screen-chat { display: none; flex-direction: column; height: 100%; }
   .chat-header { display: flex; align-items: center; gap: 12px; padding: 8px 0 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
   .chat-back { background: none; border: none; color: var(--star-white); font-size: 22px; cursor: pointer; padding: 4px; }
@@ -88,8 +119,11 @@
   .chat-input { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 12px 18px; color: var(--star-white); font-size: 14px; font-family: 'Inter', sans-serif; outline: none; resize: none; max-height: 100px; transition: border-color 0.3s; }
   .chat-input:focus { border-color: var(--accent-gold); }
   .chat-input::placeholder { color: var(--soft-gray); }
+  .chat-input:disabled { opacity: 0.4; cursor: not-allowed; }
   .btn-send { width: 44px; height: 44px; border-radius: 50%; background: var(--gradient-gold); border: none; font-size: 18px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
   .btn-send:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(212,168,83,0.3); }
+
+  /* Plans */
   #screen-plans { display: none; padding: 20px 4px; height: 100%; overflow-y: auto; }
   #screen-plans::-webkit-scrollbar { display: none; }
   .plans-header { text-align: center; margin-bottom: 28px; }
@@ -107,30 +141,31 @@
   .btn-plan { width: 100%; padding: 14px; border-radius: 50px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.3s; }
   .btn-plan.primary { background: var(--gradient-gold); color: #0a0e27; }
   .btn-plan.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,168,83,0.3); }
-  .btn-plan.outline { background: transparent; color: var(--star-white); border: 1px solid rgba(212,168,83,0.2); }
-  .btn-plan.outline:hover { border-color: var(--accent-gold); background: rgba(212,168,83,0.05); }
-  /* === STATUS DO BACKEND === */
+
+  .countdown { background: rgba(212,168,83,0.1); border: 1px solid rgba(212,168,83,0.15); border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; cursor: pointer; }
+  .countdown-text { color: var(--star-white); font-size: 13px; }
+  .countdown-text span { color: var(--accent-gold); font-weight: 700; }
+  .countdown-time { color: var(--accent-gold); font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
   .backend-status { display: flex; align-items: center; gap: 6px; margin-bottom: 16px; font-size: 12px; }
   .backend-status .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
   .backend-status .dot.online { background: #4ade80; box-shadow: 0 0 8px rgba(74,222,128,0.4); }
   .backend-status .dot.offline { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.4); }
   .backend-status .dot.loading { background: #facc15; animation: pulse-dot 1s ease-in-out infinite; }
   @keyframes pulse-dot { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
-  .countdown { background: rgba(212,168,83,0.1); border: 1px solid rgba(212,168,83,0.15); border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-  .countdown-text { color: var(--star-white); font-size: 13px; }
-  .countdown-text span { color: var(--accent-gold); font-weight: 700; }
-  .countdown-time { color: var(--accent-gold); font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .error-msg { color: #ef4444; font-size: 12px; padding: 8px 12px; background: rgba(239,68,68,0.1); border-radius: 8px; display: none; margin-bottom: 8px; }
+  .trial-expired-msg { text-align: center; padding: 30px 20px; }
+  .trial-expired-msg h3 { color: var(--accent-gold); font-size: 20px; margin-bottom: 10px; }
+  .trial-expired-msg p { color: var(--soft-gray); font-size: 14px; ma-rgin-bottom: 20px; }
+
   .stars { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; overflow: hidden; }
   .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: twinkle 3s ease-in-out infinite; }
   @keyframes twinkle { 0%,100% { opacity: 0.2; } 50% { opacity: 0.8; } }
-  .error-msg { color: #ef4444; font-size: 12px; padding: 8px 12px; background: rgba(239,68,68,0.1); border-radius: 8px; display: none; }
 </style>
 </head>
 <body>
 
 <div class="phone">
   <div class="dynamic-island"></div>
-
   <div class="stars">
     <div class="star" style="top:5%;left:10%;animation-delay:0s;"></div>
     <div class="star" style="top:12%;left:80%;animation-delay:0.5s;"></div>
@@ -153,29 +188,80 @@
       Como uma conversa com seu melhor amigo.<br>
       <strong style="color:var(--accent-gold)">Baseado na fé.</strong>
     </p>
-    <button class="btn-primary" onclick="startApp()">✨ COMEÇAR AGORA</button>
-    <button class="btn-outline" onclick="goToScreen('plans')">VER PLANOS</button>
+    <button class="btn-primary" id="btnStart">✨ COMEÇAR AGORA</button>
+    <button class="btn-outline" onclick="showScreen('plans')">VER PLANOS</button>
   </div>
 
-  <!-- TELA 2: CATEGORIAS -->
+  <!-- TELA 2: LOGIN -->
+  <div id="screen-login" class="screen">
+    <div class="polaris-logo" style="width:60px;height:60px;font-size:28px;margin-bottom:16px;">⭐</div>
+    <div class="auth-title">Entrar no Polaris</div>
+    <div class="auth-subtitle">Continue sua jornada de onde parou</div>
+    <div class="auth-error" id="loginError"></div>
+    <div class="input-group">
+      <label>Email</label>
+      <input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="email">
+    </div>
+    <div class="input-group">
+      <label>Senha</label>
+      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" id="btnLogin" onclick="handleLogin()" style="max-width:300px;">ENTRAR</button>
+    <div class="auth-divider">ou</div>
+    <button class="btn-google" onclick="handleGoogleLogin()">
+      <svg viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continuar com Google
+    </button>
+    <div class="auth-link">Não tem conta? <a onclick="showScreen('signup')">Criar conta</a></div>
+    <div class="auth-link" style="margin-top:4px;"><a onclick="showScreen('onboarding')">Voltar</a></div>
+  </div>
+
+  <!-- TELA 3: CADASTRO -->
+  <div id="screen-signup" class="screen">
+    <div class="polaris-logo" style="width:60px;height:60px;font-size:28px;margin-bottom:16px;">⭐</div>
+    <div class="auth-title">Criar Conta</div>
+    <div class="auth-subtitle">Comece sua jornada de 24h grátis</div>
+    <div class="auth-error" id="signupError"></div>
+    <div class="input-group">
+      <label>Seu nome</label>
+      <input type="text" id="signupName" placeholder="Seu nome">
+    </div>
+    <div class="input-group">
+      <label>Email</label>
+      <input type="email" id="signupEmail" placeholder="seu@email.com">
+    </div>
+    <div class="input-group">
+      <label>Senha (mínimo 6 caracteres)</label>
+      <input type="password" id="signupPassword" placeholder="••••••••">
+    </div>
+    <button class="btn-primary" id="btnSignup" onclick="handleSignup()" style="max-width:300px;">CRIAR CONTA GRÁTIS</button>
+    <div class="auth-divider">ou</div>
+    <button class="btn-google" onclick="handleGoogleLogin()">
+      <svg viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+      Continuar com Google
+    </button>
+    <div class="auth-link">Já tem conta? <a onclick="showScreen('login')">Entrar</a></div>
+  </div>
+
+  <!-- TELA 4: CATEGORIAS -->
   <div id="screen-categories" class="screen">
     <div class="top-bar">
       <h2>Polaris<span class="gold">.</span></h2>
-      <div class="user-avatar">👤</div>
+      <div class="user-avatar" id="avatarBtn" onclick="toggleMenu()">👤</div>
+      <div class="user-menu" id="userMenu">
+        <div class="menu-email" id="menuEmail">email</div>
+        <button onclick="handleLogout()">🚪 Sair</button>
+      </div>
     </div>
-    <div class="countdown">
-      <div class="countdown-text">⏳ Grátis por mais <span id="timer">23:45:12</span></div>
+    <div class="countdown" id="trialBanner" onclick="showScreen('plans')" title="Clique para ver planos">
+      <div class="countdown-text">⏳ <span id="trialLabel">Grátis por mais</span> <span id="timer">23:45:12</span></div>
       <div class="countdown-time">⏰</div>
     </div>
-
-    <!-- Status do Backend -->
     <div class="backend-status">
       <span class="dot offline" id="backendDot"></span>
       <span id="backendStatus" style="color:var(--soft-gray);">Verificando conexão...</span>
     </div>
-
-    <p class="greeting">Bom dia <strong>Felipe</strong> 🌅<br><span style="color:var(--soft-gray);font-size:13px;">O que você gostaria de compartilhar hoje?</span></p>
-
+    <p class="greeting" id="greetingMsg">Bom dia <strong>Felipe</strong> 🌅<br><span style="color:var(--soft-gray);font-size:13px;">O que você gostaria de compartilhar hoje?</span></p>
     <div class="categories-grid">
       <div class="cat-card" onclick="openChat('financeiro')">
         <div class="cat-icon">💰</div>
@@ -223,10 +309,10 @@
     </div>
   </div>
 
-  <!-- TELA 3: CHAT -->
+  <!-- TELA 5: CHAT -->
   <div id="screen-chat" class="screen">
     <div class="chat-header">
-      <button class="chat-back" onclick="goToScreen('categories')">‹</button>
+      <button class="chat-back" onclick="showScreen('categories')">‹</button>
       <div class="chat-avatar">⭐</div>
       <div class="chat-header-info">
         <h4>Polaris</h4>
@@ -244,11 +330,11 @@
     </div>
   </div>
 
-  <!-- TELA 4: PLANOS -->
+  <!-- TELA 6: PLANOS -->
   <div id="screen-plans" class="screen">
     <div class="top-bar">
       <h2>Planos<span class="gold">.</span></h2>
-      <div class="user-avatar">👤</div>
+      <div id="plansAvatar" class="user-avatar" onclick="showScreen('categories')">←</div>
     </div>
     <div class="plans-header">
       <h2>Escolha seu caminho</h2>
@@ -264,7 +350,7 @@
         <li>Versículos e orações personalizadas</li>
         <li>Testemunhos da comunidade</li>
       </ul>
-      <button class="btn-plan primary" onclick="goToScreen('categories')">COMEÇAR GRÁTIS</button>
+      <button class="btn-plan primary" onclick="showScreen('signup')">COMEÇAR GRÁTIS</button>
     </div>
     <div class="plan-card featured">
       <div class="plan-badge">🔥 MAIS POPULAR</div>
@@ -297,271 +383,551 @@
 </div>
 
 <script>
-  // ==========================================
-  // CONFIGURAÇÃO DO BACKEND (GROQ)
-  // ==========================================
-  const API_URL = 'https://polaris-backend-747y.onrender.com/api';
-  let sessionId = null;
+// ==========================================
+// CONFIGURAÇÃO
+// ==========================================
+const API_URL = 'https://polaris-backend-747y.onrender.com/api';
+const SUPABASE_URL = 'https://ebojkulgfrnpwkdznjbx.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_VMCJV4weArj93usA8dAFCQ_ZdhqdX1Y';
 
-  // ==========================================
-  // TIMER 24H
-  // ==========================================
-  let secondsLeft = 86399;
-  setInterval(() => {
-    secondsLeft--;
-    if (secondsLeft < 0) secondsLeft = 0;
-    const h = Math.floor(secondsLeft / 3600);
-    const m = Math.floor((secondsLeft % 3600) / 60);
-    const s = secondsLeft % 60;
-    const timer = document.getElementById('timer');
-    if (timer) timer.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-  }, 1000);
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-  // ==========================================
-  // VERIFICA SE O BACKEND ESTÁ ONLINE
-  // ==========================================
-  async function checkBackend() {
-    const dot = document.getElementById('backendDot');
-    const status = document.getElementById('backendStatus');
+let sessionToken = null;
+let currentUser = null;
+let currentCategory = '';
+let currentSessionId = null;
+let isWaitingResponse = false;
+let trialTimer = null;
 
-    dot.className = 'dot loading';
-    status.textContent = 'Verificando conexão...';
+// ==========================================
+// SUPABASE - AUTENTICAÇÃO
+// ==========================================
 
-    try {
-      const response = await fetch(`${API_URL}/health`);
-      if (response.ok) {
-        const data = await response.json();
-        dot.className = 'dot online';
-        status.textContent = `🟢 Conectado (${data.model})`;
-        return true;
+// Verificar sessão ao carregar
+async function checkSession() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    sessionToken = session.access_token;
+    currentUser = session.user;
+    document.getElementById('btnStart').onclick = () => showScreen('categories');
+    startTrialTimer();
+    return true;
+  }
+  // Se não tiver sessão, "COMEÇAR AGORA" vai pra tela de login
+  document.getElementById('btnStart').onclick = () => showScreen('login');
+  return false;
+}
+
+// Login com email/senha
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  const errorDiv = document.getElementById('loginError');
+
+  if (!email || !password) {
+    errorDiv.textContent = 'Preencha email e senha';
+    errorDiv.style.display = 'block';
+    return;
+  }
+
+  document.getElementById('btnLogin').disabled = true;
+  document.getElementById('btnLogin').textContent = 'Entrando...';
+
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+
+    if (error) {
+      errorDiv.textContent = error.message === 'Invalid login credentials'
+        ? 'Email ou senha incorretos'
+        : error.message;
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    sessionToken = data.session.access_token;
+    currentUser = data.user;
+    await loginSuccess();
+  } catch (e) {
+    errorDiv.textContent = 'Erro ao conectar. Tente novamente.';
+    errorDiv.style.display = 'block';
+  } finally {
+    document.getElementById('btnLogin').disabled = false;
+    document.getElementById('btnLogin').textContent = 'ENTRAR';
+  }
+}
+
+// Cadastro
+async function handleSignup() {
+  const name = document.getElementById('signupName').value;
+  const email = document.getElementById('signupEmail').value;
+  const password = document.getElementById('signupPassword').value;
+  const errorDiv = document.getElementById('signupError');
+
+  if (!name || !email || !password) {
+    errorDiv.textContent = 'Preencha todos os campos';
+    errorDiv.style.display = 'block';
+    return;
+  }
+  if (password.length < 6) {
+    errorDiv.textContent = 'Senha deve ter no mínimo 6 caracteres';
+    errorDiv.style.display = 'block';
+    return;
+  }
+
+  document.getElementById('btnSignup').disabled = true;
+  document.getElementById('btnSignup').textContent = 'Criando...';
+
+  try {
+    const { data, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { full_name: name } }
+    });
+
+    if (error) {
+      errorDiv.textContent = error.message;
+      errorDiv.style.display = 'block';
+      return;
+    }
+
+    // Pega o token da sessão
+    if (data.session) {
+      sessionToken = data.session.access_token;
+      currentUser = data.user;
+      await loginSuccess();
+    } else {
+      // Email confirmation needed
+      errorDiv.textContent = '📧 Conta criada! Verifique seu email para confirmar.';
+      errorDiv.style.display = 'block';
+      errorDiv.style.color = '#4ade80';
+    }
+  } catch (e) {
+    errorDiv.textContent = 'Erro ao criar conta.';
+    errorDiv.style.display = 'block';
+  } finally {
+    document.getElementById('btnSignup').disabled = false;
+    document.getElementById('btnSignup').textContent = 'CRIAR CONTA GRÁTIS';
+  }
+}
+
+// Login com Google
+async function handleGoogleLogin() {
+  try {
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin + '/auth/callback'
       }
-    } catch (e) {
-      dot.className = 'dot offline';
-      status.textContent = '🔴 Backend offline — iniciando respostas locais';
-      return false;
+    });
+    if (error) throw error;
+    // A página vai redirecionar para o Google
+  } catch (e) {
+    showError(e.message);
+  }
+}
+
+// Logout
+async function handleLogout() {
+  await supabase.auth.signOut();
+  sessionToken = null;
+  currentUser = null;
+  clearTrialTimer();
+  document.getElementById('userMenu').classList.remove('active');
+  showScreen('onboarding');
+  document.getElementById('btnStart').onclick = () => showScreen('login');
+}
+
+// Callback do OAuth (quando volta do Google)
+async function handleAuthCallback() {
+  const { data: { session } } = await supabase.auth.getSession();
+  if (session) {
+    sessionToken = session.access_token;
+    currentUser = session.user;
+    await loginSuccess();
+  }
+}
+
+// Após login bem-sucedido
+async function loginSuccess() {
+  document.getElementById('btnStart').onclick = () => showScreen('categories');
+
+  // Definir nome do usuário
+  const userName = currentUser?.user_metadata?.full_name || currentUser?.email?.split('@')[0] || 'Felipe';
+  document.getElementById('greetingMsg').innerHTML = `Bom dia <strong>${userName}</strong> 🌅<br><span style="color:var(--soft-gray);font-size:13px;">O que você gostaria de compartilhar hoje?</span>`;
+  document.getElementById('menuEmail').textContent = currentUser?.email || '';
+
+  // Iniciar trial se for a primeira vez
+  await startTrial();
+  startTrialTimer();
+  showScreen('categories');
+}
+
+// ==========================================
+// TRIAL DE 24H
+// ==========================================
+
+async function startTrial() {
+  try {
+    await fetch(`${API_URL}/trial/start`, {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${sessionToken}` }
+    });
+  } catch (e) {
+    // Se já existe, ignora
+  }
+}
+
+async function startTrialTimer() {
+  if (!sessionToken) return;
+  try {
+    const res = await fetch(`${API_URL}/trial/status`, {
+      headers: { Authorization: `Bearer ${sessionToken}` }
+    });
+    const data = await res.json();
+
+    if (data.can_chat && data.remaining_ms > 0) {
+      // Timer regressivo real
+      updateTrialTimer(data.remaining_ms);
+      if (trialTimer) clearInterval(trialTimer);
+      trialTimer = setInterval(() => {
+        const banner = document.querySelector('.countdown');
+        if (banner) {
+          const timerEl = document.getElementById('timer');
+          let current = parseTimer(timerEl?.textContent);
+          if (current > 0) {
+            current--;
+            timerEl.textContent = formatTime(current);
+          }
+        }
+      }, 1000);
+    } else if (data.is_premium) {
+      document.getElementById('timer').textContent = '♾️';
+      document.getElementById('trialLabel').textContent = 'Premium';
+    } else {
+      document.getElementById('timer').textContent = 'EXPIRADO';
+      document.getElementById('trialLabel').textContent = '⛔ Trial';
     }
+  } catch (e) {
+    // Fallback para timer visual
+    startFakeTimer();
+  }
+}
+
+function updateTrialTimer(remainingMs) {
+  const totalSeconds = Math.floor(remainingMs / 1000);
+  const timerEl = document.getElementById('timer');
+  if (timerEl) timerEl.textContent = formatTime(totalSeconds);
+}
+
+function parseTimer(str) {
+  if (!str) return 0;
+  const parts = str.split(':');
+  if (parts.length === 3) {
+    return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
+  }
+  return 0;
+}
+
+function formatTime(totalSec) {
+  const h = Math.floor(totalSec / 3600);
+  const m = Math.floor((totalSec % 3600) / 60);
+  const s = totalSec % 60;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+}
+
+function startFakeTimer() {
+  let secs = 86399;
+  if (trialTimer) clearInterval(trialTimer);
+  trialTimer = setInterval(() => {
+    secs--;
+    if (secs < 0) secs = 0;
+    document.getElementById('timer').textContent = formatTime(secs);
+  }, 1000);
+}
+
+function clearTrialTimer() {
+  if (trialTimer) {
+    clearInterval(trialTimer);
+    trialTimer = null;
+  }
+}
+
+// ==========================================
+// NAVEGAÇÃO ENTRE TELAS
+// ==========================================
+function showScreen(screen) {
+  document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+  document.getElementById('userMenu')?.classList.remove('active');
+
+  const screens = {
+    'onboarding': 'screen-onboarding',
+    'login': 'screen-login',
+    'signup': 'screen-signup',
+    'categories': 'screen-categories',
+    'chat': 'screen-chat',
+    'plans': 'screen-plans'
+  };
+
+  const el = document.getElementById(screens[screen]);
+  if (el) {
+    el.style.display = screen === 'onboarding' || screen === 'login' || screen === 'signup' ? 'flex' : 'block';
+    el.scrollTop = 0;
+  }
+}
+
+function toggleMenu() {
+  document.getElementById('userMenu').classList.toggle('active');
+}
+
+// Fechar menu ao clicar fora
+document.addEventListener('click', (e) => {
+  const menu = document.getElementById('userMenu');
+  const avatar = document.getElementById('avatarBtn');
+  if (menu?.classList.contains('active') && !avatar?.contains(e.target) && !menu.contains(e.target)) {
+    menu.classList.remove('active');
+  }
+});
+
+// ==========================================
+// BACKEND - STATUS
+// ==========================================
+async function checkBackend() {
+  const dot = document.getElementById('backendDot');
+  const status = document.getElementById('backendStatus');
+  dot.className = 'dot loading';
+  status.textContent = 'Verificando conexão...';
+
+  try {
+    const res = await fetch(`${API_URL}/health`);
+    if (res.ok) {
+      const data = await res.json();
+      dot.className = 'dot online';
+      status.textContent = `🟢 Conectado (${data.model})`;
+      return true;
+    }
+  } catch (e) {
+    dot.className = 'dot offline';
+    status.textContent = '🔴 Offline';
+    return false;
+  }
+}
+
+// ==========================================
+// CHAT COM IA
+// ==========================================
+async function openChat(category) {
+  // Se não tiver logado, pede login
+  if (!sessionToken) {
+    showScreen('login');
+    return;
   }
 
-  // Verifica ao carregar
-  setTimeout(checkBackend, 1000);
+  currentCategory = category;
+  currentSessionId = null;
+  document.getElementById('chatMessages').innerHTML = '';
+  document.getElementById('errorMsg').style.display = 'none';
 
-  // ==========================================
-  // CONTROLE DE TELAS
-  // ==========================================
-  function goToScreen(screen) {
-    document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-    if (screen === 'onboarding') document.getElementById('screen-onboarding').style.display = 'flex';
-    if (screen === 'categories') {
-      document.getElementById('screen-categories').style.display = 'block';
-      document.getElementById('screen-categories').scrollTop = 0;
+  addMessage('ai', '✨ Conectando ao Polaris...');
+
+  try {
+    const res = await fetch(`${API_URL}/start`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${sessionToken}`
+      },
+      body: JSON.stringify({ category })
+    });
+
+    if (res.status === 403) {
+      // Trial expirado
+      document.getElementById('chatMessages').innerHTML = '';
+      addMessage('ai', '⏳ Seu período grátis de 24h expirou.');
+      addMessage('ai', 'Mas não se preocupe! Você pode assinar o Polaris por apenas <strong>R$ 29,90/mês</strong> e continuar recebendo conselhos ilimitados. <br><br><a href="#" onclick="showScreen(\'plans\')" style="color:var(--accent-gold);">👉 Ver planos</a>');
+      showScreen('chat');
+      document.getElementById('chatInput').disabled = true;
+      return;
     }
-    if (screen === 'chat') {
-      document.getElementById('screen-chat').style.display = 'flex';
-      document.getElementById('screen-chat').scrollTop = 0;
-    }
-    if (screen === 'plans') document.getElementById('screen-plans').style.display = 'block';
+
+    if (!res.ok) throw new Error('Erro ao conectar');
+
+    const data = await res.json();
+    currentSessionId = data.sessionId;
+    document.getElementById('chatMessages').innerHTML = '';
+    addMessage('ai', formatMessage(data.message));
+    document.getElementById('chatInput').disabled = false;
+    showScreen('chat');
+    document.getElementById('chatInput').focus();
+
+  } catch (e) {
+    // Modo offline
+    document.getElementById('chatMessages').innerHTML = '';
+    addMessage('ai', '🔄 Tentando reconectar...');
+    setTimeout(() => {
+      const greetings = {
+        financeiro: "💰 Vamos falar sobre finanças. Compartilhe sua situação.",
+        amoroso: "❤️ Vamos falar sobre amor. 'O amor é paciente' (1 Coríntios 13:4).",
+        espiritual: "🙏 Vamos falar sobre sua fé. 'Andamos por fé, não por vista' (2 Coríntios 5:7).",
+        profissional: "💼 Vamos falar sobre carreira. Compartilhe seus desafios.",
+        familiar: "👨‍👩‍👧‍👦 'Quanto a mim e à minha casa, serviremos ao Senhor' (Josué 24:15).",
+        pessoal: "🧠 'Não andeis ansiosos' (Filipenses 4:6). Me conta."
+      };
+      addMessage('ai', greetings[category] || 'Como posso te ajudar?');
+      document.getElementById('chatInput').disabled = false;
+    }, 1000);
+    showScreen('chat');
+    document.getElementById('chatInput').focus();
   }
+}
 
-  // ==========================================
-  // INICIAR APP
-  // ==========================================
-  function startApp() {
-    goToScreen('categories');
-    checkBackend();
+function addMessage(type, text, delay = 0) {
+  const messages = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `message message-${type}`;
+  div.innerHTML = text;
+  if (delay > 0) {
+    setTimeout(() => { messages.appendChild(div); messages.scrollTop = messages.scrollHeight; }, delay);
+  } else {
+    messages.appendChild(div);
+    messages.scrollTop = messages.scrollHeight;
   }
+}
 
-  // ==========================================
-  // CHAT COM IA REAL
-  // ==========================================
-  let currentCategory = '';
-  let isWaitingResponse = false;
+function handleKey(e) {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+}
 
-  async function openChat(category) {
-    currentCategory = category;
-    sessionId = null;
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text || isWaitingResponse || input.disabled) return;
 
-    const messages = document.getElementById('chatMessages');
-    messages.innerHTML = '';
-    document.getElementById('errorMsg').style.display = 'none';
+  addMessage('user', text);
+  input.value = '';
+  document.getElementById('errorMsg').style.display = 'none';
 
-    // Mensagem de loading
-    addMessage('ai', '✨ Conectando ao Polaris...');
+  const typing = document.getElementById('typingIndicator');
+  typing.classList.add('active');
+  isWaitingResponse = true;
 
-    try {
-      // Chama o backend pra iniciar a conversa
-      const response = await fetch(`${API_URL}/start`, {
+  try {
+    if (sessionToken) {
+      const res = await fetch(`${API_URL}/chat`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ category, name: 'Felipe' })
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${sessionToken}`
+        },
+        body: JSON.stringify({
+          message: text,
+          category: currentCategory,
+          sessionId: currentSessionId
+        })
       });
 
-      if (!response.ok) throw new Error('Erro ao conectar');
+      typing.classList.remove('active');
 
-      const data = await response.json();
-      sessionId = data.sessionId;
-
-      // Limpa a mensagem de loading e mostra a real
-      messages.innerHTML = '';
-      // Formata a resposta (versículos em blocos)
-      addMessage('ai', formatMessage(data.message));
-      goToScreen('chat');
-      document.getElementById('chatInput').focus();
-
-    } catch (e) {
-      // Fallback: modo offline com respostas locais
-      messages.innerHTML = '';
-      addMessage('ai', '🔄 Modo offline — o backend está desconectado, mas ainda posso ajudar com respostas básicas.');
-
-      const offlineGreetings = {
-        financeiro: "💰 Vamos falar sobre finanças. Compartilhe sua situação que vou te dar conselhos com base na fé.",
-        amoroso: "❤️ Vamos falar sobre amor. 'O amor é paciente, o amor é bondoso' (1 Coríntios 13:4). Compartilhe seu coração.",
-        espiritual: "🙏 Vamos falar sobre sua fé. 'Porque andamos por fé, e não por vista' (2 Coríntios 5:7). Me conta como está sua caminhada.",
-        profissional: "💼 Vamos falar sobre carreira. 'Tudo quanto te vier à mão para fazer, faze-o conforme as tuas forças' (Eclesiastes 9:10).",
-        familiar: "👨‍👩‍👧‍👦 'Quanto a mim e à minha casa, serviremos ao Senhor' (Josué 24:15). Me conta o que está acontecendo.",
-        pessoal: "🧠 'Não andeis ansiosos por coisa alguma' (Filipenses 4:6). Me conta o que está no seu coração."
-      };
-      setTimeout(() => {
-        addMessage('ai', offlineGreetings[category] || 'Como posso te ajudar hoje?');
-      }, 1000);
-
-      goToScreen('chat');
-      document.getElementById('chatInput').focus();
-    }
-  }
-
-  function addMessage(type, text, delay = 0) {
-    const messages = document.getElementById('chatMessages');
-    const div = document.createElement('div');
-    div.className = `message message-${type}`;
-    div.innerHTML = text;
-    if (delay > 0) {
-      setTimeout(() => { messages.appendChild(div); messages.scrollTop = messages.scrollHeight; }, delay);
-    } else {
-      messages.appendChild(div);
-      messages.scrollTop = messages.scrollHeight;
-    }
-  }
-
-  function handleKey(e) {
-    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
-  }
-
-  async function sendMessage() {
-    const input = document.getElementById('chatInput');
-    const text = input.value.trim();
-    if (!text || isWaitingResponse) return;
-
-    addMessage('user', text);
-    input.value = '';
-    document.getElementById('errorMsg').style.display = 'none';
-
-    // Mostra indicador de digitação
-    const typing = document.getElementById('typingIndicator');
-    typing.classList.add('active');
-    isWaitingResponse = true;
-
-    try {
-      if (sessionId) {
-        // MODO ONLINE — chama a Groq de verdade
-        const response = await fetch(`${API_URL}/chat`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            message: text,
-            category: currentCategory,
-            sessionId
-          })
-        });
-
-        typing.classList.remove('active');
-
-        if (!response.ok) {
-          const errorData = await response.json().catch(() => ({}));
-          throw new Error(errorData.error || 'Erro no servidor');
-        }
-
-        const data = await response.json();
-        sessionId = data.sessionId;
-        addMessage('ai', formatMessage(data.reply));
-      } else {
-        // MODO OFFLINE — respostas locais
-        setTimeout(() => {
-          typing.classList.remove('active');
-          const r = generateLocalResponse(text);
-          addMessage('ai', r.text);
-          if (r.verse) {
-            setTimeout(() => {
-              addMessage('ai', `<div class="bible-verse">"${r.verse}"<span class="bible-ref">— ${r.ref}</span></div>`);
-            }, 800);
-          }
-        }, 1500 + Math.random() * 1500);
+      if (res.status === 403) {
+        addMessage('ai', '⏳ Seu período grátis expirou. <a href="#" onclick="showScreen(\'plans\')" style="color:var(--accent-gold);">Assine aqui</a>');
+        document.getElementById('chatInput').disabled = true;
+        return;
       }
-    } catch (e) {
-      document.getElementById('typingIndicator').classList.remove('active');
-      console.error('Erro:', e);
 
-      // Tenta de novo no modo offline
-      const errorDiv = document.getElementById('errorMsg');
-      errorDiv.textContent = '⚠️ ' + (e.message || 'Erro ao conectar. Usando modo offline.');
-      errorDiv.style.display = 'block';
+      if (!res.ok) throw new Error('Erro');
+      const data = await res.json();
+      if (data.sessionId) currentSessionId = data.sessionId;
+      addMessage('ai', formatMessage(data.reply));
 
+    } else {
+      // Offline
       setTimeout(() => {
-        const r = generateLocalResponse(text);
+        typing.classList.remove('active');
+        const r = getLocalResponse(text);
         addMessage('ai', r.text);
         if (r.verse) {
           setTimeout(() => {
             addMessage('ai', `<div class="bible-verse">"${r.verse}"<span class="bible-ref">— ${r.ref}</span></div>`);
           }, 800);
         }
-      }, 1000);
-    } finally {
-      isWaitingResponse = false;
+      }, 1500);
     }
+  } catch (e) {
+    document.getElementById('typingIndicator').classList.remove('active');
+    document.getElementById('errorMsg').textContent = '⚠️ Erro ao conectar. Usando modo offline.';
+    document.getElementById('errorMsg').style.display = 'block';
+
+    setTimeout(() => {
+      const r = getLocalResponse(text);
+      addMessage('ai', r.text);
+      if (r.verse) {
+        setTimeout(() => {
+          addMessage('ai', `<div class="bible-verse">"${r.verse}"<span class="bible-ref">— ${r.ref}</span></div>`);
+        }, 800);
+      }
+    }, 1000);
+  } finally {
+    isWaitingResponse = false;
+  }
+}
+
+function formatMessage(text) {
+  text = text.replace(/"([^"]+)"\s*\(([^)]+)\)/g,
+    '<div class="bible-verse">"$1"<span class="bible-ref">— $2</span></div>');
+  text = text.replace(/\n\n/g, '<br><br>');
+  text = text.replace(/\n/g, '<br>');
+  return text;
+}
+
+function getLocalResponse(text) {
+  const l = text.toLowerCase();
+  if (l.includes('divida')||l.includes('dinheiro')||l.includes('conta')||l.includes('banco')||l.includes('emprego'))
+    return {text: "Entendo, irmão. As dificuldades financeiras podem parecer um fardo pesado. Mas o Senhor é o seu provedor.", verse: "O meu Deus suprirá todas as vossas necessidades segundo as suas riquezas na glória em Cristo Jesus.", ref: "Filipenses 4:19"};
+  if (l.includes('amor')||l.includes('termin')||l.includes('sozin')||l.includes('namor')||l.includes('cas'))
+    return {text: "Deus conhece a dor do seu coração. Confie no tempo de Deus.", verse: "Tudo tem o seu tempo determinado, e há tempo para todo propósito debaixo do céu.", ref: "Eclesiastes 3:1"};
+  if (l.includes('deus')||l.includes('fé')||l.includes('oração')||l.includes('igreja'))
+    return {text: "Sua fé já é uma vitória! Continue firme.", verse: "Não temas, porque eu sou contigo; eu te fortaleço, e te ajudo.", ref: "Isaías 41:10"};
+  if (l.includes('ansiedade')||l.includes('medo')||l.includes('preocup'))
+    return {text: "A ansiedade quer roubar sua paz. Entregue esse fardo nas mãos d'Ele.", verse: "Não andeis ansiosos por coisa alguma; ... a paz de Deus guardará os vossos corações.", ref: "Filipenses 4:6-7"};
+  return {text: "Deus está ouvindo sua oração antes mesmo de você terminar de falar.", verse: "Clama a mim, e responder-te-ei, e anunciar-te-ei coisas grandes e ocultas.", ref: "Jeremias 33:3"};
+}
+
+// ==========================================
+// PWA - SERVICE WORKER
+// ==========================================
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js')
+      .then(reg => console.log('✅ Polaris PWA pronto!'))
+      .catch(err => console.log('PWA:', err));
+  });
+}
+
+// ==========================================
+// INIT
+// ==========================================
+async function init() {
+  // Verificar se voltou do Google OAuth
+  if (window.location.hash?.includes('access_token')) {
+    await handleAuthCallback();
   }
 
-  // ==========================================
-  // FORMATA RESPOSTA (destaca versículos)
-  // ==========================================
-  function formatMessage(text) {
-    // Transforma versículos em citações destacadas
-    // Ex: (Mateus 7:7) ou "versículo" (referência)
-    text = text.replace(/"([^"]+)"\s*\(([^)]+)\)/g,
-      '<div class="bible-verse">"$1"<span class="bible-ref">— $2</span></div>');
+  const logged = await checkSession();
+  showScreen('onboarding');
+  checkBackend();
 
-    // Transforma linhas em parágrafos
-    text = text.replace(/\n\n/g, '<br><br>');
-    text = text.replace(/\n/g, '<br>');
-
-    return text;
+  if (logged) {
+    document.getElementById('btnStart').onclick = () => showScreen('categories');
+  } else {
+    document.getElementById('btnStart').onclick = () => showScreen('login');
   }
 
-  // ==========================================
-  // RESPOSTAS LOCAIS (FALLBACK)
-  // ==========================================
-  function generateLocalResponse(text) {
-    const l = text.toLowerCase();
-    if (l.includes('divida')||l.includes('dinheiro')||l.includes('conta')||l.includes('banco')||l.includes('emprego')||l.includes('carro')||l.includes('casa'))
-      return {text: "Entendo, irmão. As dificuldades financeiras podem parecer um fardo pesado demais. Mas quero te lembrar que o Senhor é o seu provedor. Ele nunca desampara os seus filhos. Vamos orar sobre isso?", verse: "O meu Deus suprirá todas as vossas necessidades segundo as suas riquezas na glória em Cristo Jesus.", ref: "Filipenses 4:19"};
-    if (l.includes('amor')||l.includes('termin')||l.includes('sozin')||l.includes('namor')||l.includes('cas')||l.includes('solidão')||l.includes('paixão'))
-      return {text: "Deus conhece a dor do seu coração. Ele vê cada lágrima. Talvez esse tempo de espera ou de dor esteja preparando você para algo maior. Confie no tempo de Deus, Ele nunca se atrasa.", verse: "Tudo tem o seu tempo determinado, e há tempo para todo propósito debaixo do céu.", ref: "Eclesiastes 3:1"};
-    if (l.includes('deus')||l.includes('fé')||l.includes('oração')||l.includes('igreja')||l.includes('crent')||l.includes('bíblia')||l.includes('salmos'))
-      return {text: "Sua fé já é uma vitória! O simples fato de você estar buscando respostas mostra que Deus está agindo em você. Continue firme. A tempestade passa, mas a Palavra do Senhor permanece para sempre.", verse: "Não temas, porque eu sou contigo; não te assombres, porque eu sou teu Deus; eu te fortaleço, e te ajudo, e te sustento com a destra da minha justiça.", ref: "Isaías 41:10"};
-    if (l.includes('ansiedade')||l.includes('medo')||l.includes('preocup')||l.includes('pânico')||l.includes('dormir')||l.includes('stress'))
-      return {text: "A ansiedade quer roubar sua paz, mas lembre-se: o Príncipe da Paz vive em você. Entregue esse fardo nas mãos d'Ele. Você não precisa carregar isso sozinho.", verse: "Não andeis ansiosos por coisa alguma; antes, em tudo, sejam conhecidas as vossas petições diante de Deus pela oração e pela súplica, com ação de graças.", ref: "Filipenses 4:6"};
-    return {text: "Deus está ouvindo sua oração antes mesmo de você terminar de falar. Ele conhece o fundo do seu coração. Confie, descanse e permita que Ele aja.", verse: "Clama a mim, e responder-te-ei, e anunciar-te-ei coisas grandes e ocultas, que não sabes.", ref: "Jeremias 33:3"};
+  // Se tem hash de callback do Google, processa
+  if (window.location.hash?.includes('type=recovery') || window.location.hash?.includes('type=signup')) {
+    await handleAuthCallback();
   }
+}
+
+init();
 </script>
-
-<script>
-  // PWA - Service Worker
-  if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-      navigator.serviceWorker.register('/sw.js')
-        .then(reg => console.log('✅ Polaris PWA pronto!'))
-        .catch(err => console.log('PWA:', err));
-    });
-  }
-</script>
-
 </body>
 </html>

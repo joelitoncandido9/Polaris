@@ -465,6 +465,24 @@ body { font-family:Inter,sans-serif; background:#06081a; display:flex; justify-c
 </div>
 
 <div class="sett-section">
+<h3>&#128100; Avatar IA Realista (D-ID)</h3>
+<div class="sett-row" style="flex-direction:column;align-items:stretch;gap:8px;">
+<span style="font-size:12px;color:var(--soft-gray);line-height:1.5;">
+Crie um agente em studio.d-id.com, copie o Agent ID e cole abaixo.
+</span>
+<div class="input-group" style="max-width:100%;">
+<label>Agent ID (ex: ag_xxxxx)</label>
+<input type="text" id="didAgentId" placeholder="Cole o Agent ID aqui">
+</div>
+<div class="input-group" style="max-width:100%;">
+<label>API Key (se precisar)</label>
+<input type="password" id="didApiKey" placeholder="Opcional">
+</div>
+<button class="btn-plan primary" onclick="saveDIDSettings()" style="font-size:13px;padding:10px;">SALVAR D-ID</button>
+</div>
+</div>
+
+<div class="sett-section">
 <h3>&#9888; Conta</h3>
 <button class="btn-outline" onclick="handleLogout()" style="max-width:100%;">&#128682; Sair</button>
 </div>
@@ -800,29 +818,6 @@ function saveSettings() {
 localStorage.setItem('polaris_settings', JSON.stringify(userSettings));
 }
 
-function loadSettingsUI() {
-// Speed
-var speedBtns = document.querySelectorAll('#speedBtns .sett-btn');
-for (var i = 0; i < speedBtns.length; i++) {
-speedBtns[i].classList.toggle('active', parseFloat(speedBtns[i].dataset.speed) === userSettings.speed);
-}
-// Voice
-var voiceBtns = document.querySelectorAll('#voiceBtns .sett-btn');
-for (var i = 0; i < voiceBtns.length; i++) {
-voiceBtns[i].classList.toggle('active', voiceBtns[i].dataset.voice === userSettings.voice);
-}
-// Avatar
-var avBtns = document.querySelectorAll('#avatarPicker .av-btn');
-for (var i = 0; i < avBtns.length; i++) {
-avBtns[i].classList.toggle('active', avBtns[i].dataset.av === userSettings.avatar);
-}
-// Colors
-var colBtns = document.querySelectorAll('#colorPicker .col-btn');
-for (var i = 0; i < colBtns.length; i++) {
-colBtns[i].classList.toggle('active', colBtns[i].dataset.color === userSettings.avatarColor);
-}
-}
-
 // ========== AVATAR IA REALISTA (D-ID) ==========
 var didAgent = null;
 var didLoaded = false;
@@ -844,12 +839,12 @@ loadAvatar();
 }
 
 function saveDIDSettings() {
-var key = document.getElementById('didApiKey').value.trim();
 var agentId = document.getElementById('didAgentId').value.trim();
-if (!key || !agentId) { alert('Preencha a chave da API e o ID do agente D-ID'); return; }
-localStorage.setItem('polaris_did_key', key);
+if (!agentId) { alert('Preencha o ID do agente D-ID'); return; }
+var key = document.getElementById('didApiKey').value.trim();
+if (key) localStorage.setItem('polaris_did_key', key);
 localStorage.setItem('polaris_did_agent', agentId);
-alert('Configuracao salva! Clique no icone de rosto no chat para ativar o avatar.');
+alert('Configuracao salva! Abra o chat e clique no icone de rosto para ativar.');
 }
 
 function loadAvatar() {

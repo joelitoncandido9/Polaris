@@ -110,16 +110,33 @@ body { font-family:Inter,sans-serif; background:#06081a; display:flex; justify-c
 @keyframes mic-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4);} 50%{box-shadow:0 0 0 10px rgba(239,68,68,0);} }
 .chat-layout { display:flex; flex:1; overflow:hidden; }
 .chat-main { display:flex; flex-direction:column; flex:1; min-width:0; }
-.avatar-panel { display:none; width:280px; flex-shrink:0; border-left:1px solid rgba(255,255,255,0.05); flex-direction:column; }
+.avatar-panel { display:none; width:340px; flex-shrink:0; border-left:1px solid rgba(255,255,255,0.05); flex-direction:column; }
 .avatar-panel.active { display:flex; }
-.avatar-panel-header { display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid rgba(255,255,255,0.05); }
-.avatar-panel-header span { color:var(--star-white); font-size:13px; font-weight:600; }
+.avatar-panel-header { display:flex; justify-content:space-between; align-items:center; padding:10px 12px; border-bottom:1px solid rgba(255,255,255,0.05); }
+.avatar-panel-header span { color:var(--star-white); font-size:12px; font-weight:600; }
 .avatar-close { background:none; border:none; color:var(--soft-gray); font-size:14px; cursor:pointer; }
-.avatar-container { flex:1; display:flex; align-items:center; justify-content:center; overflow:hidden; background:rgba(0,0,0,0.2); }
-.avatar-container iframe { width:100%; height:100%; border:none; }
-.btn-avatar-toggle { background:none; border:1px solid rgba(255,255,255,0.1); border-radius:50%; width:36px; height:36px; font-size:16px; cursor:pointer; transition:all .2s; color:var(--soft-gray); display:flex; align-items:center; justify-content:center; margin-left:auto; flex-shrink:0; }
-.btn-avatar-toggle:hover { border-color:var(--accent-gold); color:var(--accent-gold); }
-.btn-avatar-toggle.active { background:rgba(212,168,83,0.15); border-color:var(--accent-gold); color:var(--accent-gold); }
+.avatar-container { flex:1; display:flex; align-items:center; justify-content:center; overflow:hidden; background:radial-gradient(ellipse at center,#1a1f42 0%,#0a0e27 100%); position:relative; }
+.avatar-container canvas { width:100% !important; height:100% !important; }
+.avatar-tabs { display:flex; border-bottom:1px solid rgba(255,255,255,0.05); }
+.avatar-tab { flex:1; padding:8px; text-align:center; font-size:11px; font-weight:500; color:var(--soft-gray); background:none; border:none; cursor:pointer; font-family:Inter,sans-serif; transition:all .2s; border-bottom:2px solid transparent; }
+.avatar-tab.active { color:var(--accent-gold); border-bottom-color:var(--accent-gold); }
+.avatar-tab:hover { color:var(--star-white); }
+.avatar-customize { display:none; padding:8px 12px; overflow-y:auto; max-height:200px; }
+.avatar-customize.active { display:block; }
+.avatar-customize::-webkit-scrollbar { display:none; }
+.av-cat { margin-bottom:10px; }
+.av-cat-label { color:var(--soft-gray); font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-bottom:6px; }
+.av-options { display:flex; gap:4px; flex-wrap:wrap; }
+.av-opt { width:28px; height:28px; border-radius:50%; border:2px solid transparent; cursor:pointer; transition:all .2s; }
+.av-opt:hover { transform:scale(1.15); }
+.av-opt.active { border-color:var(--accent-gold); box-shadow:0 0 8px rgba(212,168,83,0.3); }
+.av-opt-square { padding:4px 10px; border-radius:12px; border:1px solid rgba(255,255,255,0.1); background:transparent; color:var(--soft-gray); font-size:11px; cursor:pointer; font-family:Inter,sans-serif; transition:all .2s; }
+.av-opt-square:hover { border-color:var(--accent-gold); color:var(--star-white); }
+.av-opt-square.active { background:rgba(212,168,83,0.15); border-color:var(--accent-gold); color:var(--accent-gold); }
+.av-slider-row { display:flex; align-items:center; gap:8px; margin-bottom:8px; }
+.av-slider-row label { color:var(--soft-gray); font-size:11px; min-width:60px; }
+.av-slider-row input[type=range] { flex:1; -webkit-appearance:none; appearance:none; height:3px; background:rgba(255,255,255,0.1); border-radius:2px; outline:none; }
+.av-slider-row input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; width:14px; height:14px; border-radius:50%; background:var(--accent-gold); cursor:pointer; }
 #screen-plans { display:none; padding:20px 4px; height:100%; overflow-y:auto; }
 #screen-plans::-webkit-scrollbar { display:none; }
 .plans-header { text-align:center; margin-bottom:28px; }
@@ -308,15 +325,66 @@ body { font-family:Inter,sans-serif; background:#06081a; display:flex; justify-c
 </div>
 <div class="avatar-panel" id="avatarPanel">
 <div class="avatar-panel-header">
-<span>Polaris IA &#128100;</span>
+<span>Polaris IA</span>
 <button class="avatar-close" onclick="toggleAvatar()">&#10005;</button>
 </div>
-<div class="avatar-container" id="avatarContainer">
-<p id="avatarPlaceholder" style="color:var(--soft-gray);font-size:13px;text-align:center;padding:20px;">
-Configure seu avatar IA nas Configuracoes<br><br>
-Precisa de uma chave D-ID para ativar o rosto realista.<br>
-Veja o passo a passo no final da pagina.
-</p>
+<div class="avatar-tabs">
+<button class="avatar-tab active" onclick="switchAvatarTab('view',this)">&#128100; Avatar</button>
+<button class="avatar-tab" onclick="switchAvatarTab('customize',this)">&#9881; Personalizar</button>
+</div>
+<div class="avatar-container" id="avatarContainer"></div>
+<div class="avatar-customize active" id="avatarCustomize">
+<div class="av-cat">
+<div class="av-cat-label">Tom de Pele</div>
+<div class="av-options" id="skinOptions">
+<button class="av-opt active" data-skin="f5d0a9" style="background:#f5d0a9;" onclick="setAvSkin('f5d0a9')"></button>
+<button class="av-opt" data-skin="e8c499" style="background:#e8c499;" onclick="setAvSkin('e8c499')"></button>
+<button class="av-opt" data-skin="d4a574" style="background:#d4a574;" onclick="setAvSkin('d4a574')"></button>
+<button class="av-opt" data-skin="fde8d0" style="background:#fde8d0;" onclick="setAvSkin('fde8d0')"></button>
+<button class="av-opt" data-skin="c68642" style="background:#c68642;" onclick="setAvSkin('c68642')"></button>
+<button class="av-opt" data-skin="8d5524" style="background:#8d5524;" onclick="setAvSkin('8d5524')"></button>
+<button class="av-opt" data-skin="6b3a0a" style="background:#6b3a0a;" onclick="setAvSkin('6b3a0a')"></button>
+<button class="av-opt" data-skin="2c1810" style="background:#2c1810;" onclick="setAvSkin('2c1810')"></button>
+</div>
+</div>
+<div class="av-cat">
+<div class="av-cat-label">Cor dos Olhos</div>
+<div class="av-options" id="eyeColorOptions">
+<button class="av-opt active" data-eyec="#4a3520" style="background:#4a3520;" onclick="setAvEyeColor('#4a3520')" title="Castanho"></button>
+<button class="av-opt" data-eyec="#2e5a8c" style="background:#2e5a8c;" onclick="setAvEyeColor('#2e5a8c')" title="Azul"></button>
+<button class="av-opt" data-eyec="#4a7a4a" style="background:#4a7a4a;" onclick="setAvEyeColor('#4a7a4a')" title="Verde"></button>
+<button class="av-opt" data-eyec="#6b4a2e" style="background:#6b4a2e;" onclick="setAvEyeColor('#6b4a2e')" title="Mel"></button>
+<button class="av-opt" data-eyec="#2a2a2a" style="background:#2a2a2a;" onclick="setAvEyeColor('#2a2a2a')" title="Preto"></button>
+<button class="av-opt" data-eyec="#8c8c8c" style="background:#8c8c8c;" onclick="setAvEyeColor('#8c8c8c')" title="Cinza"></button>
+</div>
+</div>
+<div class="av-cat">
+<div class="av-cat-label">Cor do Cabelo</div>
+<div class="av-options" id="hairColorOptions">
+<button class="av-opt active" data-hair="#3d2513" style="background:#3d2513;" onclick="setAvHair('#3d2513')"></button>
+<button class="av-opt" data-hair="#1a0e05" style="background:#1a0e05;" onclick="setAvHair('#1a0e05')"></button>
+<button class="av-opt" data-hair="#8b4513" style="background:#8b4513;" onclick="setAvHair('#8b4513')"></button>
+<button class="av-opt" data-hair="#d4a017" style="background:#d4a017;" onclick="setAvHair('#d4a017')"></button>
+<button class="av-opt" data-hair="#c0c0c0" style="background:#c0c0c0;" onclick="setAvHair('#c0c0c0')"></button>
+<button class="av-opt" data-hair="#ff4500" style="background:#ff4500;" onclick="setAvHair('#ff4500')"></button>
+</div>
+</div>
+<div class="av-cat">
+<div class="av-cat-label">Formato do Rosto</div>
+<div class="av-options">
+<button class="av-opt-square active" onclick="setAvShape('oval')">Oval</button>
+<button class="av-opt-square" onclick="setAvShape('round')">Redondo</button>
+<button class="av-opt-square" onclick="setAvShape('square')">Quadrado</button>
+<button class="av-opt-square" onclick="setAvShape('heart')">Cora&#231;&#227;o</button>
+</div>
+</div>
+<div class="av-cat">
+<div class="av-cat-label">Boca</div>
+<div class="av-slider-row">
+<label>Grossura</label>
+<input type="range" min="0.5" max="1.5" step="0.1" value="1" oninput="setAvLipThickness(this.value)">
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -397,31 +465,13 @@ Veja o passo a passo no final da pagina.
 </div>
 
 <div class="sett-section">
-<h3>&#128100; Avatar IA Realista (D-ID)</h3>
-<div class="sett-row" style="flex-direction:column;align-items:stretch;gap:8px;">
-<span style="font-size:12px;color:var(--soft-gray);line-height:1.5;">
-Use um rosto humano real que fala, pisca, se move e reage enquanto conversa com voce. 5 minutos gratis na D-ID.
-</span>
-<div class="input-group" style="max-width:100%;">
-<label>Chave da API D-ID</label>
-<input type="password" id="didApiKey" placeholder="Cole sua chave aqui">
-</div>
-<div class="input-group" style="max-width:100%;">
-<label>ID do Agente D-ID</label>
-<input type="text" id="didAgentId" placeholder="ex: ag_xxxxx">
-</div>
-<button class="btn-plan primary" onclick="saveDIDSettings()" style="font-size:13px;padding:10px;">SALVAR</button>
-<button class="btn-outline" onclick="window.open('https://studio.d-id.com/agents','_blank')" style="font-size:12px;padding:8px;max-width:100%;text-align:center;">Criar conta D-ID (gratis)</button>
-</div>
-</div>
-
-<div class="sett-section">
 <h3>&#9888; Conta</h3>
 <button class="btn-outline" onclick="handleLogout()" style="max-width:100%;">&#128682; Sair</button>
 </div>
 </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
 <script>
 var API_URL = 'https://polaris-backend-747y.onrender.com/api';
 var sessionToken = null;
@@ -694,6 +744,10 @@ startRecognition();
 
 function speakText(text) {
 if (!synth) return;
+if (avatarInitialized) { avatarSpeaking = true; }
+var checkSpeechEnd = setInterval(function() {
+if (!synth.speaking) { avatarSpeaking = false; clearInterval(checkSpeechEnd); }
+}, 200);
 synth.cancel();
 var clean = text.replace(/<[^>]*>/g, '').replace(/[&;#0-9]+;/g, '').replace(/[""''\u{1F300}-\u{1FFFF}]/gu, '');
 var utterance = new SpeechSynthesisUtterance(clean);
@@ -907,6 +961,381 @@ if (l.indexOf('ansiedade')>=0||l.indexOf('medo')>=0||l.indexOf('preocup')>=0)
 return {text:"Entregue esse fardo a Deus.", verse:"Nao andeis ansiosos por coisa alguma.", ref:"Filipenses 4:6-7"};
 return {text:"Deus esta ouvindo sua oracao.", verse:"Clama a mim, e responder-te-ei.", ref:"Jeremias 33:3"};
 }
+
+// ==========================================
+// SISTEMA DE AVATAR 3D (Three.js)
+// ==========================================
+var avatarScene, avatarCamera, avatarRenderer;
+var avatarHead, avatarLeftEye, avatarRightEye;
+var avatarLeftEyelid, avatarRightEyelid;
+var avatarMouth, avatarHair, avatarNose;
+var avatarLeftBrow, avatarRightBrow;
+var avatarNeck;
+var avatarMixer, avatarAnimations = {};
+var avatarBlinkTime = 0;
+var avatarLipSyncAmt = 0;
+var avatarSpeaking = false;
+var avatarInitialized = false;
+
+var avState = {
+skinColor: '#f5d0a9',
+eyeColor: '#4a3520',
+hairColor: '#3d2513',
+faceShape: 'oval',
+lipThickness: 1.0,
+morphTargets: {}
+};
+
+function initAvatar() {
+if (avatarInitialized) return;
+var container = document.getElementById('avatarContainer');
+if (!container || container.offsetWidth === 0) { setTimeout(initAvatar, 500); return; }
+
+avatarScene = new THREE.Scene();
+
+var w = container.offsetWidth || 320;
+var h = container.offsetHeight || 400;
+avatarCamera = new THREE.PerspectiveCamera(40, w/h, 0.1, 100);
+avatarCamera.position.set(0, 0.1, 7);
+avatarCamera.lookAt(0, 0, 0);
+
+avatarRenderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+avatarRenderer.setSize(w, h);
+avatarRenderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+avatarRenderer.toneMapping = THREE.ACESFilmicToneMapping;
+avatarRenderer.toneMappingExposure = 1.2;
+container.innerHTML = '';
+container.appendChild(avatarRenderer.domElement);
+
+// Lighting
+var ambient = new THREE.AmbientLight(0xffffff, 0.4);
+avatarScene.add(ambient);
+
+var keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+keyLight.position.set(2, 3, 4);
+avatarScene.add(keyLight);
+
+var fillLight = new THREE.DirectionalLight(0xffeedd, 0.5);
+fillLight.position.set(-2, 1, 3);
+avatarScene.add(fillLight);
+
+var rimLight = new THREE.DirectionalLight(0x8888ff, 0.4);
+rimLight.position.set(0, -1, -4);
+avatarScene.add(rimLight);
+
+var hemi = new THREE.HemisphereLight(0xffeedd, 0x444466, 0.6);
+avatarScene.add(hemi);
+
+buildAvatar();
+avatarInitialized = true;
+animateAvatar();
+}
+
+function buildAvatar() {
+// Clean previous
+while(avatarScene.children.length > 4) avatarScene.remove(avatarScene.children[avatarScene.children.length-1]);
+
+var skinHex = new THREE.Color(avState.skinColor);
+var skinMat = new THREE.MeshPhysicalMaterial({
+color: skinHex, roughness: 0.45, metalness: 0.0,
+clearcoat: 0.05, clearcoatRoughness: 0.4,
+subsurface: 0.1, thickness: 0.5
+});
+
+// Neck
+var neckGeo = new THREE.CylinderGeometry(0.7, 0.9, 0.8, 16);
+avatarNeck = new THREE.Mesh(neckGeo, skinMat);
+avatarNeck.position.y = -1.2;
+avatarScene.add(avatarNeck);
+
+// Head shape
+var headSeg = 32;
+var headGeo = new THREE.SphereGeometry(1, headSeg, headSeg);
+
+// Manipulate vertices for face shape
+var pos = headGeo.attributes.position;
+var vec = new THREE.Vector3();
+for (var i = 0; i < pos.count; i++) {
+vec.fromBufferAttribute(pos, i);
+var y = vec.y;
+var x = vec.x;
+var z = vec.z;
+
+// Chin - elongate
+if (y < -0.3) { var factor = 1 + (Math.abs(y + 0.3) * 0.3); vec.z *= factor; }
+
+// Cheekbones
+if (y > -0.2 && y < 0.3 && Math.abs(x) > 0.5) { vec.z -= 0.05; }
+
+// Forehead slope
+if (y > 0.5) { vec.x *= 0.85; }
+
+// Jaw line
+if (y < 0 && y > -0.8 && Math.abs(x) > 0.6) { vec.z += 0.08; }
+
+pos.setXYZ(i, vec.x, vec.y, vec.z);
+}
+headGeo.computeVertexNormals();
+
+avatarHead = new THREE.Mesh(headGeo, skinMat.clone());
+avatarScene.add(avatarHead);
+
+// Eyes
+var eyeWhiteMat = new THREE.MeshPhysicalMaterial({ color: 0xf8f8f8, roughness: 0.1, metalness: 0.0 });
+var irisMat = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(avState.eyeColor), roughness: 0.3, metalness: 0.1, clearcoat: 0.2 });
+var pupilMat = new THREE.MeshPhysicalMaterial({ color: 0x111111, roughness: 0.0, metalness: 0.0 });
+
+function createEye(side) {
+var group = new THREE.Group();
+var white = new THREE.Mesh(new THREE.SphereGeometry(0.22, 24, 24), eyeWhiteMat);
+white.scale.set(1, 0.9, 0.6);
+group.add(white);
+var iris = new THREE.Mesh(new THREE.SphereGeometry(0.12, 16, 16), irisMat.clone());
+iris.position.z = 0.12;
+iris.scale.set(1, 0.8, 0.3);
+group.add(iris);
+var pupil = new THREE.Mesh(new THREE.SphereGeometry(0.05, 12, 12), pupilMat);
+pupil.position.z = 0.16;
+group.add(pupil);
+// Cornea
+var cornea = new THREE.Mesh(new THREE.SphereGeometry(0.23, 24, 24), new THREE.MeshPhysicalMaterial({ color:0xffffff, roughness:0.0, metalness:0.0, clearcoat:1.0, clearcoatRoughness:0.05, transparent:true, opacity:0.3 }));
+cornea.scale.set(1, 0.9, 0.55);
+cornea.position.z = 0.04;
+group.add(cornea);
+group.position.set(side * 0.35, 0.2, 0.85);
+return group;
+}
+
+avatarLeftEye = createEye(-1);
+avatarRightEye = createEye(1);
+avatarScene.add(avatarLeftEye);
+avatarScene.add(avatarRightEye);
+
+// Eyelids for blinking
+var eyelidMat = skinMat.clone();
+var eyelidGeo = new THREE.SphereGeometry(1.02, 24, 12, 0, Math.PI * 2, 0, Math.PI * 0.35);
+
+avatarLeftEyelid = new THREE.Mesh(eyelidGeo.clone(), eyelidMat);
+avatarLeftEyelid.scale.set(1, 1, 1.1);
+avatarLeftEyelid.position.set(-0.35, 0.25, 0.85);
+avatarLeftEyelid.rotation.x = 0.1;
+avatarLeftEyelid.rotation.y = 0.1;
+avatarScene.add(avatarLeftEyelid);
+
+avatarRightEyelid = new THREE.Mesh(eyelidGeo.clone(), eyelidMat);
+avatarRightEyelid.scale.set(1, 1, 1.1);
+avatarRightEyelid.position.set(0.35, 0.25, 0.85);
+avatarRightEyelid.rotation.x = 0.1;
+avatarRightEyelid.rotation.y = -0.1;
+avatarScene.add(avatarRightEyelid);
+
+// Nose
+var noseMat = skinMat.clone();
+var noseGeo = new THREE.SphereGeometry(0.12, 12, 12);
+avatarNose = new THREE.Mesh(noseGeo, noseMat);
+avatarNose.position.set(0, 0.05, 0.92);
+avatarNose.scale.set(0.8, 1.2, 0.6);
+avatarScene.add(avatarNose);
+
+// Nostrils
+var nostrilMat = new THREE.MeshPhysicalMaterial({ color: 0xd4a080, roughness: 0.8 });
+var nostrilGeo = new THREE.SphereGeometry(0.03, 8, 8);
+var n1 = new THREE.Mesh(nostrilGeo, nostrilMat);
+n1.position.set(-0.06, -0.04, 0.95);
+n1.scale.set(1, 0.5, 0.8);
+avatarScene.add(n1);
+var n2 = new THREE.Mesh(nostrilGeo, nostrilMat);
+n2.position.set(0.06, -0.04, 0.95);
+n2.scale.set(1, 0.5, 0.8);
+avatarScene.add(n2);
+
+// Mouth
+var mouthMat = new THREE.MeshPhysicalMaterial({ color: 0xc47070, roughness: 0.5, metalness: 0.0 });
+var mouthGeo = new THREE.SphereGeometry(0.12 * avState.lipThickness, 16, 8, 0, Math.PI * 2, 0, Math.PI * 0.5);
+avatarMouth = new THREE.Mesh(mouthGeo, mouthMat);
+avatarMouth.position.set(0, -0.25, 0.92);
+avatarMouth.scale.set(1.2 * avState.lipThickness, 0.4 * avState.lipThickness, 0.5);
+avatarScene.add(avatarMouth);
+
+// Inner mouth (dark)
+var innerMouthMat = new THREE.MeshPhysicalMaterial({ color: 0x3a1a1a, roughness: 1.0 });
+var innerMouth = new THREE.Mesh(new THREE.SphereGeometry(0.07, 8, 8), innerMouthMat);
+innerMouth.position.set(0, -0.12, 0.03);
+innerMouth.scale.set(1, 0.3, 0.3);
+avatarMouth.add(innerMouth);
+
+// Eyebrows
+var browMat = new THREE.MeshPhysicalMaterial({ color: new THREE.Color(avState.hairColor), roughness: 0.9 });
+
+function createEyebrow(side) {
+var browGeo = new THREE.BoxGeometry(0.22, 0.03, 0.04);
+var brow = new THREE.Mesh(browGeo, browMat.clone());
+brow.position.set(side * 0.32, 0.5, 0.8);
+brow.rotation.z = side * 0.1;
+return brow;
+}
+
+avatarLeftBrow = createEyebrow(-1);
+avatarRightBrow = createEyebrow(1);
+avatarScene.add(avatarLeftBrow);
+avatarScene.add(avatarRightBrow);
+
+// Hair
+var hairMat = new THREE.MeshPhysicalMaterial({
+color: new THREE.Color(avState.hairColor), roughness: 0.8, metalness: 0.1
+});
+var hairGeo = new THREE.SphereGeometry(1.02, 24, 24, 0, Math.PI * 2, 0, Math.PI * 0.55);
+avatarHair = new THREE.Mesh(hairGeo, hairMat);
+avatarHair.position.y = 0.55;
+avatarHair.scale.set(1.05, 1, 1.05);
+avatarHair.rotation.x = 0.15;
+avatarScene.add(avatarHair);
+
+// Hair bangs (front)
+var bangMat = hairMat.clone();
+var bangGeo = new THREE.SphereGeometry(1.02, 24, 12, -Math.PI*0.4, Math.PI*0.8, 0, Math.PI*0.2);
+var bang = new THREE.Mesh(bangGeo, bangMat);
+bang.position.set(0, 0.6, 0.9);
+bang.scale.set(1.0, 0.8, 0.6);
+bang.rotation.x = 0.4;
+avatarScene.add(bang);
+}
+
+function animateAvatar() {
+requestAnimationFrame(animateAvatar);
+if (!avatarScene || !avatarRenderer) return;
+
+var time = Date.now() / 1000;
+
+// Subtle breathing / head sway
+if (avatarHead) {
+avatarHead.rotation.y = Math.sin(time * 0.3) * 0.03;
+avatarHead.rotation.x = Math.sin(time * 0.2) * 0.02;
+var breathScale = 1 + Math.sin(time * 1.2) * 0.002;
+avatarHead.scale.set(breathScale, breathScale, breathScale);
+}
+
+// Blinking
+avatarBlinkTime += 0.016;
+if (avatarBlinkTime > 3 + Math.random() * 2) {
+blinkAvatar();
+avatarBlinkTime = 0;
+}
+
+// Lip sync - subtle idle movement + speech
+if (avatarSpeaking && avatarMouth) {
+avatarLipSyncAmt = 0.3 + Math.sin(time * 8) * 0.3 + Math.sin(time * 13) * 0.15 + Math.sin(time * 5) * 0.1;
+avatarMouth.scale.y = 0.4 * avState.lipThickness * (1 + avatarLipSyncAmt * 0.5);
+avatarMouth.position.y = -0.25 - avatarLipSyncAmt * 0.03;
+} else if (avatarMouth) {
+avatarLipSyncAmt *= 0.9;
+avatarMouth.scale.y = 0.4 * avState.lipThickness;
+avatarMouth.position.y = -0.25;
+}
+
+// Soft eye tracking (look toward camera slightly)
+if (avatarLeftEye) {
+var eyeLookX = Math.sin(time * 0.1) * 0.02;
+var eyeLookY = Math.sin(time * 0.15) * 0.01;
+avatarLeftEye.children.forEach(function(c) { if (c !== avatarLeftEye.children[0]) { c.position.x = eyeLookX; c.position.y = eyeLookY; } });
+avatarRightEye.children.forEach(function(c) { if (c !== avatarRightEye.children[0]) { c.position.x = eyeLookX; c.position.y = eyeLookY; } });
+}
+
+avatarRenderer.render(avatarScene, avatarCamera);
+}
+
+function blinkAvatar() {
+if (!avatarLeftEyelid || !avatarRightEyelid) return;
+// Quick close and open
+var duration = 100;
+[avatarLeftEyelid, avatarRightEyelid].forEach(function(lid) {
+lid.scale.y = 0.05;
+});
+setTimeout(function() {
+[avatarLeftEyelid, avatarRightEyelid].forEach(function(lid) {
+lid.scale.y = 1;
+});
+}, duration);
+}
+
+// Customization functions
+function setAvSkin(color) {
+avState.skinColor = color;
+var c = new THREE.Color(color);
+avatarScene.children.forEach(function(child) {
+if (child.isMesh && child.material && child.material.color &&
+(child === avatarHead || child === avatarNeck || child === avatarNose ||
+child === avatarLeftEyelid || child === avatarRightEyelid)) {
+child.material.color.copy(c);
+}
+});
+var btns = document.querySelectorAll('#skinOptions .av-opt');
+for (var i = 0; i < btns.length; i++) { btns[i].classList.toggle('active', btns[i].dataset.skin === color); }
+}
+
+function setAvEyeColor(color) {
+avState.eyeColor = color;
+var c = new THREE.Color(color);
+[avatarLeftEye, avatarRightEye].forEach(function(eye) {
+eye.children.forEach(function(child) {
+if (child.isMesh && child.material && child.material.color &&
+child !== eye.children[0] && child !== eye.children[2] && child !== eye.children[3]) {
+child.material.color.copy(c);
+}
+});
+});
+var btns = document.querySelectorAll('#eyeColorOptions .av-opt');
+for (var i = 0; i < btns.length; i++) { btns[i].classList.toggle('active', btns[i].dataset.eyec === color); }
+}
+
+function setAvHair(color) {
+avState.hairColor = color;
+var c = new THREE.Color(color);
+[avatarHair, avatarLeftBrow, avatarRightBrow].forEach(function(mesh) {
+if (mesh) mesh.material.color.copy(c);
+});
+var btns = document.querySelectorAll('#hairColorOptions .av-opt');
+for (var i = 0; i < btns.length; i++) { btns[i].classList.toggle('active', btns[i].dataset.hair === color); }
+}
+
+function setAvShape(shape) {
+avState.faceShape = shape;
+var btns = document.querySelectorAll('.av-opt-square[onclick*="'+shape+'"]');
+document.querySelectorAll('.av-opt-square').forEach(function(b) { b.classList.remove('active'); });
+if (btns.length) btns[0].classList.add('active');
+}
+
+function setAvLipThickness(val) {
+avState.lipThickness = parseFloat(val);
+if (avatarMouth) {
+avatarMouth.scale.x = 1.2 * parseFloat(val);
+avatarMouth.scale.y = 0.4 * parseFloat(val);
+}
+}
+
+function switchAvatarTab(tab, btn) {
+document.querySelectorAll('.avatar-tab').forEach(function(b) { b.classList.remove('active'); });
+btn.classList.add('active');
+var customize = document.getElementById('avatarCustomize');
+if (tab === 'view') {
+customize.classList.remove('active');
+} else {
+customize.classList.add('active');
+}
+}
+
+// Override toggleAvatar to init 3D
+var origToggleAvatar = toggleAvatar;
+toggleAvatar = function() {
+var panel = document.getElementById('avatarPanel');
+var btn = document.getElementById('avatarToggle');
+if (panel.classList.contains('active')) {
+panel.classList.remove('active'); btn.classList.remove('active'); btn.innerHTML = '&#128100;';
+} else {
+panel.classList.add('active'); btn.classList.add('active'); btn.innerHTML = '&#128100;';
+setTimeout(initAvatar, 100);
+}
+};
 
 if ('serviceWorker' in navigator) {
 window.addEventListener('load', function() { navigator.serviceWorker.register('/sw.js').catch(function() {}); });

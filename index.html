@@ -134,6 +134,24 @@ body { font-family:Inter,sans-serif; background:#06081a; display:flex; justify-c
 .backend-status .dot.loading { background:#facc15; animation:pulse-dot 1s ease-in-out infinite; }
 @keyframes pulse-dot { 0%,100%{opacity:.4;} 50%{opacity:1;} }
 .error-msg { color:#ef4444; font-size:12px; padding:8px 12px; background:rgba(239,68,68,0.1); border-radius:8px; display:none; margin-bottom:8px; }
+#screen-settings { display:none; padding:16px 4px; height:100%; overflow-y:auto; }
+#screen-settings::-webkit-scrollbar { display:none; }
+.sett-section { margin-bottom:24px; }
+.sett-section h3 { color:var(--star-white); font-size:16px; font-weight:600; margin-bottom:16px; padding-bottom:8px; border-bottom:1px solid rgba(255,255,255,0.05); }
+.sett-row { display:flex; justify-content:space-between; align-items:center; padding:10px 0; }
+.sett-row span { color:var(--soft-gray); font-size:14px; }
+.sett-btns { display:flex; gap:6px; }
+.sett-btn { padding:6px 14px; border-radius:20px; border:1px solid rgba(255,255,255,0.1); background:transparent; color:var(--soft-gray); font-size:13px; cursor:pointer; font-family:Inter,sans-serif; transition:all .2s; }
+.sett-btn.active { background:var(--gradient-gold); color:#0a0e27; border-color:var(--accent-gold); font-weight:600; }
+.sett-btn:hover { border-color:var(--accent-gold); }
+.sett-avatars { display:flex; gap:6px; flex-wrap:wrap; }
+.av-btn { width:36px; height:36px; border-radius:50%; border:2px solid transparent; background:rgba(255,255,255,0.05); font-size:18px; cursor:pointer; transition:all .2s; display:flex; align-items:center; justify-content:center; }
+.av-btn.active { border-color:var(--accent-gold); background:rgba(212,168,83,0.15); }
+.av-btn:hover { border-color:rgba(212,168,83,0.4); }
+.sett-colors { display:flex; gap:6px; }
+.col-btn { width:28px; height:28px; border-radius:50%; border:2px solid transparent; cursor:pointer; transition:all .2s; }
+.col-btn.active { border-color:var(--star-white); transform:scale(1.2); }
+.col-btn:hover { transform:scale(1.1); }
 .stars { position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none; overflow:hidden; }
 .star { position:absolute; width:2px; height:2px; background:white; border-radius:50%; animation:twinkle 3s ease-in-out infinite; }
 @keyframes twinkle { 0%,100%{opacity:.2;} 50%{opacity:.8;} }
@@ -192,10 +210,11 @@ body { font-family:Inter,sans-serif; background:#06081a; display:flex; justify-c
 <div id="screen-categories" class="screen">
 <div class="top-bar">
 <h2>Polaris<span class="gold">.</span></h2>
-<div class="user-avatar" id="avatarBtn" onclick="toggleMenu()">&#128100;</div>
+<div class="user-avatar" id="avatarBtn" onclick="toggleMenu()" style="background:var(--gradient-gold);">&#128100;</div>
 <div class="user-menu" id="userMenu">
 <div class="menu-email" id="menuEmail">email</div>
-<button onclick="handleLogout()">Sair</button>
+<button onclick="showScreen('settings')">&#9881; Configuracoes</button>
+<button onclick="handleLogout()">&#128682; Sair</button>
 </div>
 </div>
 <div class="countdown" id="trialBanner" onclick="showScreen('plans')">
@@ -264,6 +283,61 @@ body { font-family:Inter,sans-serif; background:#06081a; display:flex; justify-c
 </div>
 </div>
 
+<!-- TELA 7: CONFIGURACOES -->
+<div id="screen-settings" class="screen">
+<div class="top-bar"><h2>Configuracoes<span class="gold">.</span></h2><div class="user-avatar" onclick="showScreen('categories')">&larr;</div></div>
+
+<div class="sett-section">
+<h3>&#127908; Audio</h3>
+<div class="sett-row">
+<span>Velocidade da voz</span>
+<div class="sett-btns" id="speedBtns">
+<button class="sett-btn active" data-speed="1" onclick="setSpeed(1)">1x</button>
+<button class="sett-btn" data-speed="1.5" onclick="setSpeed(1.5)">1.5x</button>
+<button class="sett-btn" data-speed="2" onclick="setSpeed(2)">2x</button>
+</div>
+</div>
+<div class="sett-row">
+<span>Voz preferida</span>
+<div class="sett-btns" id="voiceBtns">
+<button class="sett-btn active" data-voice="feminina" onclick="setVoice('feminina')">Feminina</button>
+<button class="sett-btn" data-voice="masculina" onclick="setVoice('masculina')">Masculina</button>
+</div>
+</div>
+</div>
+
+<div class="sett-section">
+<h3>&#128100; Avatar</h3>
+<div class="sett-row">
+<span>Seu icone</span>
+<div class="sett-avatars" id="avatarPicker">
+<button class="av-btn active" data-av="&#128100;" onclick="setAvatar('&#128100;')">&#128100;</button>
+<button class="av-btn" data-av="&#128102;" onclick="setAvatar('&#128102;')">&#128102;</button>
+<button class="av-btn" data-av="&#128104;" onclick="setAvatar('&#128104;')">&#128104;</button>
+<button class="av-btn" data-av="&#129333;" onclick="setAvatar('&#129333;')">&#129333;</button>
+<button class="av-btn" data-av="&#127775;" onclick="setAvatar('&#127775;')">&#127775;</button>
+<button class="av-btn" data-av="&#128081;" onclick="setAvatar('&#128081;')">&#128081;</button>
+</div>
+</div>
+<div class="sett-row">
+<span>Cor do fundo</span>
+<div class="sett-colors" id="colorPicker">
+<button class="col-btn active" data-color="gold" onclick="setAvatarColor('gold')" style="background:var(--gradient-gold);"></button>
+<button class="col-btn" data-color="blue" onclick="setAvatarColor('blue')" style="background:#4a90d9;"></button>
+<button class="col-btn" data-color="green" onclick="setAvatarColor('green')" style="background:#4ade80;"></button>
+<button class="col-btn" data-color="purple" onclick="setAvatarColor('purple')" style="background:#a855f7;"></button>
+<button class="col-btn" data-color="rose" onclick="setAvatarColor('rose')" style="background:#f43f5e;"></button>
+</div>
+</div>
+</div>
+
+<div class="sett-section">
+<h3>&#9888; Conta</h3>
+<button class="btn-outline" onclick="handleLogout()" style="max-width:100%;">&#128682; Sair</button>
+</div>
+</div>
+</div>
+
 <script>
 var API_URL = 'https://polaris-backend-747y.onrender.com/api';
 var sessionToken = null;
@@ -282,6 +356,7 @@ if (screen === 'onboarding' || screen === 'login' || screen === 'signup') { el.s
 else { el.style.display = 'block'; }
 el.scrollTop = 0;
 }
+if (screen === 'settings') { loadSettingsUI(); }
 }
 
 function toggleMenu() {
@@ -370,12 +445,19 @@ showScreen('onboarding'); document.getElementById('btnStart').onclick = function
 
 function loginSuccess() {
 document.getElementById('btnStart').onclick = function() { showScreen('categories'); };
+loadUserSettings();
+updateAvatar();
 var meta = currentUser.user_metadata || {};
 var name = meta.full_name || currentUser.email.split('@')[0] || 'Felipe';
 var msg = document.getElementById('greetingMsg');
 msg.innerHTML = 'Bom dia <strong>' + name + '</strong><br><span style="color:var(--soft-gray);font-size:13px;">O que compartilhar hoje?</span>';
 document.getElementById('menuEmail').textContent = currentUser.email || '';
 startTrial(); startTrialTimer(); showScreen('categories');
+}
+
+function loadUserSettings() {
+var s = loadSettings();
+if (s) { userSettings = s; }
 }
 
 function startTrial() {
@@ -529,16 +611,27 @@ startRecognition();
 function speakText(text) {
 if (!synth) return;
 synth.cancel();
-// Remove HTML tags for cleaner speech
 var clean = text.replace(/<[^>]*>/g, '').replace(/[&;#0-9]+;/g, '').replace(/[""''\u{1F300}-\u{1FFFF}]/gu, '');
 var utterance = new SpeechSynthesisUtterance(clean);
 utterance.lang = 'pt-BR';
-utterance.rate = 1.0;
+utterance.rate = userSettings.speed || 1.0;
 utterance.pitch = 1.0;
-// Try to find a Brazilian Portuguese voice
 var voices = synth.getVoices();
+// Try to find matching voice based on user preference
+for (var i = 0; i < voices.length; i++) {
+if (voices[i].lang.indexOf('pt') === 0) {
+var n = voices[i].name.toLowerCase();
+var isFem = n.indexOf('maria') >= 0 || n.indexOf('female') >= 0 || n.indexOf('zira') >= 0;
+var isMasc = n.indexOf('antonio') >= 0 || n.indexOf('male') >= 0 || n.indexOf('david') >= 0 || n.indexOf('daniel') >= 0;
+if (userSettings.voice === 'feminina' && isFem) { utterance.voice = voices[i]; break; }
+if (userSettings.voice === 'masculina' && isMasc) { utterance.voice = voices[i]; break; }
+}
+}
+// Fallback: first Portuguese voice
+if (!utterance.voice) {
 for (var i = 0; i < voices.length; i++) {
 if (voices[i].lang.indexOf('pt') === 0) { utterance.voice = voices[i]; break; }
+}
 }
 synth.speak(utterance);
 }
@@ -558,6 +651,74 @@ if (!synth.speaking) { btn.classList.remove('playing'); btn.innerHTML = '&#9654;
 };
 msgEl.appendChild(btn);
 }
+
+// ========== CONFIGURACOES ==========
+var userSettings = loadSettings() || { speed: 1, voice: 'feminina', avatar: '&#128100;', avatarColor: 'gold' };
+
+function loadSettings() {
+try { var d = JSON.parse(localStorage.getItem('polaris_settings')); return d; } catch(e) { return null; }
+}
+function saveSettings() {
+localStorage.setItem('polaris_settings', JSON.stringify(userSettings));
+}
+
+function loadSettingsUI() {
+// Speed
+var speedBtns = document.querySelectorAll('#speedBtns .sett-btn');
+for (var i = 0; i < speedBtns.length; i++) {
+speedBtns[i].classList.toggle('active', parseFloat(speedBtns[i].dataset.speed) === userSettings.speed);
+}
+// Voice
+var voiceBtns = document.querySelectorAll('#voiceBtns .sett-btn');
+for (var i = 0; i < voiceBtns.length; i++) {
+voiceBtns[i].classList.toggle('active', voiceBtns[i].dataset.voice === userSettings.voice);
+}
+// Avatar
+var avBtns = document.querySelectorAll('#avatarPicker .av-btn');
+for (var i = 0; i < avBtns.length; i++) {
+avBtns[i].classList.toggle('active', avBtns[i].dataset.av === userSettings.avatar);
+}
+// Colors
+var colBtns = document.querySelectorAll('#colorPicker .col-btn');
+for (var i = 0; i < colBtns.length; i++) {
+colBtns[i].classList.toggle('active', colBtns[i].dataset.color === userSettings.avatarColor);
+}
+}
+
+function setSpeed(val) {
+userSettings.speed = val; saveSettings();
+var btns = document.querySelectorAll('#speedBtns .sett-btn');
+for (var i = 0; i < btns.length; i++) { btns[i].classList.toggle('active', parseFloat(btns[i].dataset.speed) === val); }
+}
+
+function setVoice(val) {
+userSettings.voice = val; saveSettings();
+var btns = document.querySelectorAll('#voiceBtns .sett-btn');
+for (var i = 0; i < btns.length; i++) { btns[i].classList.toggle('active', btns[i].dataset.voice === val); }
+}
+
+function setAvatar(val) {
+userSettings.avatar = val; saveSettings();
+var btns = document.querySelectorAll('#avatarPicker .av-btn');
+for (var i = 0; i < btns.length; i++) { btns[i].classList.toggle('active', btns[i].dataset.av === val); }
+updateAvatar();
+}
+
+function setAvatarColor(val) {
+userSettings.avatarColor = val; saveSettings();
+var btns = document.querySelectorAll('#colorPicker .col-btn');
+for (var i = 0; i < btns.length; i++) { btns[i].classList.toggle('active', btns[i].dataset.color === val); }
+updateAvatar();
+}
+
+function updateAvatar() {
+var el = document.getElementById('avatarBtn');
+if (!el) return;
+el.innerHTML = userSettings.avatar;
+var colors = { gold: 'var(--gradient-gold)', blue: '#4a90d9', green: '#4ade80', purple: '#a855f7', rose: '#f43f5e' };
+el.style.background = colors[userSettings.avatarColor] || 'var(--gradient-gold)';
+}
+
 
 function sendMessage() {
 var input = document.getElementById('chatInput');

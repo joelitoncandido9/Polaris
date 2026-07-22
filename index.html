@@ -1,0 +1,550 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Polaris — Protótipo</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --deep-blue: #0a0e27;
+    --mid-blue: #131837;
+    --accent-gold: #d4a853;
+    --accent-glow: #f0d080;
+    --star-white: #f0f2ff;
+    --soft-gray: #8b8fa3;
+    --chat-user: #1a1f42;
+    --chat-ai: #0f1435;
+    --gradient-primary: linear-gradient(135deg, #0a0e27 0%, #1a1f42 50%, #0a0e27 100%);
+    --gradient-gold: linear-gradient(135deg, #d4a853 0%, #f0d080 50%, #d4a853 100%);
+  }
+  body { font-family: 'Inter', -apple-system, sans-serif; background: #06081a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
+  .phone { width: 393px; height: 852px; background: var(--gradient-primary); border-radius: 44px; padding: 16px; box-shadow: 0 0 80px rgba(212,168,83,0.08), 0 20px 60px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(212,168,83,0.1); position: relative; overflow: hidden; }
+  .dynamic-island { width: 120px; height: 30px; background: #000; border-radius: 20px; margin: 0 auto 12px; position: relative; z-index: 100; }
+  .screen { height: calc(100% - 42px); overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; position: relative; }
+  .screen::-webkit-scrollbar { display: none; }
+  #screen-onboarding { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; height: 100%; text-align: center; }
+  .polaris-logo { width: 90px; height: 90px; border-radius: 24px; background: var(--gradient-gold); display: flex; align-items: center; justify-content: center; font-size: 44px; margin-bottom: 24px; box-shadow: 0 0 60px rgba(212,168,83,0.3); position: relative; }
+  .polaris-logo::after { content: ''; position: absolute; width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, rgba(212,168,83,0.15) 0%, transparent 70%); animation: pulse-glow 3s ease-in-out infinite; }
+  @keyframes pulse-glow { 0%,100% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; } }
+  .polaris-name { font-size: 36px; font-weight: 800; color: var(--star-white); letter-spacing: 3px; margin-bottom: 6px; }
+  .polaris-sub { font-size: 13px; color: var(--accent-gold); font-weight: 500; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px; }
+  .free-badge { display: inline-block; background: rgba(212,168,83,0.15); color: var(--accent-gold); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 20px; border: 1px solid rgba(212,168,83,0.2); }
+  .tagline { font-size: 17px; color: var(--soft-gray); line-height: 1.7; margin-bottom: 36px; max-width: 300px; }
+  .tagline strong { color: var(--star-white); font-weight: 600; }
+  .btn-primary { background: var(--gradient-gold); color: #0a0e27; border: none; padding: 16px 48px; border-radius: 50px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; font-family: 'Inter', sans-serif; width: 100%; max-width: 300px; }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,168,83,0.3); }
+  .btn-outline { background: transparent; color: var(--star-white); border: 1px solid rgba(212,168,83,0.3); padding: 14px 48px; border-radius: 50px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; font-family: 'Inter', sans-serif; width: 100%; max-width: 300px; margin-top: 12px; }
+  .btn-outline:hover { border-color: var(--accent-gold); background: rgba(212,168,83,0.05); }
+  #screen-categories { display: none; padding: 16px 4px; height: 100%; }
+  .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 20px; }
+  .top-bar h2 { color: var(--star-white); font-size: 22px; font-weight: 700; }
+  .top-bar .gold { color: var(--accent-gold); }
+  .user-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--gradient-gold); display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 700; color: #0a0e27; }
+  .greeting { color: var(--soft-gray); font-size: 14px; margin-bottom: 24px; }
+  .greeting strong { color: var(--star-white); }
+  .categories-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
+  .cat-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(212,168,83,0.08); border-radius: 16px; padding: 18px 16px; cursor: pointer; transition: all 0.3s ease; text-align: left; }
+  .cat-card:hover { background: rgba(212,168,83,0.06); border-color: rgba(212,168,83,0.2); transform: translateY(-2px); }
+  .cat-icon { font-size: 28px; margin-bottom: 10px; }
+  .cat-name { color: var(--star-white); font-size: 14px; font-weight: 600; margin-bottom: 3px; }
+  .cat-desc { color: var(--soft-gray); font-size: 11px; }
+  .featured-section h3 { color: var(--star-white); font-size: 15px; font-weight: 600; margin-bottom: 12px; }
+  .testimonial-card { background: rgba(212,168,83,0.04); border: 1px solid rgba(212,168,83,0.1); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
+  .testimonial-card p { color: var(--soft-gray); font-size: 13px; line-height: 1.6; font-style: italic; }
+  .testimonial-author { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
+  .test-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--mid-blue); display: flex; align-items: center; justify-content: center; font-size: 13px; }
+  .test-name { color: var(--star-white); font-size: 13px; font-weight: 500; }
+  .test-label { color: var(--accent-gold); font-size: 11px; }
+  #screen-chat { display: none; flex-direction: column; height: 100%; }
+  .chat-header { display: flex; align-items: center; gap: 12px; padding: 8px 0 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+  .chat-back { background: none; border: none; color: var(--star-white); font-size: 22px; cursor: pointer; padding: 4px; }
+  .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-gold); display: flex; align-items: center; justify-content: center; font-size: 18px; }
+  .chat-header-info h4 { color: var(--star-white); font-size: 15px; font-weight: 600; }
+  .chat-header-info span { color: #4ade80; font-size: 11px; display: flex; align-items: center; gap: 4px; }
+  .chat-header-info span::before { content: ''; width: 6px; height: 6px; background: #4ade80; border-radius: 50%; display: inline-block; }
+  .chat-messages { flex: 1; overflow-y: auto; padding: 16px 0; display: flex; flex-direction: column; gap: 16px; }
+  .chat-messages::-webkit-scrollbar { display: none; }
+  .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 14px; line-height: 1.6; animation: msg-in 0.3s ease; }
+  @keyframes msg-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+  .message-ai { background: var(--chat-ai); color: var(--star-white); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid rgba(212,168,83,0.06); }
+  .message-ai .bible-verse { display: block; margin-top: 12px; padding: 12px 14px; background: rgba(212,168,83,0.08); border-left: 3px solid var(--accent-gold); border-radius: 8px; color: var(--accent-glow); font-family: 'Playfair Display', serif; font-size: 15px; font-style: italic; }
+  .message-ai .bible-ref { display: block; color: var(--accent-gold); font-size: 11px; margin-top: 6px; font-style: normal; font-family: 'Inter', sans-serif; }
+  .message-user { background: var(--chat-user); color: var(--star-white); align-self: flex-end; border-bottom-right-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
+  .typing-indicator { display: none; align-self: flex-start; background: var(--chat-ai); padding: 14px 18px; border-radius: 20px; border-bottom-left-radius: 4px; gap: 4px; border: 1px solid rgba(212,168,83,0.06); }
+  .typing-indicator.active { display: flex; }
+  .typing-indicator span { width: 7px; height: 7px; background: var(--soft-gray); border-radius: 50%; animation: typing 1.4s ease-in-out infinite; }
+  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes typing { 0%,60%,100% { transform: translateY(0); background: var(--soft-gray); } 30% { transform: translateY(-6px); background: var(--accent-gold); } }
+  .chat-input-bar { display: flex; gap: 10px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05); align-items: flex-end; }
+  .chat-input { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 12px 18px; color: var(--star-white); font-size: 14px; font-family: 'Inter', sans-serif; outline: none; resize: none; max-height: 100px; transition: border-color 0.3s; }
+  .chat-input:focus { border-color: var(--accent-gold); }
+  .chat-input::placeholder { color: var(--soft-gray); }
+  .btn-send { width: 44px; height: 44px; border-radius: 50%; background: var(--gradient-gold); border: none; font-size: 18px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .btn-send:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(212,168,83,0.3); }
+  #screen-plans { display: none; padding: 20px 4px; height: 100%; overflow-y: auto; }
+  #screen-plans::-webkit-scrollbar { display: none; }
+  .plans-header { text-align: center; margin-bottom: 28px; }
+  .plans-header h2 { color: var(--star-white); font-size: 26px; font-weight: 700; margin-bottom: 8px; }
+  .plans-header p { color: var(--soft-gray); font-size: 14px; }
+  .plan-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(212,168,83,0.1); border-radius: 20px; padding: 24px; margin-bottom: 14px; transition: all 0.3s; position: relative; }
+  .plan-card.featured { border-color: var(--accent-gold); background: rgba(212,168,83,0.04); box-shadow: 0 0 30px rgba(212,168,83,0.06); }
+  .plan-badge { position: absolute; top: -10px; right: 20px; background: var(--gradient-gold); color: #0a0e27; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; }
+  .plan-name { color: var(--star-white); font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .plan-price { color: var(--accent-gold); font-size: 32px; font-weight: 800; margin: 8px 0; }
+  .plan-price span { font-size: 14px; color: var(--soft-gray); font-weight: 400; }
+  .plan-features { list-style: none; margin: 16px 0; }
+  .plan-features li { color: var(--soft-gray); font-size: 13px; padding: 6px 0; display: flex; align-items: center; gap: 8px; }
+  .plan-features li::before { content: '✓'; color: var(--accent-gold); font-weight: 700; }
+  .btn-plan { width: 100%; padding: 14px; border-radius: 50px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.3s; }
+  .btn-plan.primary { background: var(--gradient-gold); color: #0a0e27; }
+  .btn-plan.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,168,83,0.3); }
+  .btn-plan.outline { background: transparent; color: var(--star-white); border: 1px solid rgba(212,168,83,0.2); }
+  .btn-plan.outline:hover { border-color: var(--accent-gold); background: rgba(212,168,83,0.05); }
+  /* === STATUS DO BACKEND === */
+  .backend-status { display: flex; align-items: center; gap: 6px; margin-bottom: 16px; font-size: 12px; }
+  .backend-status .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .backend-status .dot.online { background: #4ade80; box-shadow: 0 0 8px rgba(74,222,128,0.4); }
+  .backend-status .dot.offline { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.4); }
+  .backend-status .dot.loading { background: #facc15; animation: pulse-dot 1s ease-in-out infinite; }
+  @keyframes pulse-dot { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+  .countdown { background: rgba(212,168,83,0.1); border: 1px solid rgba(212,168,83,0.15); border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+  .countdown-text { color: var(--star-white); font-size: 13px; }
+  .countdown-text span { color: var(--accent-gold); font-weight: 700; }
+  .countdown-time { color: var(--accent-gold); font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .stars { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; overflow: hidden; }
+  .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: twinkle 3s ease-in-out infinite; }
+  @keyframes twinkle { 0%,100% { opacity: 0.2; } 50% { opacity: 0.8; } }
+  .error-msg { color: #ef4444; font-size: 12px; padding: 8px 12px; background: rgba(239,68,68,0.1); border-radius: 8px; display: none; }
+</style>
+</head>
+<body>
+
+<div class="phone">
+  <div class="dynamic-island"></div>
+
+  <div class="stars">
+    <div class="star" style="top:5%;left:10%;animation-delay:0s;"></div>
+    <div class="star" style="top:12%;left:80%;animation-delay:0.5s;"></div>
+    <div class="star" style="top:8%;left:50%;animation-delay:1s;"></div>
+    <div class="star" style="top:20%;left:25%;animation-delay:1.5s;"></div>
+    <div class="star" style="top:15%;left:70%;animation-delay:2s;"></div>
+    <div class="star" style="top:30%;left:15%;animation-delay:0.8s;"></div>
+    <div class="star" style="top:25%;left:90%;animation-delay:1.8s;"></div>
+    <div class="star" style="top:35%;left:45%;animation-delay:0.3s;"></div>
+  </div>
+
+  <!-- TELA 1: ONBOARDING -->
+  <div id="screen-onboarding" class="screen">
+    <div class="polaris-logo">⭐</div>
+    <div class="polaris-name">POLARIS</div>
+    <div class="polaris-sub">Sua Estrela do Norte</div>
+    <div class="free-badge">🎁 24 HORAS GRÁTIS — ACESSO COMPLETO</div>
+    <p class="tagline">
+      O conselho que <strong>muda sua vida</strong>.<br>
+      Como uma conversa com seu melhor amigo.<br>
+      <strong style="color:var(--accent-gold)">Baseado na fé.</strong>
+    </p>
+    <button class="btn-primary" onclick="startApp()">✨ COMEÇAR AGORA</button>
+    <button class="btn-outline" onclick="goToScreen('plans')">VER PLANOS</button>
+  </div>
+
+  <!-- TELA 2: CATEGORIAS -->
+  <div id="screen-categories" class="screen">
+    <div class="top-bar">
+      <h2>Polaris<span class="gold">.</span></h2>
+      <div class="user-avatar">👤</div>
+    </div>
+    <div class="countdown">
+      <div class="countdown-text">⏳ Grátis por mais <span id="timer">23:45:12</span></div>
+      <div class="countdown-time">⏰</div>
+    </div>
+
+    <!-- Status do Backend -->
+    <div class="backend-status">
+      <span class="dot offline" id="backendDot"></span>
+      <span id="backendStatus" style="color:var(--soft-gray);">Verificando conexão...</span>
+    </div>
+
+    <p class="greeting">Bom dia <strong>Felipe</strong> 🌅<br><span style="color:var(--soft-gray);font-size:13px;">O que você gostaria de compartilhar hoje?</span></p>
+
+    <div class="categories-grid">
+      <div class="cat-card" onclick="openChat('financeiro')">
+        <div class="cat-icon">💰</div>
+        <div class="cat-name">Financeiro</div>
+        <div class="cat-desc">Dívidas, investimentos, prosperidade</div>
+      </div>
+      <div class="cat-card" onclick="openChat('amoroso')">
+        <div class="cat-icon">❤️</div>
+        <div class="cat-name">Amoroso</div>
+        <div class="cat-desc">Relacionamento, término, solidão</div>
+      </div>
+      <div class="cat-card" onclick="openChat('espiritual')">
+        <div class="cat-icon">🙏</div>
+        <div class="cat-name">Espiritual</div>
+        <div class="cat-desc" style="color:var(--accent-gold);">Fé, oração, propósito divino</div>
+      </div>
+      <div class="cat-card" onclick="openChat('profissional')">
+        <div class="cat-icon">💼</div>
+        <div class="cat-name">Profissional</div>
+        <div class="cat-desc">Carreira, propósito, decisões</div>
+      </div>
+      <div class="cat-card" onclick="openChat('familiar')">
+        <div class="cat-icon">👨‍👩‍👧‍👦</div>
+        <div class="cat-name">Familiar</div>
+        <div class="cat-desc">Conflitos, pais, filhos</div>
+      </div>
+      <div class="cat-card" onclick="openChat('pessoal')">
+        <div class="cat-icon">🧠</div>
+        <div class="cat-name">Pessoal</div>
+        <div class="cat-desc">Ansiedade, autoestima, propósito</div>
+      </div>
+    </div>
+    <div class="featured-section">
+      <h3>📖 Testemunhos</h3>
+      <div class="testimonial-card">
+        <p>"Polaris me ajudou a enxergar que Deus tinha um plano pra minha vida financeira. Hoje estou livre das dívidas."</p>
+        <div class="testimonial-author">
+          <div class="test-avatar">🙏</div>
+          <div>
+            <div class="test-name">Ana Clara</div>
+            <div class="test-label">✝️ Há 3 meses no Polaris</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TELA 3: CHAT -->
+  <div id="screen-chat" class="screen">
+    <div class="chat-header">
+      <button class="chat-back" onclick="goToScreen('categories')">‹</button>
+      <div class="chat-avatar">⭐</div>
+      <div class="chat-header-info">
+        <h4>Polaris</h4>
+        <span>Online · IA conectada (Groq)</span>
+      </div>
+    </div>
+    <div class="error-msg" id="errorMsg"></div>
+    <div class="chat-messages" id="chatMessages"></div>
+    <div class="typing-indicator" id="typingIndicator">
+      <span></span><span></span><span></span>
+    </div>
+    <div class="chat-input-bar">
+      <textarea class="chat-input" id="chatInput" rows="1" placeholder="Compartilhe o que está no seu coração..." onkeydown="handleKey(event)"></textarea>
+      <button class="btn-send" onclick="sendMessage()">✧</button>
+    </div>
+  </div>
+
+  <!-- TELA 4: PLANOS -->
+  <div id="screen-plans" class="screen">
+    <div class="top-bar">
+      <h2>Planos<span class="gold">.</span></h2>
+      <div class="user-avatar">👤</div>
+    </div>
+    <div class="plans-header">
+      <h2>Escolha seu caminho</h2>
+      <p>Continue sendo guiado pela estrela que nunca se apaga</p>
+    </div>
+    <div class="plan-card">
+      <div class="plan-badge">🎁 EXPERIMENTE</div>
+      <div class="plan-name">Free Trial</div>
+      <div class="plan-price">Grátis <span>/ 24 horas</span></div>
+      <ul class="plan-features">
+        <li>Acesso completo a todas as categorias</li>
+        <li>Conselhos ilimitados com IA real</li>
+        <li>Versículos e orações personalizadas</li>
+        <li>Testemunhos da comunidade</li>
+      </ul>
+      <button class="btn-plan primary" onclick="goToScreen('categories')">COMEÇAR GRÁTIS</button>
+    </div>
+    <div class="plan-card featured">
+      <div class="plan-badge">🔥 MAIS POPULAR</div>
+      <div class="plan-name">Mensal</div>
+      <div class="plan-price">R$ 29,90 <span>/mês</span></div>
+      <ul class="plan-features">
+        <li>Tudo do Free Trial, sem limite de tempo</li>
+        <li>Mensagens diárias personalizadas</li>
+        <li>Orações proféticas exclusivas</li>
+        <li>Acesso prioritário</li>
+        <li>Sem anúncios</li>
+      </ul>
+      <button class="btn-plan primary">ASSINAR AGORA</button>
+    </div>
+    <div class="plan-card">
+      <div class="plan-badge">⭐ MELHOR VALOR</div>
+      <div class="plan-name">Vitalício</div>
+      <div class="plan-price">R$ 197 <span>único pagamento</span></div>
+      <ul class="plan-features">
+        <li>Tudo do plano Mensal</li>
+        <li>🎖️ Acesso VITALÍCIO</li>
+        <li>Recursos vitalícios futuros</li>
+        <li>Badge de Pioneiro</li>
+        <li>Prioridade máxima</li>
+      </ul>
+      <button class="btn-plan primary">GARANTIR ACESSO VITALÍCIO</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  // ==========================================
+  // CONFIGURAÇÃO DO BACKEND (GROQ)
+  // ==========================================
+  const API_URL = 'http://localhost:3000/api';
+  let sessionId = null;
+
+  // ==========================================
+  // TIMER 24H
+  // ==========================================
+  let secondsLeft = 86399;
+  setInterval(() => {
+    secondsLeft--;
+    if (secondsLeft < 0) secondsLeft = 0;
+    const h = Math.floor(secondsLeft / 3600);
+    const m = Math.floor((secondsLeft % 3600) / 60);
+    const s = secondsLeft % 60;
+    const timer = document.getElementById('timer');
+    if (timer) timer.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+  }, 1000);
+
+  // ==========================================
+  // VERIFICA SE O BACKEND ESTÁ ONLINE
+  // ==========================================
+  async function checkBackend() {
+    const dot = document.getElementById('backendDot');
+    const status = document.getElementById('backendStatus');
+
+    dot.className = 'dot loading';
+    status.textContent = 'Verificando conexão...';
+
+    try {
+      const response = await fetch(`${API_URL}/health`);
+      if (response.ok) {
+        const data = await response.json();
+        dot.className = 'dot online';
+        status.textContent = `🟢 Conectado (${data.model})`;
+        return true;
+      }
+    } catch (e) {
+      dot.className = 'dot offline';
+      status.textContent = '🔴 Backend offline — iniciando respostas locais';
+      return false;
+    }
+  }
+
+  // Verifica ao carregar
+  setTimeout(checkBackend, 1000);
+
+  // ==========================================
+  // CONTROLE DE TELAS
+  // ==========================================
+  function goToScreen(screen) {
+    document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
+    if (screen === 'onboarding') document.getElementById('screen-onboarding').style.display = 'flex';
+    if (screen === 'categories') {
+      document.getElementById('screen-categories').style.display = 'block';
+      document.getElementById('screen-categories').scrollTop = 0;
+    }
+    if (screen === 'chat') {
+      document.getElementById('screen-chat').style.display = 'flex';
+      document.getElementById('screen-chat').scrollTop = 0;
+    }
+    if (screen === 'plans') document.getElementById('screen-plans').style.display = 'block';
+  }
+
+  // ==========================================
+  // INICIAR APP
+  // ==========================================
+  function startApp() {
+    goToScreen('categories');
+    checkBackend();
+  }
+
+  // ==========================================
+  // CHAT COM IA REAL
+  // ==========================================
+  let currentCategory = '';
+  let isWaitingResponse = false;
+
+  async function openChat(category) {
+    currentCategory = category;
+    sessionId = null;
+
+    const messages = document.getElementById('chatMessages');
+    messages.innerHTML = '';
+    document.getElementById('errorMsg').style.display = 'none';
+
+    // Mensagem de loading
+    addMessage('ai', '✨ Conectando ao Polaris...');
+
+    try {
+      // Chama o backend pra iniciar a conversa
+      const response = await fetch(`${API_URL}/start`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ category, name: 'Felipe' })
+      });
+
+      if (!response.ok) throw new Error('Erro ao conectar');
+
+      const data = await response.json();
+      sessionId = data.sessionId;
+
+      // Limpa a mensagem de loading e mostra a real
+      messages.innerHTML = '';
+      // Formata a resposta (versículos em blocos)
+      addMessage('ai', formatMessage(data.message));
+      goToScreen('chat');
+      document.getElementById('chatInput').focus();
+
+    } catch (e) {
+      // Fallback: modo offline com respostas locais
+      messages.innerHTML = '';
+      addMessage('ai', '🔄 Modo offline — o backend está desconectado, mas ainda posso ajudar com respostas básicas.');
+
+      const offlineGreetings = {
+        financeiro: "💰 Vamos falar sobre finanças. Compartilhe sua situação que vou te dar conselhos com base na fé.",
+        amoroso: "❤️ Vamos falar sobre amor. 'O amor é paciente, o amor é bondoso' (1 Coríntios 13:4). Compartilhe seu coração.",
+        espiritual: "🙏 Vamos falar sobre sua fé. 'Porque andamos por fé, e não por vista' (2 Coríntios 5:7). Me conta como está sua caminhada.",
+        profissional: "💼 Vamos falar sobre carreira. 'Tudo quanto te vier à mão para fazer, faze-o conforme as tuas forças' (Eclesiastes 9:10).",
+        familiar: "👨‍👩‍👧‍👦 'Quanto a mim e à minha casa, serviremos ao Senhor' (Josué 24:15). Me conta o que está acontecendo.",
+        pessoal: "🧠 'Não andeis ansiosos por coisa alguma' (Filipenses 4:6). Me conta o que está no seu coração."
+      };
+      setTimeout(() => {
+        addMessage('ai', offlineGreetings[category] || 'Como posso te ajudar hoje?');
+      }, 1000);
+
+      goToScreen('chat');
+      document.getElementById('chatInput').focus();
+    }
+  }
+
+  function addMessage(type, text, delay = 0) {
+    const messages = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = `message message-${type}`;
+    div.innerHTML = text;
+    if (delay > 0) {
+      setTimeout(() => { messages.appendChild(div); messages.scrollTop = messages.scrollHeight; }, delay);
+    } else {
+      messages.appendChild(div);
+      messages.scrollTop = messages.scrollHeight;
+    }
+  }
+
+  function handleKey(e) {
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+  }
+
+  async function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text || isWaitingResponse) return;
+
+    addMessage('user', text);
+    input.value = '';
+    document.getElementById('errorMsg').style.display = 'none';
+
+    // Mostra indicador de digitação
+    const typing = document.getElementById('typingIndicator');
+    typing.classList.add('active');
+    isWaitingResponse = true;
+
+    try {
+      if (sessionId) {
+        // MODO ONLINE — chama a Groq de verdade
+        const response = await fetch(`${API_URL}/chat`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            message: text,
+            category: currentCategory,
+            sessionId
+          })
+        });
+
+        typing.classList.remove('active');
+
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(errorData.error || 'Erro no servidor');
+        }
+
+        const data = await response.json();
+        sessionId = data.sessionId;
+        addMessage('ai', formatMessage(data.reply));
+      } else {
+        // MODO OFFLINE — respostas locais
+        setTimeout(() => {
+          typing.classList.remove('active');
+          const r = generateLocalResponse(text);
+          addMessage('ai', r.text);
+          if (r.verse) {
+            setTimeout(() => {
+              addMessage('ai', `<div class="bible-verse">"${r.verse}"<span class="bible-ref">— ${r.ref}</span></div>`);
+            }, 800);
+          }
+        }, 1500 + Math.random() * 1500);
+      }
+    } catch (e) {
+      document.getElementById('typingIndicator').classList.remove('active');
+      console.error('Erro:', e);
+
+      // Tenta de novo no modo offline
+      const errorDiv = document.getElementById('errorMsg');
+      errorDiv.textContent = '⚠️ ' + (e.message || 'Erro ao conectar. Usando modo offline.');
+      errorDiv.style.display = 'block';
+
+      setTimeout(() => {
+        const r = generateLocalResponse(text);
+        addMessage('ai', r.text);
+        if (r.verse) {
+          setTimeout(() => {
+            addMessage('ai', `<div class="bible-verse">"${r.verse}"<span class="bible-ref">— ${r.ref}</span></div>`);
+          }, 800);
+        }
+      }, 1000);
+    } finally {
+      isWaitingResponse = false;
+    }
+  }
+
+  // ==========================================
+  // FORMATA RESPOSTA (destaca versículos)
+  // ==========================================
+  function formatMessage(text) {
+    // Transforma versículos em citações destacadas
+    // Ex: (Mateus 7:7) ou "versículo" (referência)
+    text = text.replace(/"([^"]+)"\s*\(([^)]+)\)/g,
+      '<div class="bible-verse">"$1"<span class="bible-ref">— $2</span></div>');
+
+    // Transforma linhas em parágrafos
+    text = text.replace(/\n\n/g, '<br><br>');
+    text = text.replace(/\n/g, '<br>');
+
+    return text;
+  }
+
+  // ==========================================
+  // RESPOSTAS LOCAIS (FALLBACK)
+  // ==========================================
+  function generateLocalResponse(text) {
+    const l = text.toLowerCase();
+    if (l.includes('divida')||l.includes('dinheiro')||l.includes('conta')||l.includes('banco')||l.includes('emprego')||l.includes('carro')||l.includes('casa'))
+      return {text: "Entendo, irmão. As dificuldades financeiras podem parecer um fardo pesado demais. Mas quero te lembrar que o Senhor é o seu provedor. Ele nunca desampara os seus filhos. Vamos orar sobre isso?", verse: "O meu Deus suprirá todas as vossas necessidades segundo as suas riquezas na glória em Cristo Jesus.", ref: "Filipenses 4:19"};
+    if (l.includes('amor')||l.includes('termin')||l.includes('sozin')||l.includes('namor')||l.includes('cas')||l.includes('solidão')||l.includes('paixão'))
+      return {text: "Deus conhece a dor do seu coração. Ele vê cada lágrima. Talvez esse tempo de espera ou de dor esteja preparando você para algo maior. Confie no tempo de Deus, Ele nunca se atrasa.", verse: "Tudo tem o seu tempo determinado, e há tempo para todo propósito debaixo do céu.", ref: "Eclesiastes 3:1"};
+    if (l.includes('deus')||l.includes('fé')||l.includes('oração')||l.includes('igreja')||l.includes('crent')||l.includes('bíblia')||l.includes('salmos'))
+      return {text: "Sua fé já é uma vitória! O simples fato de você estar buscando respostas mostra que Deus está agindo em você. Continue firme. A tempestade passa, mas a Palavra do Senhor permanece para sempre.", verse: "Não temas, porque eu sou contigo; não te assombres, porque eu sou teu Deus; eu te fortaleço, e te ajudo, e te sustento com a destra da minha justiça.", ref: "Isaías 41:10"};
+    if (l.includes('ansiedade')||l.includes('medo')||l.includes('preocup')||l.includes('pânico')||l.includes('dormir')||l.includes('stress'))
+      return {text: "A ansiedade quer roubar sua paz, mas lembre-se: o Príncipe da Paz vive em você. Entregue esse fardo nas mãos d'Ele. Você não precisa carregar isso sozinho.", verse: "Não andeis ansiosos por coisa alguma; antes, em tudo, sejam conhecidas as vossas petições diante de Deus pela oração e pela súplica, com ação de graças.", ref: "Filipenses 4:6"};
+    return {text: "Deus está ouvindo sua oração antes mesmo de você terminar de falar. Ele conhece o fundo do seu coração. Confie, descanse e permita que Ele aja.", verse: "Clama a mim, e responder-te-ei, e anunciar-te-ei coisas grandes e ocultas, que não sabes.", ref: "Jeremias 33:3"};
+  }
+</script>
+
+</body>
+</html>

@@ -397,38 +397,39 @@ let isWaitingResponse = false;
 let trialTimer = null;
 
 // ==========================================
-// SUPABASE - AUTENTICAÇÃO VIA REST API
+// AUTENTICAÇÃO VIA BACKEND
 // ==========================================
 
-const AUTH_URL = `${SUPABASE_URL}/auth/v1`;
-
-async function sbAuth(path, opts = {}) {
-  const hdrs = { 'apikey': SUPABASE_ANON_KEY, 'Content-Type': 'application/json', ...opts.headers };
-  const res = await fetch(`${AUTH_URL}${path}`, { ...opts, headers: hdrs });
+async function apiFetch(path, opts = {}) {
+  const hdrs = { 'Content-Type': 'application/json', ...opts.headers };
+  const res = await fetch(`${API_URL}${path}`, { ...opts, headers: hdrs });
   const d = await res.json();
-  if (!res.ok) throw new Error(d.error_description || d.msg || d.error || 'Erro de autenticação');
+  if (!res.ok) throw new Error(d.error || d.message || 'Erro na requisição');
   return d;
 }
 
 function saveSession(s) {
-  if (s) localStorage.setItem('polaris_session', JSON.stringify({ access_token: s.access_token, user: s.user, exp: Date.now() + 3600000 }));
+  if (s) localStorage.setItem('polaris_session', JSON.stringify(s));
   else localStorage.removeItem('polaris_session');
 }
 function loadSession() {
   try {
     const d = JSON.parse(localStorage.getItem('polaris_session'));
-    return d && d.exp > Date.now() ? d : (localStorage.removeItem('polaris_session'), null);
+    if (!d || !d.token || d.exp < Date.now()) { localStorage.removeItem('polaris_session'); return null; }
+    return d;
   } catch { return null; }
 }
 
 async function checkSession() {
   const saved = loadSession();
-  if (saved && saved.access_token) {
+  if (saved) {
     try {
-      const user = await sbAuth('/user', { headers: { 'Authorization': `Bearer ${saved.access_token}` } });
-      sessionToken = saved.access_token; currentUser = user;
-      document.getElementById('btnStart').onclick = () => showScreen('categories');
-      startTrialTimer(); return true;
+      const res = await apiFetch('/auth/session', { headers: { 'Authorization': `Bearer ${saved.token}` } });
+      if (res.authenticated && res.user) {
+        sessionToken = saved.token; currentUser = res.user;
+        document.getElementById('btnStart').onclick = () => showScreen('categories');
+        startTrialTimer(); return true;
+      }
     } catch { localStorage.removeItem('polaris_session'); }
   }
   document.getElementById('btnStart').onclick = () => showScreen('login');
@@ -442,11 +443,11 @@ async function handleLogin() {
   if (!email || !password) { e.textContent = 'Preencha email e senha'; e.style.display = 'block'; return; }
   document.getElementById('btnLogin').disabled = true; document.getElementById('btnLogin').textContent = 'Entrando...';
   try {
-    const d = await sbAuth('/token?grant_type=password', { method: 'POST', body: JSON.stringify({ email, password }) });
-    sessionToken = d.access_token; currentUser = d.user;
-    saveSession({ access_token: d.access_token, user: d.user });
+    const d = await apiFetch('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
+    sessionToken = d.session.access_token; currentUser = d.user;
+    saveSession({ token: d.session.access_token, user: d.user, exp: Date.now() + 3600000 });
     await loginSuccess();
-  } catch (err) { e.textContent = err.message.includes('Invalid') ? 'Email ou senha incorretos' : err.message; e.style.display = 'block'; }
+  } catch (err) { e.textContent = err.message; e.style.display = 'block'; }
   finally { document.getElementById('btnLogin').disabled = false; document.getElementById('btnLogin').textContent = 'ENTRAR'; }
 }
 
@@ -459,10 +460,10 @@ async function handleSignup() {
   if (password.length < 6) { e.textContent = 'Senha deve ter no mínimo 6 caracteres'; e.style.display = 'block'; return; }
   document.getElementById('btnSignup').disabled = true; document.getElementById('btnSignup').textContent = 'Criando...';
   try {
-    const d = await sbAuth('/signup', { method: 'POST', body: JSON.stringify({ email, password, data: { full_name: name } }) });
-    if (d.access_token) {
-      sessionToken = d.access_token; currentUser = d.user || d;
-      saveSession({ access_token: d.access_token, user: d.user || d });
+    const d = await apiFetch('/auth/signup', { method: 'POST', body: JSON.stringify({ email, password, name }) });
+    if (d.session) {
+      sessionToken = d.session.access_token; currentUser = d.user;
+      saveSession({ token: d.session.access_token, user: d.user, exp: Date.now() + 3600000 });
       await loginSuccess();
     } else { e.textContent = '📧 Conta criada! Verifique seu email.'; e.style.color = '#4ade80'; e.style.display = 'block'; }
   } catch (err) { e.textContent = err.message || 'Erro ao criar conta.'; e.style.display = 'block'; }
@@ -470,31 +471,31 @@ async function handleSignup() {
 }
 
 async function handleGoogleLogin() {
-  window.location.href = `${AUTH_URL}/authorize?provider=google&redirect_to=${encodeURIComponent(window.location.origin)}`;
+  try {
+    const d = await apiFetch('/auth/google', { method: 'POST', body: '{}' });
+    if (d.url) window.location.href = d.url;
+  } catch (e) { document.getElementById('loginError').textContent = 'Erro ao conectar com Google.'; document.getElementById('loginError').style.display = 'block'; }
 }
 
 async function handleLogout() {
-  try { if (sessionToken) await sbAuth('/logout', { method: 'POST', headers: { 'Authorization': `Bearer ${sessionToken}` } }); } catch {}
+  try { if (sessionToken) await apiFetch('/reset', { method: 'POST', body: JSON.stringify({ sessionId: sessionToken }) }); } catch {}
   sessionToken = null; currentUser = null; saveSession(null); clearTrialTimer();
   document.getElementById('userMenu')?.classList.remove('active');
   showScreen('onboarding'); document.getElementById('btnStart').onclick = () => showScreen('login');
 }
 
 async function handleAuthCallback() {
-  const saved = loadSession();
-  if (saved && saved.access_token) {
-    try {
-      const user = await sbAuth('/user', { headers: { 'Authorization': `Bearer ${saved.access_token}` } });
-      sessionToken = saved.access_token; currentUser = user; await loginSuccess(); return;
-    } catch {}
-  }
   const hash = window.location.hash.substring(1);
-  const token = new URLSearchParams(hash).get('access_token');
+  const params = new URLSearchParams(hash);
+  const token = params.get('access_token');
   if (token) {
     try {
-      const user = await sbAuth('/user', { headers: { 'Authorization': `Bearer ${token}` } });
-      sessionToken = token; currentUser = user; saveSession({ access_token: token, user });
-      await loginSuccess(); window.location.hash = '';
+      const res = await apiFetch('/auth/session', { headers: { 'Authorization': `Bearer ${token}` } });
+      if (res.authenticated) {
+        sessionToken = token; currentUser = res.user;
+        saveSession({ token, user: res.user, exp: Date.now() + 3600000 });
+        await loginSuccess(); window.location.hash = '';
+      }
     } catch {}
   }
 }
@@ -505,7 +506,8 @@ async function handleAuthCallback() {
 
 async function loginSuccess() {
   document.getElementById('btnStart').onclick = () => showScreen('categories');
-  const userName = currentUser?.user_metadata?.full_name || currentUser?.email?.split('@')[0] || 'Felipe';
+  const meta = currentUser?.user_metadata || currentUser?.identities?.[0]?.identity_data || {};
+  const userName = meta?.full_name || meta?.name || currentUser?.email?.split('@')[0] || 'Felipe';
   document.getElementById('greetingMsg').innerHTML = `Bom dia <strong>${userName}</strong> 🌅<br><span style="color:var(--soft-gray);font-size:13px;">O que você gostaria de compartilhar hoje?</span>`;
   document.getElementById('menuEmail').textContent = currentUser?.email || '';
   await startTrial();

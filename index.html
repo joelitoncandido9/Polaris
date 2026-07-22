@@ -471,10 +471,8 @@ async function handleSignup() {
 }
 
 async function handleGoogleLogin() {
-  try {
-    const d = await apiFetch('/auth/google', { method: 'POST', body: '{}' });
-    if (d.url) window.location.href = d.url;
-  } catch (e) { document.getElementById('loginError').textContent = 'Erro ao conectar com Google.'; document.getElementById('loginError').style.display = 'block'; }
+  const redirectUrl = window.location.origin;
+  window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectUrl)}`;
 }
 
 async function handleLogout() {

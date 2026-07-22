@@ -605,10 +605,13 @@ synth.getVoices();
 if (synth.onvoiceschanged !== undefined) { synth.onvoiceschanged = function() { synth.getVoices(); }; }
 }
 
-checkSession().then(function(logged) {
+// Sempre limpa sessao ao carregar para testes
+saveSession(null);
+sessionToken = null;
+currentUser = null;
+
 showScreen('onboarding'); checkBackend();
-if (!logged) { document.getElementById('btnStart').onclick = function() { showScreen('login'); }; }
-});
+document.getElementById('btnStart').onclick = function() { showScreen('login'); };
 </script>
 </body>
 </html>

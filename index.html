@@ -520,8 +520,8 @@ startRecognition();
 function speakText(text) {
 if (!synth) return;
 synth.cancel();
-// Remove HTML tags and emojis for cleaner speech
-var clean = text.replace(/<[^>]*>/g, '').replace(/[&#128512;-&#128591;]/g, '').replace(/[&#9733;&#10024;&#127908;&#10027;]/g, '');
+// Remove HTML tags for cleaner speech
+var clean = text.replace(/<[^>]*>/g, '').replace(/[&;#0-9]+;/g, '').replace(/[""''\u{1F300}-\u{1FFFF}]/gu, '');
 var utterance = new SpeechSynthesisUtterance(clean);
 utterance.lang = 'pt-BR';
 utterance.rate = 1.0;

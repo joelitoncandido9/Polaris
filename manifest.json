@@ -1,0 +1,24 @@
+{
+  "name": "Polaris - Sua Estrela do Norte",
+  "short_name": "Polaris",
+  "description": "O conselho que muda sua vida. Como uma conversa com seu melhor amigo. Baseado na fé.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0e27",
+  "theme_color": "#d4a853",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -3,7 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Polaris — Protótipo</title>
+<meta name="theme-color" content="#d4a853">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/manifest.json">
+<link rel="icon" type="image/svg+xml" href="/icon-192.svg">
+<link rel="apple-touch-icon" href="/icon-192.svg">
+<title>Polaris — Sua Estrela do Norte</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -543,6 +549,17 @@
     if (l.includes('ansiedade')||l.includes('medo')||l.includes('preocup')||l.includes('pânico')||l.includes('dormir')||l.includes('stress'))
       return {text: "A ansiedade quer roubar sua paz, mas lembre-se: o Príncipe da Paz vive em você. Entregue esse fardo nas mãos d'Ele. Você não precisa carregar isso sozinho.", verse: "Não andeis ansiosos por coisa alguma; antes, em tudo, sejam conhecidas as vossas petições diante de Deus pela oração e pela súplica, com ação de graças.", ref: "Filipenses 4:6"};
     return {text: "Deus está ouvindo sua oração antes mesmo de você terminar de falar. Ele conhece o fundo do seu coração. Confie, descanse e permita que Ele aja.", verse: "Clama a mim, e responder-te-ei, e anunciar-te-ei coisas grandes e ocultas, que não sabes.", ref: "Jeremias 33:3"};
+  }
+</script>
+
+<script>
+  // PWA - Service Worker
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('/sw.js')
+        .then(reg => console.log('✅ Polaris PWA pronto!'))
+        .catch(err => console.log('PWA:', err));
+    });
   }
 </script>
 

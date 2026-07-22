@@ -76,7 +76,8 @@ body { font-family:Inter,sans-serif; background:#06081a; display:flex; justify-c
 .test-avatar { width:32px; height:32px; border-radius:50%; background:var(--mid-blue); display:flex; align-items:center; justify-content:center; font-size:13px; }
 .test-name { color:var(--star-white); font-size:13px; font-weight:500; }
 .test-label { color:var(--accent-gold); font-size:11px; }
-#screen-chat { display:none; flex-direction:column; height:100%; }
+#screen-chat { display:none; flex-direction:column; height:100%; position:relative; }
+.chat-body { display:flex; flex:1; overflow:hidden; position:relative; }
 .chat-header { display:flex; align-items:center; gap:12px; padding:8px 0 16px; border-bottom:1px solid rgba(255,255,255,0.05); }
 .chat-back { background:none; border:none; color:var(--star-white); font-size:22px; cursor:pointer; padding:4px; }
 .chat-avatar { width:40px; height:40px; border-radius:50%; background:var(--gradient-gold); display:flex; align-items:center; justify-content:center; font-size:18px; }
@@ -107,6 +108,18 @@ body { font-family:Inter,sans-serif; background:#06081a; display:flex; justify-c
 .btn-mic:hover { border-color:var(--accent-gold); color:var(--star-white); }
 .btn-mic.recording { background:rgba(239,68,68,0.2); border-color:#ef4444; color:#ef4444; animation:mic-pulse 1s ease-in-out infinite; }
 @keyframes mic-pulse { 0%,100%{box-shadow:0 0 0 0 rgba(239,68,68,0.4);} 50%{box-shadow:0 0 0 10px rgba(239,68,68,0);} }
+.chat-layout { display:flex; flex:1; overflow:hidden; }
+.chat-main { display:flex; flex-direction:column; flex:1; min-width:0; }
+.avatar-panel { display:none; width:280px; flex-shrink:0; border-left:1px solid rgba(255,255,255,0.05); flex-direction:column; }
+.avatar-panel.active { display:flex; }
+.avatar-panel-header { display:flex; justify-content:space-between; align-items:center; padding:12px; border-bottom:1px solid rgba(255,255,255,0.05); }
+.avatar-panel-header span { color:var(--star-white); font-size:13px; font-weight:600; }
+.avatar-close { background:none; border:none; color:var(--soft-gray); font-size:14px; cursor:pointer; }
+.avatar-container { flex:1; display:flex; align-items:center; justify-content:center; overflow:hidden; background:rgba(0,0,0,0.2); }
+.avatar-container iframe { width:100%; height:100%; border:none; }
+.btn-avatar-toggle { background:none; border:1px solid rgba(255,255,255,0.1); border-radius:50%; width:36px; height:36px; font-size:16px; cursor:pointer; transition:all .2s; color:var(--soft-gray); display:flex; align-items:center; justify-content:center; margin-left:auto; flex-shrink:0; }
+.btn-avatar-toggle:hover { border-color:var(--accent-gold); color:var(--accent-gold); }
+.btn-avatar-toggle.active { background:rgba(212,168,83,0.15); border-color:var(--accent-gold); color:var(--accent-gold); }
 #screen-plans { display:none; padding:20px 4px; height:100%; overflow-y:auto; }
 #screen-plans::-webkit-scrollbar { display:none; }
 .plans-header { text-align:center; margin-bottom:28px; }
@@ -280,7 +293,10 @@ body { font-family:Inter,sans-serif; background:#06081a; display:flex; justify-c
 <button class="chat-back" onclick="showScreen('categories')">&#8249;</button>
 <div class="chat-avatar">&#9733;</div>
 <div class="chat-header-info"><h4>Polaris</h4><span>Online</span></div>
+<button class="btn-avatar-toggle" id="avatarToggle" onclick="toggleAvatar()" title="Mostrar avatar IA">&#128100;</button>
 </div>
+<div class="chat-layout">
+<div class="chat-main">
 <div class="error-msg" id="errorMsg"></div>
 <div class="chat-messages" id="chatMessages"></div>
 <div class="typing-indicator" id="typingIndicator"><span></span><span></span><span></span></div>
@@ -288,6 +304,21 @@ body { font-family:Inter,sans-serif; background:#06081a; display:flex; justify-c
 <textarea class="chat-input" id="chatInput" rows="1" placeholder="Compartilhe..." onkeydown="handleKey(event)"></textarea>
 <button class="btn-mic" id="btnMic" onclick="toggleMic()" title="Enviar audio">&#127908;</button>
 <button class="btn-send" onclick="sendMessage()">&#10027;</button>
+</div>
+</div>
+<div class="avatar-panel" id="avatarPanel">
+<div class="avatar-panel-header">
+<span>Polaris IA &#128100;</span>
+<button class="avatar-close" onclick="toggleAvatar()">&#10005;</button>
+</div>
+<div class="avatar-container" id="avatarContainer">
+<p id="avatarPlaceholder" style="color:var(--soft-gray);font-size:13px;text-align:center;padding:20px;">
+Configure seu avatar IA nas Configuracoes<br><br>
+Precisa de uma chave D-ID para ativar o rosto realista.<br>
+Veja o passo a passo no final da pagina.
+</p>
+</div>
+</div>
 </div>
 </div>
 
@@ -362,6 +393,25 @@ body { font-family:Inter,sans-serif; background:#06081a; display:flex; justify-c
 <svg viewBox="0 0 30 30"><ellipse cx="15" cy="12" rx="7" ry="5" fill="#d4a853"/><circle cx="15" cy="16" r="8" fill="#fce4c4"/></svg>
 </button>
 </div>
+</div>
+</div>
+
+<div class="sett-section">
+<h3>&#128100; Avatar IA Realista (D-ID)</h3>
+<div class="sett-row" style="flex-direction:column;align-items:stretch;gap:8px;">
+<span style="font-size:12px;color:var(--soft-gray);line-height:1.5;">
+Use um rosto humano real que fala, pisca, se move e reage enquanto conversa com voce. 5 minutos gratis na D-ID.
+</span>
+<div class="input-group" style="max-width:100%;">
+<label>Chave da API D-ID</label>
+<input type="password" id="didApiKey" placeholder="Cole sua chave aqui">
+</div>
+<div class="input-group" style="max-width:100%;">
+<label>ID do Agente D-ID</label>
+<input type="text" id="didAgentId" placeholder="ex: ag_xxxxx">
+</div>
+<button class="btn-plan primary" onclick="saveDIDSettings()" style="font-size:13px;padding:10px;">SALVAR</button>
+<button class="btn-outline" onclick="window.open('https://studio.d-id.com/agents','_blank')" style="font-size:12px;padding:8px;max-width:100%;text-align:center;">Criar conta D-ID (gratis)</button>
 </div>
 </div>
 
@@ -719,6 +769,56 @@ colBtns[i].classList.toggle('active', colBtns[i].dataset.color === userSettings.
 }
 }
 
+// ========== AVATAR IA REALISTA (D-ID) ==========
+var didAgent = null;
+var didLoaded = false;
+
+function toggleAvatar() {
+var panel = document.getElementById('avatarPanel');
+var btn = document.getElementById('avatarToggle');
+if (panel.classList.contains('active')) {
+panel.classList.remove('active');
+btn.classList.remove('active');
+btn.innerHTML = '&#128100;';
+if (didAgent) { didAgent.pause(); }
+} else {
+panel.classList.add('active');
+btn.classList.add('active');
+btn.innerHTML = '&#128100;';
+loadAvatar();
+}
+}
+
+function saveDIDSettings() {
+var key = document.getElementById('didApiKey').value.trim();
+var agentId = document.getElementById('didAgentId').value.trim();
+if (!key || !agentId) { alert('Preencha a chave da API e o ID do agente D-ID'); return; }
+localStorage.setItem('polaris_did_key', key);
+localStorage.setItem('polaris_did_agent', agentId);
+alert('Configuracao salva! Clique no icone de rosto no chat para ativar o avatar.');
+}
+
+function loadAvatar() {
+if (didLoaded) { if (didAgent) { didAgent.resume(); } return; }
+var key = localStorage.getItem('polaris_did_key');
+var agentId = localStorage.getItem('polaris_did_agent');
+var container = document.getElementById('avatarContainer');
+if (!key || !agentId) {
+container.innerHTML = '<p style="color:var(--soft-gray);font-size:13px;text-align:center;padding:20px;">Configure sua chave D-ID nas Configuracoes.<br><br><a href="#" onclick="showScreen(\'settings\')" style="color:var(--accent-gold);">Ir para Configuracoes</a></p>';
+return;
+}
+// D-ID Agent embed iframe
+var iframe = document.createElement('iframe');
+iframe.src = 'https://agent.d-id.com/embed/' + agentId + '?apiKey=' + encodeURIComponent(key);
+iframe.style.width = '100%';
+iframe.style.height = '100%';
+iframe.style.border = 'none';
+iframe.allow = 'microphone; camera; autoplay';
+container.innerHTML = '';
+container.appendChild(iframe);
+didLoaded = true;
+}
+
 function setSpeed(val) {
 userSettings.speed = val; saveSettings();
 var btns = document.querySelectorAll('#speedBtns .sett-btn');
@@ -755,6 +855,11 @@ var vbtns = document.querySelectorAll('#voiceBtns .sett-btn');
 for (var i = 0; i < vbtns.length; i++) { vbtns[i].classList.toggle('active', vbtns[i].dataset.voice === userSettings.voice); }
 var abtns = document.querySelectorAll('#avatarPicker .av-btn');
 for (var i = 0; i < abtns.length; i++) { abtns[i].classList.toggle('active', abtns[i].dataset.sk === userSettings.skinTone && abtns[i].dataset.hr === userSettings.hairColor); }
+// D-ID settings
+var didKey = document.getElementById('didApiKey');
+var didAgent = document.getElementById('didAgentId');
+if (didKey) didKey.value = localStorage.getItem('polaris_did_key') || '';
+if (didAgent) didAgent.value = localStorage.getItem('polaris_did_agent') || '';
 }
 
 

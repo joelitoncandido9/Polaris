@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
@@ -9,7 +9,7 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/svg+xml" href="/icon-192.svg">
 <link rel="apple-touch-icon" href="/icon-192.svg">
-<title>Polaris — Sua Estrela do Norte</title>
+<title>Polaris â€” Sua Estrela do Norte</title>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -136,7 +136,7 @@
   .plan-price span { font-size: 14px; color: var(--soft-gray); font-weight: 400; }
   .plan-features { list-style: none; margin: 16px 0; }
   .plan-features li { color: var(--soft-gray); font-size: 13px; padding: 6px 0; display: flex; align-items: center; gap: 8px; }
-  .plan-features li::before { content: '✓'; color: var(--accent-gold); font-weight: 700; }
+  .plan-features li::before { content: 'âœ“'; color: var(--accent-gold); font-weight: 700; }
   .btn-plan { width: 100%; padding: 14px; border-radius: 50px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.3s; }
   .btn-plan.primary { background: var(--gradient-gold); color: #0a0e27; }
   .btn-plan.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,168,83,0.3); }
@@ -178,22 +178,22 @@
 
   <!-- TELA 1: ONBOARDING -->
   <div id="screen-onboarding" class="screen">
-    <div class="polaris-logo">⭐</div>
+    <div class="polaris-logo">â­</div>
     <div class="polaris-name">POLARIS</div>
     <div class="polaris-sub">Sua Estrela do Norte</div>
-    <div class="free-badge">🎁 24 HORAS GRÁTIS — ACESSO COMPLETO</div>
+    <div class="free-badge">ðŸŽ 24 HORAS GRÃTIS â€” ACESSO COMPLETO</div>
     <p class="tagline">
       O conselho que <strong>muda sua vida</strong>.<br>
       Como uma conversa com seu melhor amigo.<br>
-      <strong style="color:var(--accent-gold)">Baseado na fé.</strong>
+      <strong style="color:var(--accent-gold)">Baseado na fÃ©.</strong>
     </p>
-    <button class="btn-primary" id="btnStart">✨ COMEÇAR AGORA</button>
+    <button class="btn-primary" id="btnStart">âœ¨ COMEÃ‡AR AGORA</button>
     <button class="btn-outline" onclick="showScreen('plans')">VER PLANOS</button>
   </div>
 
   <!-- TELA 2: LOGIN -->
   <div id="screen-login" class="screen">
-    <div class="polaris-logo" style="width:60px;height:60px;font-size:28px;margin-bottom:16px;">⭐</div>
+    <div class="polaris-logo" style="width:60px;height:60px;font-size:28px;margin-bottom:16px;">â­</div>
     <div class="auth-title">Entrar no Polaris</div>
     <div class="auth-subtitle">Continue sua jornada de onde parou</div>
     <div class="auth-error" id="loginError"></div>
@@ -203,7 +203,7 @@
     </div>
     <div class="input-group">
       <label>Senha</label>
-      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
+      <input type="password" id="loginPassword" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢" autocomplete="current-password">
     </div>
     <button class="btn-primary" id="btnLogin" onclick="handleLogin()" style="max-width:300px;">ENTRAR</button>
     <div class="auth-divider">ou</div>
@@ -211,15 +211,15 @@
       <svg viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Continuar com Google
     </button>
-    <div class="auth-link">Não tem conta? <a onclick="showScreen('signup')">Criar conta</a></div>
+    <div class="auth-link">NÃ£o tem conta? <a onclick="showScreen('signup')">Criar conta</a></div>
     <div class="auth-link" style="margin-top:4px;"><a onclick="showScreen('onboarding')">Voltar</a></div>
   </div>
 
   <!-- TELA 3: CADASTRO -->
   <div id="screen-signup" class="screen">
-    <div class="polaris-logo" style="width:60px;height:60px;font-size:28px;margin-bottom:16px;">⭐</div>
+    <div class="polaris-logo" style="width:60px;height:60px;font-size:28px;margin-bottom:16px;">â­</div>
     <div class="auth-title">Criar Conta</div>
-    <div class="auth-subtitle">Comece sua jornada de 24h grátis</div>
+    <div class="auth-subtitle">Comece sua jornada de 24h grÃ¡tis</div>
     <div class="auth-error" id="signupError"></div>
     <div class="input-group">
       <label>Seu nome</label>
@@ -230,78 +230,78 @@
       <input type="email" id="signupEmail" placeholder="seu@email.com">
     </div>
     <div class="input-group">
-      <label>Senha (mínimo 6 caracteres)</label>
-      <input type="password" id="signupPassword" placeholder="••••••••">
+      <label>Senha (mÃ­nimo 6 caracteres)</label>
+      <input type="password" id="signupPassword" placeholder="â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢">
     </div>
-    <button class="btn-primary" id="btnSignup" onclick="handleSignup()" style="max-width:300px;">CRIAR CONTA GRÁTIS</button>
+    <button class="btn-primary" id="btnSignup" onclick="handleSignup()" style="max-width:300px;">CRIAR CONTA GRÃTIS</button>
     <div class="auth-divider">ou</div>
     <button class="btn-google" onclick="handleGoogleLogin()">
       <svg viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
       Continuar com Google
     </button>
-    <div class="auth-link">Já tem conta? <a onclick="showScreen('login')">Entrar</a></div>
+    <div class="auth-link">JÃ¡ tem conta? <a onclick="showScreen('login')">Entrar</a></div>
   </div>
 
   <!-- TELA 4: CATEGORIAS -->
   <div id="screen-categories" class="screen">
     <div class="top-bar">
       <h2>Polaris<span class="gold">.</span></h2>
-      <div class="user-avatar" id="avatarBtn" onclick="toggleMenu()">👤</div>
+      <div class="user-avatar" id="avatarBtn" onclick="toggleMenu()">ðŸ‘¤</div>
       <div class="user-menu" id="userMenu">
         <div class="menu-email" id="menuEmail">email</div>
-        <button onclick="handleLogout()">🚪 Sair</button>
+        <button onclick="handleLogout()">ðŸšª Sair</button>
       </div>
     </div>
     <div class="countdown" id="trialBanner" onclick="showScreen('plans')" title="Clique para ver planos">
-      <div class="countdown-text">⏳ <span id="trialLabel">Grátis por mais</span> <span id="timer">23:45:12</span></div>
-      <div class="countdown-time">⏰</div>
+      <div class="countdown-text">â³ <span id="trialLabel">GrÃ¡tis por mais</span> <span id="timer">23:45:12</span></div>
+      <div class="countdown-time">â°</div>
     </div>
     <div class="backend-status">
       <span class="dot offline" id="backendDot"></span>
-      <span id="backendStatus" style="color:var(--soft-gray);">Verificando conexão...</span>
+      <span id="backendStatus" style="color:var(--soft-gray);">Verificando conexÃ£o...</span>
     </div>
-    <p class="greeting" id="greetingMsg">Bom dia <strong>Felipe</strong> 🌅<br><span style="color:var(--soft-gray);font-size:13px;">O que você gostaria de compartilhar hoje?</span></p>
+    <p class="greeting" id="greetingMsg">Bom dia <strong>Felipe</strong> ðŸŒ…<br><span style="color:var(--soft-gray);font-size:13px;">O que vocÃª gostaria de compartilhar hoje?</span></p>
     <div class="categories-grid">
       <div class="cat-card" onclick="openChat('financeiro')">
-        <div class="cat-icon">💰</div>
+        <div class="cat-icon">ðŸ’°</div>
         <div class="cat-name">Financeiro</div>
-        <div class="cat-desc">Dívidas, investimentos, prosperidade</div>
+        <div class="cat-desc">DÃ­vidas, investimentos, prosperidade</div>
       </div>
       <div class="cat-card" onclick="openChat('amoroso')">
-        <div class="cat-icon">❤️</div>
+        <div class="cat-icon">â¤ï¸</div>
         <div class="cat-name">Amoroso</div>
-        <div class="cat-desc">Relacionamento, término, solidão</div>
+        <div class="cat-desc">Relacionamento, tÃ©rmino, solidÃ£o</div>
       </div>
       <div class="cat-card" onclick="openChat('espiritual')">
-        <div class="cat-icon">🙏</div>
+        <div class="cat-icon">ðŸ™</div>
         <div class="cat-name">Espiritual</div>
-        <div class="cat-desc" style="color:var(--accent-gold);">Fé, oração, propósito divino</div>
+        <div class="cat-desc" style="color:var(--accent-gold);">FÃ©, oraÃ§Ã£o, propÃ³sito divino</div>
       </div>
       <div class="cat-card" onclick="openChat('profissional')">
-        <div class="cat-icon">💼</div>
+        <div class="cat-icon">ðŸ’¼</div>
         <div class="cat-name">Profissional</div>
-        <div class="cat-desc">Carreira, propósito, decisões</div>
+        <div class="cat-desc">Carreira, propÃ³sito, decisÃµes</div>
       </div>
       <div class="cat-card" onclick="openChat('familiar')">
-        <div class="cat-icon">👨‍👩‍👧‍👦</div>
+        <div class="cat-icon">ðŸ‘¨â€ðŸ‘©â€ðŸ‘§â€ðŸ‘¦</div>
         <div class="cat-name">Familiar</div>
         <div class="cat-desc">Conflitos, pais, filhos</div>
       </div>
       <div class="cat-card" onclick="openChat('pessoal')">
-        <div class="cat-icon">🧠</div>
+        <div class="cat-icon">ðŸ§ </div>
         <div class="cat-name">Pessoal</div>
-        <div class="cat-desc">Ansiedade, autoestima, propósito</div>
+        <div class="cat-desc">Ansiedade, autoestima, propÃ³sito</div>
       </div>
     </div>
     <div class="featured-section">
-      <h3>📖 Testemunhos</h3>
+      <h3>ðŸ“– Testemunhos</h3>
       <div class="testimonial-card">
-        <p>"Polaris me ajudou a enxergar que Deus tinha um plano pra minha vida financeira. Hoje estou livre das dívidas."</p>
+        <p>"Polaris me ajudou a enxergar que Deus tinha um plano pra minha vida financeira. Hoje estou livre das dÃ­vidas."</p>
         <div class="testimonial-author">
-          <div class="test-avatar">🙏</div>
+          <div class="test-avatar">ðŸ™</div>
           <div>
             <div class="test-name">Ana Clara</div>
-            <div class="test-label">✝️ Há 3 meses no Polaris</div>
+            <div class="test-label">âœï¸ HÃ¡ 3 meses no Polaris</div>
           </div>
         </div>
       </div>
@@ -311,11 +311,11 @@
   <!-- TELA 5: CHAT -->
   <div id="screen-chat" class="screen">
     <div class="chat-header">
-      <button class="chat-back" onclick="showScreen('categories')">‹</button>
-      <div class="chat-avatar">⭐</div>
+      <button class="chat-back" onclick="showScreen('categories')">â€¹</button>
+      <div class="chat-avatar">â­</div>
       <div class="chat-header-info">
         <h4>Polaris</h4>
-        <span>Online · IA conectada (Groq)</span>
+        <span>Online Â· IA conectada (Groq)</span>
       </div>
     </div>
     <div class="error-msg" id="errorMsg"></div>
@@ -324,8 +324,8 @@
       <span></span><span></span><span></span>
     </div>
     <div class="chat-input-bar">
-      <textarea class="chat-input" id="chatInput" rows="1" placeholder="Compartilhe o que está no seu coração..." onkeydown="handleKey(event)"></textarea>
-      <button class="btn-send" onclick="sendMessage()">✧</button>
+      <textarea class="chat-input" id="chatInput" rows="1" placeholder="Compartilhe o que estÃ¡ no seu coraÃ§Ã£o..." onkeydown="handleKey(event)"></textarea>
+      <button class="btn-send" onclick="sendMessage()">âœ§</button>
     </div>
   </div>
 
@@ -333,49 +333,49 @@
   <div id="screen-plans" class="screen">
     <div class="top-bar">
       <h2>Planos<span class="gold">.</span></h2>
-      <div id="plansAvatar" class="user-avatar" onclick="showScreen('categories')">←</div>
+      <div id="plansAvatar" class="user-avatar" onclick="showScreen('categories')">â†</div>
     </div>
     <div class="plans-header">
       <h2>Escolha seu caminho</h2>
       <p>Continue sendo guiado pela estrela que nunca se apaga</p>
     </div>
     <div class="plan-card">
-      <div class="plan-badge">🎁 EXPERIMENTE</div>
+      <div class="plan-badge">ðŸŽ EXPERIMENTE</div>
       <div class="plan-name">Free Trial</div>
-      <div class="plan-price">Grátis <span>/ 24 horas</span></div>
+      <div class="plan-price">GrÃ¡tis <span>/ 24 horas</span></div>
       <ul class="plan-features">
         <li>Acesso completo a todas as categorias</li>
         <li>Conselhos ilimitados com IA real</li>
-        <li>Versículos e orações personalizadas</li>
+        <li>VersÃ­culos e oraÃ§Ãµes personalizadas</li>
         <li>Testemunhos da comunidade</li>
       </ul>
-      <button class="btn-plan primary" onclick="showScreen('signup')">COMEÇAR GRÁTIS</button>
+      <button class="btn-plan primary" onclick="showScreen('signup')">COMEÃ‡AR GRÃTIS</button>
     </div>
     <div class="plan-card featured">
-      <div class="plan-badge">🔥 MAIS POPULAR</div>
+      <div class="plan-badge">ðŸ”¥ MAIS POPULAR</div>
       <div class="plan-name">Mensal</div>
-      <div class="plan-price">R$ 29,90 <span>/mês</span></div>
+      <div class="plan-price">R$ 29,90 <span>/mÃªs</span></div>
       <ul class="plan-features">
         <li>Tudo do Free Trial, sem limite de tempo</li>
-        <li>Mensagens diárias personalizadas</li>
-        <li>Orações proféticas exclusivas</li>
-        <li>Acesso prioritário</li>
-        <li>Sem anúncios</li>
+        <li>Mensagens diÃ¡rias personalizadas</li>
+        <li>OraÃ§Ãµes profÃ©ticas exclusivas</li>
+        <li>Acesso prioritÃ¡rio</li>
+        <li>Sem anÃºncios</li>
       </ul>
       <button class="btn-plan primary">ASSINAR AGORA</button>
     </div>
     <div class="plan-card">
-      <div class="plan-badge">⭐ MELHOR VALOR</div>
-      <div class="plan-name">Vitalício</div>
-      <div class="plan-price">R$ 197 <span>único pagamento</span></div>
+      <div class="plan-badge">â­ MELHOR VALOR</div>
+      <div class="plan-name">VitalÃ­cio</div>
+      <div class="plan-price">R$ 197 <span>Ãºnico pagamento</span></div>
       <ul class="plan-features">
         <li>Tudo do plano Mensal</li>
-        <li>🎖️ Acesso VITALÍCIO</li>
-        <li>Recursos vitalícios futuros</li>
+        <li>ðŸŽ–ï¸ Acesso VITALÃCIO</li>
+        <li>Recursos vitalÃ­cios futuros</li>
         <li>Badge de Pioneiro</li>
-        <li>Prioridade máxima</li>
+        <li>Prioridade mÃ¡xima</li>
       </ul>
-      <button class="btn-plan primary">GARANTIR ACESSO VITALÍCIO</button>
+      <button class="btn-plan primary">GARANTIR ACESSO VITALÃCIO</button>
     </div>
   </div>
 
@@ -383,7 +383,7 @@
 
 <script>
 // ==========================================
-// CONFIGURAÇÃO
+// CONFIGURAÃ‡ÃƒO
 // ==========================================
 const API_URL = 'https://polaris-backend-747y.onrender.com/api';
 const SUPABASE_URL = 'https://ebojkulgfrnpwkdznjbx.supabase.co';
@@ -397,14 +397,14 @@ let isWaitingResponse = false;
 let trialTimer = null;
 
 // ==========================================
-// AUTENTICAÇÃO VIA BACKEND
+// AUTENTICAÃ‡ÃƒO VIA BACKEND
 // ==========================================
 
 async function apiFetch(path, opts = {}) {
   const hdrs = { 'Content-Type': 'application/json', ...opts.headers };
   const res = await fetch(`${API_URL}${path}`, { ...opts, headers: hdrs });
   const d = await res.json();
-  if (!res.ok) throw new Error(d.error || d.message || 'Erro na requisição');
+  if (!res.ok) throw new Error(d.error || d.message || 'Erro na requisiÃ§Ã£o');
   return d;
 }
 
@@ -457,7 +457,7 @@ async function handleSignup() {
   const password = document.getElementById('signupPassword').value;
   const e = document.getElementById('signupError'); e.style.display = 'none'; e.style.color = '#ef4444';
   if (!name || !email || !password) { e.textContent = 'Preencha todos os campos'; e.style.display = 'block'; return; }
-  if (password.length < 6) { e.textContent = 'Senha deve ter no mínimo 6 caracteres'; e.style.display = 'block'; return; }
+  if (password.length < 6) { e.textContent = 'Senha deve ter no mÃ­nimo 6 caracteres'; e.style.display = 'block'; return; }
   document.getElementById('btnSignup').disabled = true; document.getElementById('btnSignup').textContent = 'Criando...';
   try {
     const d = await apiFetch('/auth/signup', { method: 'POST', body: JSON.stringify({ email, password, name }) });
@@ -465,9 +465,9 @@ async function handleSignup() {
       sessionToken = d.session.access_token; currentUser = d.user;
       saveSession({ token: d.session.access_token, user: d.user, exp: Date.now() + 3600000 });
       await loginSuccess();
-    } else { e.textContent = '📧 Conta criada! Verifique seu email.'; e.style.color = '#4ade80'; e.style.display = 'block'; }
+    } else { e.textContent = 'ðŸ“§ Conta criada! Verifique seu email.'; e.style.color = '#4ade80'; e.style.display = 'block'; }
   } catch (err) { e.textContent = err.message || 'Erro ao criar conta.'; e.style.display = 'block'; }
-  finally { document.getElementById('btnSignup').disabled = false; document.getElementById('btnSignup').textContent = 'CRIAR CONTA GRÁTIS'; }
+  finally { document.getElementById('btnSignup').disabled = false; document.getElementById('btnSignup').textContent = 'CRIAR CONTA GRÃTIS'; }
 }
 
 async function handleGoogleLogin() {
@@ -499,14 +499,14 @@ async function handleAuthCallback() {
 }
 
 // ==========================================
-// LOGIN - PÓS SUCESSO
+// LOGIN - PÃ“S SUCESSO
 // ==========================================
 
 async function loginSuccess() {
   document.getElementById('btnStart').onclick = () => showScreen('categories');
   const meta = currentUser?.user_metadata || currentUser?.identities?.[0]?.identity_data || {};
   const userName = meta?.full_name || meta?.name || currentUser?.email?.split('@')[0] || 'Felipe';
-  document.getElementById('greetingMsg').innerHTML = `Bom dia <strong>${userName}</strong> 🌅<br><span style="color:var(--soft-gray);font-size:13px;">O que você gostaria de compartilhar hoje?</span>`;
+  document.getElementById('greetingMsg').innerHTML = `Bom dia <strong>${userName}</strong> ðŸŒ…<br><span style="color:var(--soft-gray);font-size:13px;">O que vocÃª gostaria de compartilhar hoje?</span>`;
   document.getElementById('menuEmail').textContent = currentUser?.email || '';
   await startTrial();
   startTrialTimer();
@@ -524,7 +524,7 @@ async function startTrial() {
       headers: { Authorization: `Bearer ${sessionToken}` }
     });
   } catch (e) {
-    // Se já existe, ignora
+    // Se jÃ¡ existe, ignora
   }
 }
 
@@ -552,11 +552,11 @@ async function startTrialTimer() {
         }
       }, 1000);
     } else if (data.is_premium) {
-      document.getElementById('timer').textContent = '♾️';
+      document.getElementById('timer').textContent = 'â™¾ï¸';
       document.getElementById('trialLabel').textContent = 'Premium';
     } else {
       document.getElementById('timer').textContent = 'EXPIRADO';
-      document.getElementById('trialLabel').textContent = '⛔ Trial';
+      document.getElementById('trialLabel').textContent = 'â›” Trial';
     }
   } catch (e) {
     // Fallback para timer visual
@@ -604,7 +604,7 @@ function clearTrialTimer() {
 }
 
 // ==========================================
-// NAVEGAÇÃO ENTRE TELAS
+// NAVEGAÃ‡ÃƒO ENTRE TELAS
 // ==========================================
 function showScreen(screen) {
   document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
@@ -646,19 +646,19 @@ async function checkBackend() {
   const dot = document.getElementById('backendDot');
   const status = document.getElementById('backendStatus');
   dot.className = 'dot loading';
-  status.textContent = 'Verificando conexão...';
+  status.textContent = 'Verificando conexÃ£o...';
 
   try {
     const res = await fetch(`${API_URL}/health`);
     if (res.ok) {
       const data = await res.json();
       dot.className = 'dot online';
-      status.textContent = `🟢 Conectado (${data.model})`;
+      status.textContent = `ðŸŸ¢ Conectado (${data.model})`;
       return true;
     }
   } catch (e) {
     dot.className = 'dot offline';
-    status.textContent = '🔴 Offline';
+    status.textContent = 'ðŸ”´ Offline';
     return false;
   }
 }
@@ -667,7 +667,7 @@ async function checkBackend() {
 // CHAT COM IA
 // ==========================================
 async function openChat(category) {
-  // Se não tiver logado, pede login
+  // Se nÃ£o tiver logado, pede login
   if (!sessionToken) {
     showScreen('login');
     return;
@@ -678,7 +678,7 @@ async function openChat(category) {
   document.getElementById('chatMessages').innerHTML = '';
   document.getElementById('errorMsg').style.display = 'none';
 
-  addMessage('ai', '✨ Conectando ao Polaris...');
+  addMessage('ai', 'âœ¨ Conectando ao Polaris...');
 
   try {
     const res = await fetch(`${API_URL}/start`, {
@@ -693,8 +693,8 @@ async function openChat(category) {
     if (res.status === 403) {
       // Trial expirado
       document.getElementById('chatMessages').innerHTML = '';
-      addMessage('ai', '⏳ Seu período grátis de 24h expirou.');
-      addMessage('ai', 'Mas não se preocupe! Você pode assinar o Polaris por apenas <strong>R$ 29,90/mês</strong> e continuar recebendo conselhos ilimitados. <br><br><a href="#" onclick="showScreen(\'plans\')" style="color:var(--accent-gold);">👉 Ver planos</a>');
+      addMessage('ai', 'â³ Seu perÃ­odo grÃ¡tis de 24h expirou.');
+      addMessage('ai', 'Mas nÃ£o se preocupe! VocÃª pode assinar o Polaris por apenas <strong>R$ 29,90/mÃªs</strong> e continuar recebendo conselhos ilimitados. <br><br><a href="#" onclick="showScreen(\'plans\')" style="color:var(--accent-gold);">ðŸ‘‰ Ver planos</a>');
       showScreen('chat');
       document.getElementById('chatInput').disabled = true;
       return;
@@ -713,15 +713,15 @@ async function openChat(category) {
   } catch (e) {
     // Modo offline
     document.getElementById('chatMessages').innerHTML = '';
-    addMessage('ai', '🔄 Tentando reconectar...');
+    addMessage('ai', 'ðŸ”„ Tentando reconectar...');
     setTimeout(() => {
       const greetings = {
-        financeiro: "💰 Vamos falar sobre finanças. Compartilhe sua situação.",
-        amoroso: "❤️ Vamos falar sobre amor. 'O amor é paciente' (1 Coríntios 13:4).",
-        espiritual: "🙏 Vamos falar sobre sua fé. 'Andamos por fé, não por vista' (2 Coríntios 5:7).",
-        profissional: "💼 Vamos falar sobre carreira. Compartilhe seus desafios.",
-        familiar: "👨‍👩‍👧‍👦 'Quanto a mim e à minha casa, serviremos ao Senhor' (Josué 24:15).",
-        pessoal: "🧠 'Não andeis ansiosos' (Filipenses 4:6). Me conta."
+        financeiro: "ðŸ’° Vamos falar sobre finanÃ§as. Compartilhe sua situaÃ§Ã£o.",
+        amoroso: "â¤ï¸ Vamos falar sobre amor. 'O amor Ã© paciente' (1 CorÃ­ntios 13:4).",
+        espiritual: "ðŸ™ Vamos falar sobre sua fÃ©. 'Andamos por fÃ©, nÃ£o por vista' (2 CorÃ­ntios 5:7).",
+        profissional: "ðŸ’¼ Vamos falar sobre carreira. Compartilhe seus desafios.",
+        familiar: "ðŸ‘¨â€ðŸ‘©â€ðŸ‘§â€ðŸ‘¦ 'Quanto a mim e Ã  minha casa, serviremos ao Senhor' (JosuÃ© 24:15).",
+        pessoal: "ðŸ§  'NÃ£o andeis ansiosos' (Filipenses 4:6). Me conta."
       };
       addMessage('ai', greetings[category] || 'Como posso te ajudar?');
       document.getElementById('chatInput').disabled = false;
@@ -779,7 +779,7 @@ async function sendMessage() {
       typing.classList.remove('active');
 
       if (res.status === 403) {
-        addMessage('ai', '⏳ Seu período grátis expirou. <a href="#" onclick="showScreen(\'plans\')" style="color:var(--accent-gold);">Assine aqui</a>');
+        addMessage('ai', 'â³ Seu perÃ­odo grÃ¡tis expirou. <a href="#" onclick="showScreen(\'plans\')" style="color:var(--accent-gold);">Assine aqui</a>');
         document.getElementById('chatInput').disabled = true;
         return;
       }
@@ -797,14 +797,14 @@ async function sendMessage() {
         addMessage('ai', r.text);
         if (r.verse) {
           setTimeout(() => {
-            addMessage('ai', `<div class="bible-verse">"${r.verse}"<span class="bible-ref">— ${r.ref}</span></div>`);
+            addMessage('ai', `<div class="bible-verse">"${r.verse}"<span class="bible-ref">â€” ${r.ref}</span></div>`);
           }, 800);
         }
       }, 1500);
     }
   } catch (e) {
     document.getElementById('typingIndicator').classList.remove('active');
-    document.getElementById('errorMsg').textContent = '⚠️ Erro ao conectar. Usando modo offline.';
+    document.getElementById('errorMsg').textContent = 'âš ï¸ Erro ao conectar. Usando modo offline.';
     document.getElementById('errorMsg').style.display = 'block';
 
     setTimeout(() => {
@@ -812,7 +812,7 @@ async function sendMessage() {
       addMessage('ai', r.text);
       if (r.verse) {
         setTimeout(() => {
-          addMessage('ai', `<div class="bible-verse">"${r.verse}"<span class="bible-ref">— ${r.ref}</span></div>`);
+          addMessage('ai', `<div class="bible-verse">"${r.verse}"<span class="bible-ref">â€” ${r.ref}</span></div>`);
         }, 800);
       }
     }, 1000);
@@ -823,7 +823,7 @@ async function sendMessage() {
 
 function formatMessage(text) {
   text = text.replace(/"([^"]+)"\s*\(([^)]+)\)/g,
-    '<div class="bible-verse">"$1"<span class="bible-ref">— $2</span></div>');
+    '<div class="bible-verse">"$1"<span class="bible-ref">â€” $2</span></div>');
   text = text.replace(/\n\n/g, '<br><br>');
   text = text.replace(/\n/g, '<br>');
   return text;
@@ -832,14 +832,19 @@ function formatMessage(text) {
 function getLocalResponse(text) {
   const l = text.toLowerCase();
   if (l.includes('divida')||l.includes('dinheiro')||l.includes('conta')||l.includes('banco')||l.includes('emprego')||l.includes('carro')||l.includes('aluguel'))
-    return {text: "Isso pesa, né? Olhar as contas e sentir que não vai dar conta... já vi isso tantas vezes. Mas deixa eu te dizer uma coisa: o seu valor não está na sua conta bancária. Você não é suas dívidas. E sabe o que mais? Deus não está te ignorando nessa situação — Ele está te ensinando a confiar de um jeito que você nunca aprendeu antes. Vamos começar com o que você tem, não com o que te falta. O primeiro passo é organizar, mesmo que seja só uma planilha no papel. Depois a gente ora sobre cada entrada e saída.", verse: "O meu Deus suprirá todas as vossas necessidades segundo as suas riquezas na glória em Cristo Jesus.", ref: "Filipenses 4:19"};
-  if (l.includes('amor')||l.includes('termin')||l.includes('sozin')||l.includes('namor')||l.includes('cas')||l.includes('solidao')||l.includes('paixão'))
-    return {text: "Seu coração está doendo agora, e eu não vou fingir que entendo exatamente o que você sente — mas sei que Dói. Sabe o que eu aprendi sobre esses momentos? Eles não são o fim da história. Deus não está contra o seu desejo de amar. Ele está contra o que está te destruindo. Talvez esse vazio que você sente agora não seja ausência de alguém, mas um convite pra se encontrar com Ele de um jeito novo. Não apresse a dor. Deixa ela vir, deixa ela passar. E enquanto passa, você não está sozinho.", verse: "Tudo tem o seu tempo determinado, e há tempo para todo propósito debaixo do céu.", ref: "Eclesiastes 3:1"};
-  if (l.includes('deus')||l.includes('fé')||l.includes('oração')||l.includes('igreja')||l.includes('crente')||l.includes('bíblia'))
-    return {text: "Sabe o que mais me alegra? É que mesmo no meio da confusão, você está buscando. Isso já é fé em movimento. Muita gente acha que fé é não ter dúvidas — mas fé é justamente continuar mesmo quando as dúvidas vêm. Deus não está assustado com suas perguntas. Ele não tá bravo porque você não entende o que está acontecendo. Ele está perto. Mais perto do que você imagina. Continua buscando. A resposta vem. Pode não ser no formato que você espera, mas ela vem.", verse: "Não temas, porque eu sou contigo; não te assombres, porque eu sou teu Deus; eu te fortaleço, e te ajudo, e te sustento com a destra da minha justiça.", ref: "Isaías 41:10"};
-  if (l.includes('ansiedade')||l.includes('medo')||l.includes('preocup')||l.includes('pânico')||l.includes('dormir')||l.includes('stress'))
-    return {text: "Essa sensação de que o peito vai explodir... de que algo ruim está prestes a acontecer... eu sei como isso é paralisante. Mas escuta: a ansiedade mente pra você. Ela faz você acreditar que está sozinho, que não vai dar conta, que o pior vai acontecer. E nada disso é verdade. Você já passou por tantas tempestades e está aqui. Essa também vai passar. Respira fundo agora. Inspira contando até 4, segura 4, solta 4. Depois a gente conversa sobre o que está pesando.", verse: "Não andeis ansiosos por coisa alguma; antes, em tudo, sejam conhecidas as vossas petições diante de Deus pela oração e pela súplica, com ação de graças. E a paz de Deus, que excede todo entendimento, guardará os vossos corações.", ref: "Filipenses 4:6-7"};
-  return {text: "Sabe o que mais me toca em você? Que mesmo sem saber exatamente o que dizer, você está aqui. Buscando. Isso já diz muito sobre o seu coração. Deus está ouvindo antes mesmo de você terminar de falar — e Ele já está preparando a resposta. Não no seu timing, no dEle. E o timing dEle é perfeito, mesmo quando a gente não enxerga. Vamos orar sobre isso?", verse: "Clama a mim, e responder-te-ei, e anunciar-te-ei coisas grandes e ocultas, que não sabes.", ref: "Jeremias 33:3"};
+    return {text: "Isso pesa, nÃ©? Olhar as contas e sentir que nÃ£o vai dar conta... jÃ¡ vi isso tantas vezes. Mas deixa eu te dizer uma coisa: o seu valor nÃ£o estÃ¡ na sua conta bancÃ¡ria. VocÃª nÃ£o Ã© suas dÃ­vidas. E sabe o que mais? Deus nÃ£o estÃ¡ te ignorando nessa situaÃ§Ã£o â€” Ele estÃ¡ te ensinando a confiar de um jeito que vocÃª nunca aprendeu antes. Vamos comeÃ§ar com o que vocÃª tem, nÃ£o com o que te falta. O primeiro passo Ã© organizar, mesmo que seja sÃ³ uma planilha no papel. Depois a gente ora sobre cada entrada e saÃ­da.", verse: "O meu Deus suprirÃ¡ todas as vossas necessidades segundo as suas riquezas na glÃ³ria em Cristo Jesus.", ref: "Filipenses 4:19"};
+  if (l.includes('amor')||l.includes('termin')||l.includes('sozin')||l.includes('namor')||l.includes('cas')||l.includes('solidao')||l.includes('paixÃ£o'))
+    return {text: "Seu coraÃ§Ã£o estÃ¡ doendo agora, e eu nÃ£o vou fingir que entendo exatamente o que vocÃª sente â€” mas sei que DÃ³i. Sabe o que eu aprendi sobre esses momentos? Eles nÃ£o sÃ£o o fim da histÃ³ria. Deus nÃ£o estÃ¡ contra o seu desejo de amar. Ele estÃ¡ contra o que estÃ¡ te destruindo. Talvez esse vazio que vocÃª sente agora nÃ£o seja ausÃªncia de alguÃ©m, mas um convite pra se encontrar com Ele de um jeito novo. NÃ£o apresse a dor. Deixa ela vir, deixa ela passar. E enquanto passa, vocÃª nÃ£o estÃ¡ sozinho.", verse: "Tudo tem o seu tempo determinado, e hÃ¡ tempo para todo propÃ³sito debaixo do cÃ©u.", ref: "Eclesiastes 3:1"};
+  if (l.includes('deus')||l.includes('fÃ©')||l.includes('oraÃ§Ã£o')||l.includes('igreja')||l.includes('crente')||l.includes('bÃ­blia'))
+    return {text: "Sabe o que mais me alegra? Ã‰ que mesmo no meio da confusÃ£o, vocÃª estÃ¡ buscando. Isso jÃ¡ Ã© fÃ© em movimento. Muita gente acha que fÃ© Ã© nÃ£o ter dÃºvidas â€” mas fÃ© Ã© justamente continuar mesmo quando as dÃºvidas vÃªm. Deus nÃ£o estÃ¡ assustado com suas perguntas. Ele nÃ£o tÃ¡ bravo porque vocÃª nÃ£o entende o que estÃ¡ acontecendo. Ele estÃ¡ perto. Mais perto do que vocÃª imagina. Continua buscando. A resposta vem. Pode nÃ£o ser no formato que vocÃª espera, mas ela vem.", verse: "NÃ£o temas, porque eu sou contigo; nÃ£o te assombres, porque eu sou teu Deus; eu te fortaleÃ§o, e te ajudo, e te sustento com a destra da minha justiÃ§a.", ref: "IsaÃ­as 41:10"};
+  if (l.includes('ansiedade')||l.includes('medo')||l.includes('preocup')||l.includes('pÃ¢nico')||l.includes('dormir')||l.includes('stress'))
+    return {text: "Essa sensaÃ§Ã£o de que o peito vai explodir... de que algo ruim estÃ¡ prestes a acontecer... eu sei como isso Ã© paralisante. Mas escuta: a ansiedade mente pra vocÃª. Ela faz vocÃª acreditar que estÃ¡ sozinho, que nÃ£o vai dar conta, que o pior vai acontecer. E nada disso Ã© verdade. VocÃª jÃ¡ passou por tantas tempestades e estÃ¡ aqui. Essa tambÃ©m vai passar. Respira fundo agora. Inspira contando atÃ© 4, segura 4, solta 4. Depois a gente conversa sobre o que estÃ¡ pesando.", verse: "NÃ£o andeis ansiosos por coisa alguma; antes, em tudo, sejam conhecidas as vossas petiÃ§Ãµes diante de Deus pela oraÃ§Ã£o e pela sÃºplica, com aÃ§Ã£o de graÃ§as. E a paz de Deus, que excede todo entendimento, guardarÃ¡ os vossos coraÃ§Ãµes.", ref: "Filipenses 4:6-7"};
+  return {text: "Sabe o que mais me toca em vocÃª? Que mesmo sem saber exatamente o que dizer, vocÃª estÃ¡ aqui. Buscando. Isso jÃ¡ diz muito sobre o seu coraÃ§Ã£o. Deus estÃ¡ ouvindo antes mesmo de vocÃª terminar de falar â€” e Ele jÃ¡ estÃ¡ preparando a resposta. NÃ£o no seu timing, no dEle. E o timing dEle Ã© perfeito, mesmo quando a gente nÃ£o enxerga. Vamos orar sobre isso?", verse: "Clama a mim, e responder-te-ei, e anunciar-te-ei coisas grandes e ocultas, que nÃ£o sabes.", ref: "Jeremias 33:3"};
+  if (l.includes(\"família\")||l.includes(\"familia\")||l.includes(\"mãe\")||l.includes(\"pai\")||l.includes(\"filho\")||l.includes(\"irmao\")||l.includes(\"parente\")||l.includes(\"marido\")||l.includes(\"esposa\"))
+    return {text: \"Família é uma das bênçãos mais lindas de Deus, mas também pode ser uma das mais desafiadoras. E não tem problema sentir isso. O que aprendi é que você não precisa carregar o peso de consertar tudo sozinho. Faça sua parte com o coração puro e confia o resto a Deus. Ele é especialista em restaurar relacionamentos. Às vezes, o melhor que você pode fazer é amar de longe, orar de perto e deixar o tempo agir.\", verse: \"Quanto a mim e à minha casa, serviremos ao Senhor.\", ref: \"Josué 24:15\"};
+  if (l.includes(\"trabalho\")||l.includes(\"carreira\")||l.includes(\"profissional\")||l.includes(\"demit\")||l.includes(\"promoção\")||l.includes(\"faculdade\")||l.includes(\"emprego\"))
+    return {text: \"Sabe o que percebo em você? Que se cobra demais. Deus não te colocou no mundo pra ser medido pelo seu cargo ou salário. Sua identidade não está no currículo. Se você está num deserto profissional, saiba: desertos não são castigos, são lugares de preparação. Em vez de perguntar quando isso vai acabar, pergunte o que o Senhor quer me ensinar aqui. A resposta pode mudar tudo.\", verse: \"Tudo quanto te vier à mão para fazer, faze-o conforme as tuas forças.\", ref: \"Eclesiastes 9:10\"};
+  return {text: \"Sabe o que mais me toca em você? Que mesmo sem saber exatamente o que dizer, você está aqui. Buscando. Isso já diz muito sobre o seu coração. Deus está ouvindo antes mesmo de você terminar de falar — e Ele já está preparando a resposta. Não no seu timing, no dEle. E o timing dEle é perfeito, mesmo quando a gente não enxerga. Vamos orar sobre isso?\", verse: \"Clama a mim, e responder-te-ei, e anunciar-te-ei coisas grandes e ocultas, que não sabes.\", ref: \"Jeremias 33:3\"};
 }
 
 // ==========================================
@@ -848,7 +853,7 @@ function getLocalResponse(text) {
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('✅ Polaris PWA pronto!'))
+      .then(reg => console.log('âœ… Polaris PWA pronto!'))
       .catch(err => console.log('PWA:', err));
   });
 }

@@ -9,876 +9,522 @@
 <link rel="manifest" href="/manifest.json">
 <link rel="icon" type="image/svg+xml" href="/icon-192.svg">
 <link rel="apple-touch-icon" href="/icon-192.svg">
-<title>Polaris — Sua Estrela do Norte</title>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+<title>Polaris - Sua Estrela do Norte</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  :root {
-    --deep-blue: #0a0e27;
-    --mid-blue: #131837;
-    --accent-gold: #d4a853;
-    --accent-glow: #f0d080;
-    --star-white: #f0f2ff;
-    --soft-gray: #8b8fa3;
-    --chat-user: #1a1f42;
-    --chat-ai: #0f1435;
-    --gradient-primary: linear-gradient(135deg, #0a0e27 0%, #1a1f42 50%, #0a0e27 100%);
-    --gradient-gold: linear-gradient(135deg, #d4a853 0%, #f0d080 50%, #d4a853 100%);
-  }
-  body { font-family: 'Inter', -apple-system, sans-serif; background: #06081a; display: flex; justify-content: center; align-items: center; min-height: 100vh; padding: 20px; }
-  .phone { width: 393px; height: 852px; background: var(--gradient-primary); border-radius: 44px; padding: 16px; box-shadow: 0 0 80px rgba(212,168,83,0.08), 0 20px 60px rgba(0,0,0,0.6), inset 0 0 0 1px rgba(212,168,83,0.1); position: relative; overflow: hidden; }
-  .dynamic-island { width: 120px; height: 30px; background: #000; border-radius: 20px; margin: 0 auto 12px; position: relative; z-index: 100; }
-  .screen { height: calc(100% - 42px); overflow-y: auto; overflow-x: hidden; scroll-behavior: smooth; position: relative; }
-  .screen::-webkit-scrollbar { display: none; }
-  #screen-onboarding { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 30px 20px; height: 100%; text-align: center; }
-  .polaris-logo { width: 90px; height: 90px; border-radius: 24px; background: var(--gradient-gold); display: flex; align-items: center; justify-content: center; font-size: 44px; margin-bottom: 24px; box-shadow: 0 0 60px rgba(212,168,83,0.3); position: relative; }
-  .polaris-logo::after { content: ''; position: absolute; width: 120px; height: 120px; border-radius: 50%; background: radial-gradient(circle, rgba(212,168,83,0.15) 0%, transparent 70%); animation: pulse-glow 3s ease-in-out infinite; }
-  @keyframes pulse-glow { 0%,100% { transform: scale(0.8); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; } }
-  .polaris-name { font-size: 36px; font-weight: 800; color: var(--star-white); letter-spacing: 3px; margin-bottom: 6px; }
-  .polaris-sub { font-size: 13px; color: var(--accent-gold); font-weight: 500; letter-spacing: 4px; text-transform: uppercase; margin-bottom: 30px; }
-  .tagline { font-size: 17px; color: var(--soft-gray); line-height: 1.7; margin-bottom: 36px; max-width: 300px; }
-  .tagline strong { color: var(--star-white); font-weight: 600; }
-  .btn-primary { background: var(--gradient-gold); color: #0a0e27; border: none; padding: 16px 48px; border-radius: 50px; font-size: 16px; font-weight: 700; cursor: pointer; transition: all 0.3s ease; font-family: 'Inter', sans-serif; width: 100%; max-width: 300px; }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,168,83,0.3); }
-  .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-  .btn-outline { background: transparent; color: var(--star-white); border: 1px solid rgba(212,168,83,0.3); padding: 14px 48px; border-radius: 50px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; font-family: 'Inter', sans-serif; width: 100%; max-width: 300px; margin-top: 12px; }
-  .btn-outline:hover { border-color: var(--accent-gold); background: rgba(212,168,83,0.05); }
-  .btn-google { background: transparent; color: var(--star-white); border: 1px solid rgba(255,255,255,0.15); padding: 14px 16px; border-radius: 50px; font-size: 14px; font-weight: 500; cursor: pointer; transition: all 0.3s ease; font-family: 'Inter', sans-serif; width: 100%; max-width: 300px; display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 12px; }
-  .btn-google:hover { border-color: var(--accent-gold); background: rgba(255,255,255,0.03); }
-  .btn-google svg { width: 20px; height: 20px; }
-  .free-badge { display: inline-block; background: rgba(212,168,83,0.15); color: var(--accent-gold); padding: 6px 16px; border-radius: 20px; font-size: 12px; font-weight: 600; margin-bottom: 20px; border: 1px solid rgba(212,168,83,0.2); }
-
-  /* Login / Signup */
-  #screen-login, #screen-signup { display: none; padding: 30px 20px; height: 100%; flex-direction: column; align-items: center; justify-content: center; }
-  .auth-title { color: var(--star-white); font-size: 24px; font-weight: 700; margin-bottom: 8px; }
-  .auth-subtitle { color: var(--soft-gray); font-size: 14px; margin-bottom: 30px; text-align: center; }
-  .auth-divider { display: flex; align-items: center; gap: 16px; width: 100%; max-width: 300px; margin: 16px 0; color: var(--soft-gray); font-size: 12px; }
-  .auth-divider::before, .auth-divider::after { content: ''; flex: 1; height: 1px; background: rgba(255,255,255,0.08); }
-  .input-group { width: 100%; max-width: 300px; margin-bottom: 14px; text-align: left; }
-  .input-group label { color: var(--soft-gray); font-size: 12px; font-weight: 500; display: block; margin-bottom: 6px; }
-  .input-group input { width: 100%; padding: 14px 16px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; color: var(--star-white); font-size: 14px; font-family: 'Inter', sans-serif; outline: none; transition: border-color 0.3s; }
-  .input-group input:focus { border-color: var(--accent-gold); }
-  .input-group input::placeholder { color: var(--soft-gray); }
-  .auth-error { color: #ef4444; font-size: 13px; max-width: 300px; text-align: center; margin-bottom: 12px; display: none; }
-  .auth-link { color: var(--soft-gray); font-size: 13px; margin-top: 16px; }
-  .auth-link a { color: var(--accent-gold); text-decoration: none; cursor: pointer; }
-  .auth-link a:hover { text-decoration: underline; }
-
-  /* Categories */
-  #screen-categories { display: none; padding: 16px 4px; height: 100%; }
-  .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 8px 0 20px; }
-  .top-bar h2 { color: var(--star-white); font-size: 22px; font-weight: 700; }
-  .top-bar .gold { color: var(--accent-gold); }
-  .user-avatar { width: 38px; height: 38px; border-radius: 50%; background: var(--gradient-gold); display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; color: #0a0e27; cursor: pointer; position: relative; }
-  .user-menu { display: none; position: absolute; top: 48px; right: 0; background: var(--mid-blue); border: 1px solid rgba(212,168,83,0.15); border-radius: 12px; padding: 8px; min-width: 160px; z-index: 50; }
-  .user-menu.active { display: block; }
-  .user-menu button { background: none; border: none; color: var(--star-white); padding: 10px 14px; width: 100%; text-align: left; font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer; border-radius: 8px; }
-  .user-menu button:hover { background: rgba(255,255,255,0.05); }
-  .user-menu .menu-email { color: var(--soft-gray); font-size: 11px; padding: 8px 14px; border-bottom: 1px solid rgba(255,255,255,0.05); margin-bottom: 4px; }
-
-  .greeting { color: var(--soft-gray); font-size: 14px; margin-bottom: 24px; }
-  .greeting strong { color: var(--star-white); }
-  .categories-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 28px; }
-  .cat-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(212,168,83,0.08); border-radius: 16px; padding: 18px 16px; cursor: pointer; transition: all 0.3s ease; text-align: left; }
-  .cat-card:hover { background: rgba(212,168,83,0.06); border-color: rgba(212,168,83,0.2); transform: translateY(-2px); }
-  .cat-icon { font-size: 28px; margin-bottom: 10px; }
-  .cat-name { color: var(--star-white); font-size: 14px; font-weight: 600; margin-bottom: 3px; }
-  .cat-desc { color: var(--soft-gray); font-size: 11px; }
-  .featured-section h3 { color: var(--star-white); font-size: 15px; font-weight: 600; margin-bottom: 12px; }
-  .testimonial-card { background: rgba(212,168,83,0.04); border: 1px solid rgba(212,168,83,0.1); border-radius: 14px; padding: 16px; margin-bottom: 12px; }
-  .testimonial-card p { color: var(--soft-gray); font-size: 13px; line-height: 1.6; font-style: italic; }
-  .testimonial-author { display: flex; align-items: center; gap: 10px; margin-top: 12px; }
-  .test-avatar { width: 32px; height: 32px; border-radius: 50%; background: var(--mid-blue); display: flex; align-items: center; justify-content: center; font-size: 13px; }
-  .test-name { color: var(--star-white); font-size: 13px; font-weight: 500; }
-  .test-label { color: var(--accent-gold); font-size: 11px; }
-
-  /* Chat */
-  #screen-chat { display: none; flex-direction: column; height: 100%; }
-  .chat-header { display: flex; align-items: center; gap: 12px; padding: 8px 0 16px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-  .chat-back { background: none; border: none; color: var(--star-white); font-size: 22px; cursor: pointer; padding: 4px; }
-  .chat-avatar { width: 40px; height: 40px; border-radius: 50%; background: var(--gradient-gold); display: flex; align-items: center; justify-content: center; font-size: 18px; }
-  .chat-header-info h4 { color: var(--star-white); font-size: 15px; font-weight: 600; }
-  .chat-header-info span { color: #4ade80; font-size: 11px; display: flex; align-items: center; gap: 4px; }
-  .chat-header-info span::before { content: ''; width: 6px; height: 6px; background: #4ade80; border-radius: 50%; display: inline-block; }
-  .chat-messages { flex: 1; overflow-y: auto; padding: 16px 0; display: flex; flex-direction: column; gap: 16px; }
-  .chat-messages::-webkit-scrollbar { display: none; }
-  .message { max-width: 85%; padding: 14px 18px; border-radius: 20px; font-size: 14px; line-height: 1.6; animation: msg-in 0.3s ease; }
-  @keyframes msg-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-  .message-ai { background: var(--chat-ai); color: var(--star-white); align-self: flex-start; border-bottom-left-radius: 4px; border: 1px solid rgba(212,168,83,0.06); }
-  .message-ai .bible-verse { display: block; margin-top: 12px; padding: 12px 14px; background: rgba(212,168,83,0.08); border-left: 3px solid var(--accent-gold); border-radius: 8px; color: var(--accent-glow); font-family: 'Playfair Display', serif; font-size: 15px; font-style: italic; }
-  .message-ai .bible-ref { display: block; color: var(--accent-gold); font-size: 11px; margin-top: 6px; font-style: normal; font-family: 'Inter', sans-serif; }
-  .message-user { background: var(--chat-user); color: var(--star-white); align-self: flex-end; border-bottom-right-radius: 4px; border: 1px solid rgba(255,255,255,0.05); }
-  .typing-indicator { display: none; align-self: flex-start; background: var(--chat-ai); padding: 14px 18px; border-radius: 20px; border-bottom-left-radius: 4px; gap: 4px; border: 1px solid rgba(212,168,83,0.06); }
-  .typing-indicator.active { display: flex; }
-  .typing-indicator span { width: 7px; height: 7px; background: var(--soft-gray); border-radius: 50%; animation: typing 1.4s ease-in-out infinite; }
-  .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
-  .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
-  @keyframes typing { 0%,60%,100% { transform: translateY(0); background: var(--soft-gray); } 30% { transform: translateY(-6px); background: var(--accent-gold); } }
-  .chat-input-bar { display: flex; gap: 10px; padding: 12px 0; border-top: 1px solid rgba(255,255,255,0.05); align-items: flex-end; }
-  .chat-input { flex: 1; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08); border-radius: 24px; padding: 12px 18px; color: var(--star-white); font-size: 14px; font-family: 'Inter', sans-serif; outline: none; resize: none; max-height: 100px; transition: border-color 0.3s; }
-  .chat-input:focus { border-color: var(--accent-gold); }
-  .chat-input::placeholder { color: var(--soft-gray); }
-  .chat-input:disabled { opacity: 0.4; cursor: not-allowed; }
-  .btn-send { width: 44px; height: 44px; border-radius: 50%; background: var(--gradient-gold); border: none; font-size: 18px; cursor: pointer; transition: all 0.3s; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
-  .btn-send:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(212,168,83,0.3); }
-
-  /* Plans */
-  #screen-plans { display: none; padding: 20px 4px; height: 100%; overflow-y: auto; }
-  #screen-plans::-webkit-scrollbar { display: none; }
-  .plans-header { text-align: center; margin-bottom: 28px; }
-  .plans-header h2 { color: var(--star-white); font-size: 26px; font-weight: 700; margin-bottom: 8px; }
-  .plans-header p { color: var(--soft-gray); font-size: 14px; }
-  .plan-card { background: rgba(255,255,255,0.03); border: 1px solid rgba(212,168,83,0.1); border-radius: 20px; padding: 24px; margin-bottom: 14px; transition: all 0.3s; position: relative; }
-  .plan-card.featured { border-color: var(--accent-gold); background: rgba(212,168,83,0.04); box-shadow: 0 0 30px rgba(212,168,83,0.06); }
-  .plan-badge { position: absolute; top: -10px; right: 20px; background: var(--gradient-gold); color: #0a0e27; padding: 4px 14px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-  .plan-name { color: var(--star-white); font-size: 18px; font-weight: 700; margin-bottom: 4px; }
-  .plan-price { color: var(--accent-gold); font-size: 32px; font-weight: 800; margin: 8px 0; }
-  .plan-price span { font-size: 14px; color: var(--soft-gray); font-weight: 400; }
-  .plan-features { list-style: none; margin: 16px 0; }
-  .plan-features li { color: var(--soft-gray); font-size: 13px; padding: 6px 0; display: flex; align-items: center; gap: 8px; }
-  .plan-features li::before { content: '✓'; color: var(--accent-gold); font-weight: 700; }
-  .btn-plan { width: 100%; padding: 14px; border-radius: 50px; border: none; font-size: 15px; font-weight: 600; cursor: pointer; font-family: 'Inter', sans-serif; transition: all 0.3s; }
-  .btn-plan.primary { background: var(--gradient-gold); color: #0a0e27; }
-  .btn-plan.primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(212,168,83,0.3); }
-
-  .countdown { background: rgba(212,168,83,0.1); border: 1px solid rgba(212,168,83,0.15); border-radius: 12px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; cursor: pointer; }
-  .countdown-text { color: var(--star-white); font-size: 13px; }
-  .countdown-text span { color: var(--accent-gold); font-weight: 700; }
-  .countdown-time { color: var(--accent-gold); font-size: 18px; font-weight: 700; font-variant-numeric: tabular-nums; }
-  .backend-status { display: flex; align-items: center; gap: 6px; margin-bottom: 16px; font-size: 12px; }
-  .backend-status .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
-  .backend-status .dot.online { background: #4ade80; box-shadow: 0 0 8px rgba(74,222,128,0.4); }
-  .backend-status .dot.offline { background: #ef4444; box-shadow: 0 0 8px rgba(239,68,68,0.4); }
-  .backend-status .dot.loading { background: #facc15; animation: pulse-dot 1s ease-in-out infinite; }
-  @keyframes pulse-dot { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
-  .error-msg { color: #ef4444; font-size: 12px; padding: 8px 12px; background: rgba(239,68,68,0.1); border-radius: 8px; display: none; margin-bottom: 8px; }
-  .trial-expired-msg { text-align: center; padding: 30px 20px; }
-  .trial-expired-msg h3 { color: var(--accent-gold); font-size: 20px; margin-bottom: 10px; }
-  .trial-expired-msg p { color: var(--soft-gray); font-size: 14px; ma-rgin-bottom: 20px; }
-
-  .stars { position: absolute; width: 100%; height: 100%; top: 0; left: 0; pointer-events: none; overflow: hidden; }
-  .star { position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; animation: twinkle 3s ease-in-out infinite; }
-  @keyframes twinkle { 0%,100% { opacity: 0.2; } 50% { opacity: 0.8; } }
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+--deep-blue:#0a0e27; --mid-blue:#131837; --accent-gold:#d4a853; --accent-glow:#f0d080;
+--star-white:#f0f2ff; --soft-gray:#8b8fa3; --chat-user:#1a1f42; --chat-ai:#0f1435;
+--gradient-primary:linear-gradient(135deg,#0a0e27 0%,#1a1f42 50%,#0a0e27 100%);
+--gradient-gold:linear-gradient(135deg,#d4a853 0%,#f0d080 50%,#d4a853 100%);
+}
+body { font-family:Inter,sans-serif; background:#06081a; display:flex; justify-content:center; align-items:center; min-height:100vh; padding:20px; }
+.phone { width:393px; height:852px; background:var(--gradient-primary); border-radius:44px; padding:16px; box-shadow:0 0 80px rgba(212,168,83,0.08),0 20px 60px rgba(0,0,0,0.6),inset 0 0 0 1px rgba(212,168,83,0.1); position:relative; overflow:hidden; }
+.dynamic-island { width:120px; height:30px; background:#000; border-radius:20px; margin:0 auto 12px; z-index:100; position:relative; }
+.screen { height:calc(100% - 42px); overflow-y:auto; overflow-x:hidden; scroll-behavior:smooth; position:relative; }
+.screen::-webkit-scrollbar { display:none; }
+#screen-onboarding { display:flex; flex-direction:column; align-items:center; justify-content:center; padding:30px 20px; height:100%; text-align:center; }
+.polaris-logo { width:90px; height:90px; border-radius:24px; background:var(--gradient-gold); display:flex; align-items:center; justify-content:center; font-size:44px; margin-bottom:24px; box-shadow:0 0 60px rgba(212,168,83,0.3); position:relative; }
+.polaris-logo::after { content:''; position:absolute; width:120px; height:120px; border-radius:50%; background:radial-gradient(circle,rgba(212,168,83,0.15) 0%,transparent 70%); animation:pulse-glow 3s ease-in-out infinite; }
+@keyframes pulse-glow { 0%,100%{transform:scale(0.8);opacity:0.5;} 50%{transform:scale(1.2);opacity:1;} }
+.polaris-name { font-size:36px; font-weight:800; color:var(--star-white); letter-spacing:3px; margin-bottom:6px; }
+.polaris-sub { font-size:13px; color:var(--accent-gold); font-weight:500; letter-spacing:4px; text-transform:uppercase; margin-bottom:30px; }
+.tagline { font-size:17px; color:var(--soft-gray); line-height:1.7; margin-bottom:36px; max-width:300px; }
+.tagline strong { color:var(--star-white); }
+.btn-primary { background:var(--gradient-gold); color:#0a0e27; border:none; padding:16px 48px; border-radius:50px; font-size:16px; font-weight:700; cursor:pointer; transition:all .3s ease; font-family:Inter,sans-serif; width:100%; max-width:300px; }
+.btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(212,168,83,0.3); }
+.btn-primary:disabled { opacity:.5; cursor:not-allowed; }
+.btn-outline { background:transparent; color:var(--star-white); border:1px solid rgba(212,168,83,0.3); padding:14px 48px; border-radius:50px; font-size:14px; font-weight:500; cursor:pointer; transition:all .3s ease; font-family:Inter,sans-serif; width:100%; max-width:300px; margin-top:12px; }
+.btn-outline:hover { border-color:var(--accent-gold); background:rgba(212,168,83,0.05); }
+.free-badge { display:inline-block; background:rgba(212,168,83,0.15); color:var(--accent-gold); padding:6px 16px; border-radius:20px; font-size:12px; font-weight:600; margin-bottom:20px; border:1px solid rgba(212,168,83,0.2); }
+#screen-login,#screen-signup { display:none; padding:30px 20px; height:100%; flex-direction:column; align-items:center; justify-content:center; }
+.auth-title { color:var(--star-white); font-size:24px; font-weight:700; margin-bottom:8px; }
+.auth-subtitle { color:var(--soft-gray); font-size:14px; margin-bottom:30px; text-align:center; }
+.auth-divider { display:flex; align-items:center; gap:16px; width:100%; max-width:300px; margin:16px 0; color:var(--soft-gray); font-size:12px; }
+.auth-divider::before,.auth-divider::after { content:''; flex:1; height:1px; background:rgba(255,255,255,0.08); }
+.input-group { width:100%; max-width:300px; margin-bottom:14px; text-align:left; }
+.input-group label { color:var(--soft-gray); font-size:12px; font-weight:500; display:block; margin-bottom:6px; }
+.input-group input { width:100%; padding:14px 16px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; color:var(--star-white); font-size:14px; font-family:Inter,sans-serif; outline:none; transition:border-color .3s; }
+.input-group input:focus { border-color:var(--accent-gold); }
+.input-group input::placeholder { color:var(--soft-gray); }
+.auth-error { color:#ef4444; font-size:13px; max-width:300px; text-align:center; margin-bottom:12px; display:none; }
+.auth-link { color:var(--soft-gray); font-size:13px; margin-top:16px; }
+.auth-link a { color:var(--accent-gold); text-decoration:none; cursor:pointer; }
+#screen-categories { display:none; padding:16px 4px; height:100%; }
+.top-bar { display:flex; justify-content:space-between; align-items:center; padding:8px 0 20px; }
+.top-bar h2 { color:var(--star-white); font-size:22px; font-weight:700; }
+.top-bar .gold { color:var(--accent-gold); }
+.user-avatar { width:38px; height:38px; border-radius:50%; background:var(--gradient-gold); display:flex; align-items:center; justify-content:center; font-size:14px; font-weight:600; color:#0a0e27; cursor:pointer; position:relative; }
+.user-menu { display:none; position:absolute; top:48px; right:0; background:var(--mid-blue); border:1px solid rgba(212,168,83,0.15); border-radius:12px; padding:8px; min-width:160px; z-index:50; }
+.user-menu.active { display:block; }
+.user-menu button { background:none; border:none; color:var(--star-white); padding:10px 14px; width:100%; text-align:left; font-family:Inter,sans-serif; font-size:13px; cursor:pointer; border-radius:8px; }
+.user-menu button:hover { background:rgba(255,255,255,0.05); }
+.user-menu .menu-email { color:var(--soft-gray); font-size:11px; padding:8px 14px; border-bottom:1px solid rgba(255,255,255,0.05); margin-bottom:4px; }
+.greeting { color:var(--soft-gray); font-size:14px; margin-bottom:24px; }
+.greeting strong { color:var(--star-white); }
+.categories-grid { display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:28px; }
+.cat-card { background:rgba(255,255,255,0.03); border:1px solid rgba(212,168,83,0.08); border-radius:16px; padding:18px 16px; cursor:pointer; transition:all .3s ease; text-align:left; }
+.cat-card:hover { background:rgba(212,168,83,0.06); border-color:rgba(212,168,83,0.2); transform:translateY(-2px); }
+.cat-icon { font-size:28px; margin-bottom:10px; }
+.cat-name { color:var(--star-white); font-size:14px; font-weight:600; margin-bottom:3px; }
+.cat-desc { color:var(--soft-gray); font-size:11px; }
+.testimonial-card { background:rgba(212,168,83,0.04); border:1px solid rgba(212,168,83,0.1); border-radius:14px; padding:16px; margin-bottom:12px; }
+.testimonial-card p { color:var(--soft-gray); font-size:13px; line-height:1.6; font-style:italic; }
+.testimonial-author { display:flex; align-items:center; gap:10px; margin-top:12px; }
+.test-avatar { width:32px; height:32px; border-radius:50%; background:var(--mid-blue); display:flex; align-items:center; justify-content:center; font-size:13px; }
+.test-name { color:var(--star-white); font-size:13px; font-weight:500; }
+.test-label { color:var(--accent-gold); font-size:11px; }
+#screen-chat { display:none; flex-direction:column; height:100%; }
+.chat-header { display:flex; align-items:center; gap:12px; padding:8px 0 16px; border-bottom:1px solid rgba(255,255,255,0.05); }
+.chat-back { background:none; border:none; color:var(--star-white); font-size:22px; cursor:pointer; padding:4px; }
+.chat-avatar { width:40px; height:40px; border-radius:50%; background:var(--gradient-gold); display:flex; align-items:center; justify-content:center; font-size:18px; }
+.chat-header-info h4 { color:var(--star-white); font-size:15px; font-weight:600; }
+.chat-header-info span { color:#4ade80; font-size:11px; display:flex; align-items:center; gap:4px; }
+.chat-header-info span::before { content:''; width:6px; height:6px; background:#4ade80; border-radius:50%; display:inline-block; }
+.chat-messages { flex:1; overflow-y:auto; padding:16px 0; display:flex; flex-direction:column; gap:16px; }
+.chat-messages::-webkit-scrollbar { display:none; }
+.message { max-width:85%; padding:14px 18px; border-radius:20px; font-size:14px; line-height:1.6; animation:msg-in .3s ease; }
+@keyframes msg-in { from{opacity:0;transform:translateY(10px);} to{opacity:1;transform:translateY(0);} }
+.message-ai { background:var(--chat-ai); color:var(--star-white); align-self:flex-start; border-bottom-left-radius:4px; border:1px solid rgba(212,168,83,0.06); }
+.message-ai .bible-verse { display:block; margin-top:12px; padding:12px 14px; background:rgba(212,168,83,0.08); border-left:3px solid var(--accent-gold); border-radius:8px; color:var(--accent-glow); font-family:Georgia,serif; font-size:15px; font-style:italic; }
+.message-ai .bible-ref { display:block; color:var(--accent-gold); font-size:11px; margin-top:6px; font-style:normal; }
+.message-user { background:var(--chat-user); color:var(--star-white); align-self:flex-end; border-bottom-right-radius:4px; border:1px solid rgba(255,255,255,0.05); }
+.typing-indicator { display:none; align-self:flex-start; background:var(--chat-ai); padding:14px 18px; border-radius:20px; border-bottom-left-radius:4px; gap:4px; border:1px solid rgba(212,168,83,0.06); }
+.typing-indicator.active { display:flex; }
+.typing-indicator span { width:7px; height:7px; background:var(--soft-gray); border-radius:50%; animation:typing 1.4s ease-in-out infinite; }
+.typing-indicator span:nth-child(2) { animation-delay:.2s; }
+.typing-indicator span:nth-child(3) { animation-delay:.4s; }
+@keyframes typing { 0%,60%,100%{transform:translateY(0);background:var(--soft-gray);} 30%{transform:translateY(-6px);background:var(--accent-gold);} }
+.chat-input-bar { display:flex; gap:10px; padding:12px 0; border-top:1px solid rgba(255,255,255,0.05); align-items:flex-end; }
+.chat-input { flex:1; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:24px; padding:12px 18px; color:var(--star-white); font-size:14px; font-family:Inter,sans-serif; outline:none; resize:none; max-height:100px; transition:border-color .3s; }
+.chat-input:focus { border-color:var(--accent-gold); }
+.chat-input::placeholder { color:var(--soft-gray); }
+.chat-input:disabled { opacity:.4; cursor:not-allowed; }
+.btn-send { width:44px; height:44px; border-radius:50%; background:var(--gradient-gold); border:none; font-size:18px; cursor:pointer; transition:all .3s; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.btn-send { width:44px; height:44px; border-radius:50%; background:var(--gradient-gold); border:none; font-size:18px; cursor:pointer; transition:all .3s; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+#screen-plans { display:none; padding:20px 4px; height:100%; overflow-y:auto; }
+#screen-plans::-webkit-scrollbar { display:none; }
+.plans-header { text-align:center; margin-bottom:28px; }
+.plans-header h2 { color:var(--star-white); font-size:26px; font-weight:700; margin-bottom:8px; }
+.plans-header p { color:var(--soft-gray); font-size:14px; }
+.plan-card { background:rgba(255,255,255,0.03); border:1px solid rgba(212,168,83,0.1); border-radius:20px; padding:24px; margin-bottom:14px; transition:all .3s; position:relative; }
+.plan-card.featured { border-color:var(--accent-gold); background:rgba(212,168,83,0.04); box-shadow:0 0 30px rgba(212,168,83,0.06); }
+.plan-badge { position:absolute; top:-10px; right:20px; background:var(--gradient-gold); color:#0a0e27; padding:4px 14px; border-radius:20px; font-size:11px; font-weight:700; }
+.plan-name { color:var(--star-white); font-size:18px; font-weight:700; margin-bottom:4px; }
+.plan-price { color:var(--accent-gold); font-size:32px; font-weight:800; margin:8px 0; }
+.plan-price span { font-size:14px; color:var(--soft-gray); font-weight:400; }
+.plan-features { list-style:none; margin:16px 0; }
+.plan-features li { color:var(--soft-gray); font-size:13px; padding:6px 0; display:flex; align-items:center; gap:8px; }
+.plan-features li::before { content:'\2713'; color:var(--accent-gold); font-weight:700; }
+.btn-plan { width:100%; padding:14px; border-radius:50px; border:none; font-size:15px; font-weight:600; cursor:pointer; font-family:Inter,sans-serif; transition:all .3s; }
+.btn-plan.primary { background:var(--gradient-gold); color:#0a0e27; }
+.btn-plan.primary:hover { transform:translateY(-2px); box-shadow:0 8px 30px rgba(212,168,83,0.3); }
+.countdown { background:rgba(212,168,83,0.1); border:1px solid rgba(212,168,83,0.15); border-radius:12px; padding:12px 16px; display:flex; justify-content:space-between; align-items:center; margin-bottom:20px; cursor:pointer; }
+.countdown-text { color:var(--star-white); font-size:13px; }
+.countdown-text span { color:var(--accent-gold); font-weight:700; }
+.countdown-time { color:var(--accent-gold); font-size:18px; font-weight:700; }
+.backend-status { display:flex; align-items:center; gap:6px; margin-bottom:16px; font-size:12px; }
+.backend-status .dot { width:8px; height:8px; border-radius:50%; display:inline-block; }
+.backend-status .dot.online { background:#4ade80; box-shadow:0 0 8px rgba(74,222,128,0.4); }
+.backend-status .dot.offline { background:#ef4444; box-shadow:0 0 8px rgba(239,68,68,0.4); }
+.backend-status .dot.loading { background:#facc15; animation:pulse-dot 1s ease-in-out infinite; }
+@keyframes pulse-dot { 0%,100%{opacity:.4;} 50%{opacity:1;} }
+.error-msg { color:#ef4444; font-size:12px; padding:8px 12px; background:rgba(239,68,68,0.1); border-radius:8px; display:none; margin-bottom:8px; }
+.stars { position:absolute; width:100%; height:100%; top:0; left:0; pointer-events:none; overflow:hidden; }
+.star { position:absolute; width:2px; height:2px; background:white; border-radius:50%; animation:twinkle 3s ease-in-out infinite; }
+@keyframes twinkle { 0%,100%{opacity:.2;} 50%{opacity:.8;} }
 </style>
 </head>
 <body>
-
 <div class="phone">
-  <div class="dynamic-island"></div>
-  <div class="stars">
-    <div class="star" style="top:5%;left:10%;animation-delay:0s;"></div>
-    <div class="star" style="top:12%;left:80%;animation-delay:0.5s;"></div>
-    <div class="star" style="top:8%;left:50%;animation-delay:1s;"></div>
-    <div class="star" style="top:20%;left:25%;animation-delay:1.5s;"></div>
-    <div class="star" style="top:15%;left:70%;animation-delay:2s;"></div>
-    <div class="star" style="top:30%;left:15%;animation-delay:0.8s;"></div>
-    <div class="star" style="top:25%;left:90%;animation-delay:1.8s;"></div>
-    <div class="star" style="top:35%;left:45%;animation-delay:0.3s;"></div>
-  </div>
+<div class="dynamic-island"></div>
+<div class="stars">
+<div class="star" style="top:5%;left:10%;animation-delay:0s;"></div>
+<div class="star" style="top:12%;left:80%;animation-delay:.5s;"></div>
+<div class="star" style="top:8%;left:50%;animation-delay:1s;"></div>
+<div class="star" style="top:20%;left:25%;animation-delay:1.5s;"></div>
+<div class="star" style="top:15%;left:70%;animation-delay:2s;"></div>
+<div class="star" style="top:30%;left:15%;animation-delay:.8s;"></div>
+<div class="star" style="top:25%;left:90%;animation-delay:1.8s;"></div>
+<div class="star" style="top:35%;left:45%;animation-delay:.3s;"></div>
+</div>
 
-  <!-- TELA 1: ONBOARDING -->
-  <div id="screen-onboarding" class="screen">
-    <div class="polaris-logo">⭐</div>
-    <div class="polaris-name">POLARIS</div>
-    <div class="polaris-sub">Sua Estrela do Norte</div>
-    <div class="free-badge">🎁 24 HORAS GRÁTIS — ACESSO COMPLETO</div>
-    <p class="tagline">
-      O conselho que <strong>muda sua vida</strong>.<br>
-      Como uma conversa com seu melhor amigo.<br>
-      <strong style="color:var(--accent-gold)">Baseado na fé.</strong>
-    </p>
-    <button class="btn-primary" id="btnStart">✨ COMEÇAR AGORA</button>
-    <button class="btn-outline" onclick="showScreen('plans')">VER PLANOS</button>
-  </div>
+<div id="screen-onboarding" class="screen">
+<div class="polaris-logo">&#9733;</div>
+<div class="polaris-name">POLARIS</div>
+<div class="polaris-sub">Sua Estrela do Norte</div>
+<div class="free-badge">&#127873; 24 HORAS GRATIS - ACESSO COMPLETO</div>
+<p class="tagline">O conselho que <strong>muda sua vida</strong>.<br>Como uma conversa com seu melhor amigo.<br><strong style="color:var(--accent-gold)">Baseado na fe.</strong></p>
+<button class="btn-primary" id="btnStart">&#10024; COMECAR AGORA</button>
+<button class="btn-outline" onclick="showScreen('plans')">VER PLANOS</button>
+</div>
 
-  <!-- TELA 2: LOGIN -->
-  <div id="screen-login" class="screen">
-    <div class="polaris-logo" style="width:60px;height:60px;font-size:28px;margin-bottom:16px;">⭐</div>
-    <div class="auth-title">Entrar no Polaris</div>
-    <div class="auth-subtitle">Continue sua jornada de onde parou</div>
-    <div class="auth-error" id="loginError"></div>
-    <div class="input-group">
-      <label>Email</label>
-      <input type="email" id="loginEmail" placeholder="seu@email.com" autocomplete="email">
-    </div>
-    <div class="input-group">
-      <label>Senha</label>
-      <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password">
-    </div>
-    <button class="btn-primary" id="btnLogin" onclick="handleLogin()" style="max-width:300px;">ENTRAR</button>
-    <div class="auth-divider">ou</div>
-    <button class="btn-google" onclick="handleGoogleLogin()">
-      <svg viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Continuar com Google
-    </button>
-    <div class="auth-link">Não tem conta? <a onclick="showScreen('signup')">Criar conta</a></div>
-    <div class="auth-link" style="margin-top:4px;"><a onclick="showScreen('onboarding')">Voltar</a></div>
-  </div>
+<div id="screen-login" class="screen">
+<div class="polaris-logo" style="width:60px;height:60px;font-size:28px;margin-bottom:16px;">&#9733;</div>
+<div class="auth-title">Entrar no Polaris</div>
+<div class="auth-subtitle">Continue sua jornada</div>
+<div class="auth-error" id="loginError"></div>
+<div class="input-group"><label>Email</label><input type="email" id="loginEmail" placeholder="seu@email.com"></div>
+<div class="input-group"><label>Senha</label><input type="password" id="loginPassword" placeholder="senha"></div>
+<button class="btn-primary" id="btnLogin" onclick="handleLogin()" style="max-width:300px;">ENTRAR</button>
+<div class="auth-divider">ou</div>
+<div class="auth-link">Nao tem conta? <a onclick="showScreen('signup')">Criar conta</a></div>
+<div class="auth-link"><a onclick="showScreen('onboarding')">Voltar</a></div>
+</div>
 
-  <!-- TELA 3: CADASTRO -->
-  <div id="screen-signup" class="screen">
-    <div class="polaris-logo" style="width:60px;height:60px;font-size:28px;margin-bottom:16px;">⭐</div>
-    <div class="auth-title">Criar Conta</div>
-    <div class="auth-subtitle">Comece sua jornada de 24h grátis</div>
-    <div class="auth-error" id="signupError"></div>
-    <div class="input-group">
-      <label>Seu nome</label>
-      <input type="text" id="signupName" placeholder="Seu nome">
-    </div>
-    <div class="input-group">
-      <label>Email</label>
-      <input type="email" id="signupEmail" placeholder="seu@email.com">
-    </div>
-    <div class="input-group">
-      <label>Senha (mínimo 6 caracteres)</label>
-      <input type="password" id="signupPassword" placeholder="••••••••">
-    </div>
-    <button class="btn-primary" id="btnSignup" onclick="handleSignup()" style="max-width:300px;">CRIAR CONTA GRÁTIS</button>
-    <div class="auth-divider">ou</div>
-    <button class="btn-google" onclick="handleGoogleLogin()">
-      <svg viewBox="0 0 24 24"><path fill="#fff" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z"/><path fill="#fff" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#fff" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#fff" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
-      Continuar com Google
-    </button>
-    <div class="auth-link">Já tem conta? <a onclick="showScreen('login')">Entrar</a></div>
-  </div>
+<div id="screen-signup" class="screen">
+<div class="polaris-logo" style="width:60px;height:60px;font-size:28px;margin-bottom:16px;">&#9733;</div>
+<div class="auth-title">Criar Conta</div>
+<div class="auth-subtitle">24h gratis para testar</div>
+<div class="auth-error" id="signupError"></div>
+<div class="input-group"><label>Nome</label><input type="text" id="signupName" placeholder="Seu nome"></div>
+<div class="input-group"><label>Email</label><input type="email" id="signupEmail" placeholder="seu@email.com"></div>
+<div class="input-group"><label>Senha</label><input type="password" id="signupPassword" placeholder="min 6 caracteres"></div>
+<button class="btn-primary" id="btnSignup" onclick="handleSignup()" style="max-width:300px;">CRIAR CONTA</button>
+<div class="auth-divider">ou</div>
+<div class="auth-link">Ja tem conta? <a onclick="showScreen('login')">Entrar</a></div>
+</div>
 
-  <!-- TELA 4: CATEGORIAS -->
-  <div id="screen-categories" class="screen">
-    <div class="top-bar">
-      <h2>Polaris<span class="gold">.</span></h2>
-      <div class="user-avatar" id="avatarBtn" onclick="toggleMenu()">👤</div>
-      <div class="user-menu" id="userMenu">
-        <div class="menu-email" id="menuEmail">email</div>
-        <button onclick="handleLogout()">🚪 Sair</button>
-      </div>
-    </div>
-    <div class="countdown" id="trialBanner" onclick="showScreen('plans')" title="Clique para ver planos">
-      <div class="countdown-text">⏳ <span id="trialLabel">Grátis por mais</span> <span id="timer">23:45:12</span></div>
-      <div class="countdown-time">⏰</div>
-    </div>
-    <div class="backend-status">
-      <span class="dot offline" id="backendDot"></span>
-      <span id="backendStatus" style="color:var(--soft-gray);">Verificando conexão...</span>
-    </div>
-    <p class="greeting" id="greetingMsg">Bom dia <strong>Felipe</strong> 🌅<br><span style="color:var(--soft-gray);font-size:13px;">O que você gostaria de compartilhar hoje?</span></p>
-    <div class="categories-grid">
-      <div class="cat-card" onclick="openChat('financeiro')">
-        <div class="cat-icon">💰</div>
-        <div class="cat-name">Financeiro</div>
-        <div class="cat-desc">Dívidas, investimentos, prosperidade</div>
-      </div>
-      <div class="cat-card" onclick="openChat('amoroso')">
-        <div class="cat-icon">❤️</div>
-        <div class="cat-name">Amoroso</div>
-        <div class="cat-desc">Relacionamento, término, solidão</div>
-      </div>
-      <div class="cat-card" onclick="openChat('espiritual')">
-        <div class="cat-icon">🙏</div>
-        <div class="cat-name">Espiritual</div>
-        <div class="cat-desc" style="color:var(--accent-gold);">Fé, oração, propósito divino</div>
-      </div>
-      <div class="cat-card" onclick="openChat('profissional')">
-        <div class="cat-icon">💼</div>
-        <div class="cat-name">Profissional</div>
-        <div class="cat-desc">Carreira, propósito, decisões</div>
-      </div>
-      <div class="cat-card" onclick="openChat('familiar')">
-        <div class="cat-icon">👨‍👩‍👧‍👦</div>
-        <div class="cat-name">Familiar</div>
-        <div class="cat-desc">Conflitos, pais, filhos</div>
-      </div>
-      <div class="cat-card" onclick="openChat('pessoal')">
-        <div class="cat-icon">🧠</div>
-        <div class="cat-name">Pessoal</div>
-        <div class="cat-desc">Ansiedade, autoestima, propósito</div>
-      </div>
-    </div>
-    <div class="featured-section">
-      <h3>📖 Testemunhos</h3>
-      <div class="testimonial-card">
-        <p>"Polaris me ajudou a enxergar que Deus tinha um plano pra minha vida financeira. Hoje estou livre das dívidas."</p>
-        <div class="testimonial-author">
-          <div class="test-avatar">🙏</div>
-          <div>
-            <div class="test-name">Ana Clara</div>
-            <div class="test-label">✝️ Há 3 meses no Polaris</div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
+<div id="screen-categories" class="screen">
+<div class="top-bar">
+<h2>Polaris<span class="gold">.</span></h2>
+<div class="user-avatar" id="avatarBtn" onclick="toggleMenu()">&#128100;</div>
+<div class="user-menu" id="userMenu">
+<div class="menu-email" id="menuEmail">email</div>
+<button onclick="handleLogout()">Sair</button>
+</div>
+</div>
+<div class="countdown" id="trialBanner" onclick="showScreen('plans')">
+<div class="countdown-text"><span id="trialLabel">Gratis por mais</span> <span id="timer">23:45:12</span></div>
+<div class="countdown-time">&#9200;</div>
+</div>
+<div class="backend-status">
+<span class="dot offline" id="backendDot"></span>
+<span id="backendStatus" style="color:var(--soft-gray);">Verificando conexao...</span>
+</div>
+<p class="greeting" id="greetingMsg">Bom dia <strong>Felipe</strong> &#127749;<br><span style="color:var(--soft-gray);font-size:13px;">O que compartilhar hoje?</span></p>
+<div class="categories-grid">
+<div class="cat-card" onclick="openChat('financeiro')"><div class="cat-icon">&#128176;</div><div class="cat-name">Financeiro</div><div class="cat-desc">Dividas, investimentos</div></div>
+<div class="cat-card" onclick="openChat('amoroso')"><div class="cat-icon">&#10084;&#65039;</div><div class="cat-name">Amoroso</div><div class="cat-desc">Relacionamento, termino</div></div>
+<div class="cat-card" onclick="openChat('espiritual')"><div class="cat-icon">&#128591;</div><div class="cat-name">Espiritual</div><div class="cat-desc" style="color:var(--accent-gold);">Fe, oracao, proposito</div></div>
+<div class="cat-card" onclick="openChat('profissional')"><div class="cat-icon">&#128188;</div><div class="cat-name">Profissional</div><div class="cat-desc">Carreira, decisoes</div></div>
+<div class="cat-card" onclick="openChat('familiar')"><div class="cat-icon">&#128104;&#8205;&#128105;&#8205;&#128103;&#8205;&#128102;</div><div class="cat-name">Familiar</div><div class="cat-desc">Conflitos, pais, filhos</div></div>
+<div class="cat-card" onclick="openChat('pessoal')"><div class="cat-icon">&#129504;</div><div class="cat-name">Pessoal</div><div class="cat-desc">Ansiedade, autoestima</div></div>
+</div>
+<div class="testimonial-card">
+<p>"Polaris me ajudou a ver o plano de Deus para minha vida financeira. Hoje estou livre das dividas."</p>
+<div class="testimonial-author"><div class="test-avatar">&#128591;</div><div><div class="test-name">Ana Clara</div><div class="test-label">Ha 3 meses no Polaris</div></div></div>
+</div>
+</div>
 
-  <!-- TELA 5: CHAT -->
-  <div id="screen-chat" class="screen">
-    <div class="chat-header">
-      <button class="chat-back" onclick="showScreen('categories')">‹</button>
-      <div class="chat-avatar">⭐</div>
-      <div class="chat-header-info">
-        <h4>Polaris</h4>
-        <span>Online · IA conectada (Groq)</span>
-      </div>
-    </div>
-    <div class="error-msg" id="errorMsg"></div>
-    <div class="chat-messages" id="chatMessages"></div>
-    <div class="typing-indicator" id="typingIndicator">
-      <span></span><span></span><span></span>
-    </div>
-    <div class="chat-input-bar">
-      <textarea class="chat-input" id="chatInput" rows="1" placeholder="Compartilhe o que está no seu coração..." onkeydown="handleKey(event)"></textarea>
-      <button class="btn-send" onclick="sendMessage()">✧</button>
-    </div>
-  </div>
+<div id="screen-chat" class="screen">
+<div class="chat-header">
+<button class="chat-back" onclick="showScreen('categories')">&#8249;</button>
+<div class="chat-avatar">&#9733;</div>
+<div class="chat-header-info"><h4>Polaris</h4><span>Online</span></div>
+</div>
+<div class="error-msg" id="errorMsg"></div>
+<div class="chat-messages" id="chatMessages"></div>
+<div class="typing-indicator" id="typingIndicator"><span></span><span></span><span></span></div>
+<div class="chat-input-bar">
+<textarea class="chat-input" id="chatInput" rows="1" placeholder="Compartilhe..." onkeydown="handleKey(event)"></textarea>
+<button class="btn-send" onclick="sendMessage()">&#10027;</button>
+</div>
+</div>
 
-  <!-- TELA 6: PLANOS -->
-  <div id="screen-plans" class="screen">
-    <div class="top-bar">
-      <h2>Planos<span class="gold">.</span></h2>
-      <div id="plansAvatar" class="user-avatar" onclick="showScreen('categories')">←</div>
-    </div>
-    <div class="plans-header">
-      <h2>Escolha seu caminho</h2>
-      <p>Continue sendo guiado pela estrela que nunca se apaga</p>
-    </div>
-    <div class="plan-card">
-      <div class="plan-badge">🎁 EXPERIMENTE</div>
-      <div class="plan-name">Free Trial</div>
-      <div class="plan-price">Grátis <span>/ 24 horas</span></div>
-      <ul class="plan-features">
-        <li>Acesso completo a todas as categorias</li>
-        <li>Conselhos ilimitados com IA real</li>
-        <li>Versículos e orações personalizadas</li>
-        <li>Testemunhos da comunidade</li>
-      </ul>
-      <button class="btn-plan primary" onclick="showScreen('signup')">COMEÇAR GRÁTIS</button>
-    </div>
-    <div class="plan-card featured">
-      <div class="plan-badge">🔥 MAIS POPULAR</div>
-      <div class="plan-name">Mensal</div>
-      <div class="plan-price">R$ 29,90 <span>/mês</span></div>
-      <ul class="plan-features">
-        <li>Tudo do Free Trial, sem limite de tempo</li>
-        <li>Mensagens diárias personalizadas</li>
-        <li>Orações proféticas exclusivas</li>
-        <li>Acesso prioritário</li>
-        <li>Sem anúncios</li>
-      </ul>
-      <button class="btn-plan primary">ASSINAR AGORA</button>
-    </div>
-    <div class="plan-card">
-      <div class="plan-badge">⭐ MELHOR VALOR</div>
-      <div class="plan-name">Vitalício</div>
-      <div class="plan-price">R$ 197 <span>único pagamento</span></div>
-      <ul class="plan-features">
-        <li>Tudo do plano Mensal</li>
-        <li>🎖️ Acesso VITALÍCIO</li>
-        <li>Recursos vitalícios futuros</li>
-        <li>Badge de Pioneiro</li>
-        <li>Prioridade máxima</li>
-      </ul>
-      <button class="btn-plan primary">GARANTIR ACESSO VITALÍCIO</button>
-    </div>
-  </div>
-
+<div id="screen-plans" class="screen">
+<div class="top-bar"><h2>Planos<span class="gold">.</span></h2><div class="user-avatar" onclick="showScreen('onboarding')">&larr;</div></div>
+<div class="plans-header"><h2>Escolha seu plano</h2><p>Continue sendo guiado</p></div>
+<div class="plan-card">
+<div class="plan-badge">EXPERIMENTE</div>
+<div class="plan-name">Free Trial</div>
+<div class="plan-price">Gratis <span>/ 24h</span></div>
+<ul class="plan-features"><li>Acesso completo</li><li>Conselhos ilimitados</li><li>Versiculos personalizados</li></ul>
+<button class="btn-plan primary" onclick="showScreen('signup')">COMECAR GRATIS</button>
+</div>
+<div class="plan-card featured">
+<div class="plan-badge">POPULAR</div>
+<div class="plan-name">Mensal</div>
+<div class="plan-price">R$ 29,90 <span>/mes</span></div>
+<ul class="plan-features"><li>Tudo do Free Trial</li><li>Mensagens diarias</li><li>Oracoes exclusivas</li><li>Sem anuncios</li></ul>
+<button class="btn-plan primary">ASSINAR</button>
+</div>
+<div class="plan-card">
+<div class="plan-badge">MELHOR VALOR</div>
+<div class="plan-name">Vitalicio</div>
+<div class="plan-price">R$ 197 <span>unico</span></div>
+<ul class="plan-features"><li>Tudo do Mensal</li><li>Acesso vitalicio</li><li>Badge Pioneiro</li></ul>
+<button class="btn-plan primary">GARANTIR</button>
+</div>
+</div>
 </div>
 
 <script>
-// ==========================================
-// CONFIGURAÇÃO
-// ==========================================
-const API_URL = 'https://polaris-backend-747y.onrender.com/api';
-const SUPABASE_URL = 'https://ebojkulgfrnpwkdznjbx.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_VMCJV4weArj93usA8dAFCQ_ZdhqdX1Y';
+var API_URL = 'https://polaris-backend-747y.onrender.com/api';
+var sessionToken = null;
+var currentUser = null;
+var currentCategory = '';
+var currentSessionId = null;
+var isWaitingResponse = false;
+var trialTimer = null;
 
-let sessionToken = null;
-let currentUser = null;
-let currentCategory = '';
-let currentSessionId = null;
-let isWaitingResponse = false;
-let trialTimer = null;
-
-// ==========================================
-// AUTENTICAÇÃO VIA BACKEND
-// ==========================================
-
-async function apiFetch(path, opts = {}) {
-  const hdrs = { 'Content-Type': 'application/json', ...opts.headers };
-  const res = await fetch(`${API_URL}${path}`, { ...opts, headers: hdrs });
-  const d = await res.json();
-  if (!res.ok) throw new Error(d.error || d.message || 'Erro na requisição');
-  return d;
-}
-
-function saveSession(s) {
-  if (s) localStorage.setItem('polaris_session', JSON.stringify(s));
-  else localStorage.removeItem('polaris_session');
-}
-function loadSession() {
-  try {
-    const d = JSON.parse(localStorage.getItem('polaris_session'));
-    if (!d || !d.token || d.exp < Date.now()) { localStorage.removeItem('polaris_session'); return null; }
-    return d;
-  } catch { return null; }
-}
-
-async function checkSession() {
-  const saved = loadSession();
-  if (saved) {
-    try {
-      const res = await apiFetch('/auth/session', { headers: { 'Authorization': `Bearer ${saved.token}` } });
-      if (res.authenticated && res.user) {
-        sessionToken = saved.token; currentUser = res.user;
-        document.getElementById('btnStart').onclick = () => showScreen('categories');
-        startTrialTimer(); return true;
-      }
-    } catch { localStorage.removeItem('polaris_session'); }
-  }
-  document.getElementById('btnStart').onclick = () => showScreen('login');
-  return false;
-}
-
-async function handleLogin() {
-  const email = document.getElementById('loginEmail').value;
-  const password = document.getElementById('loginPassword').value;
-  const e = document.getElementById('loginError'); e.style.display = 'none';
-  if (!email || !password) { e.textContent = 'Preencha email e senha'; e.style.display = 'block'; return; }
-  document.getElementById('btnLogin').disabled = true; document.getElementById('btnLogin').textContent = 'Entrando...';
-  try {
-    const d = await apiFetch('/auth/login', { method: 'POST', body: JSON.stringify({ email, password }) });
-    sessionToken = d.session.access_token; currentUser = d.user;
-    saveSession({ token: d.session.access_token, user: d.user, exp: Date.now() + 3600000 });
-    await loginSuccess();
-  } catch (err) { e.textContent = err.message; e.style.display = 'block'; }
-  finally { document.getElementById('btnLogin').disabled = false; document.getElementById('btnLogin').textContent = 'ENTRAR'; }
-}
-
-async function handleSignup() {
-  const name = document.getElementById('signupName').value;
-  const email = document.getElementById('signupEmail').value;
-  const password = document.getElementById('signupPassword').value;
-  const e = document.getElementById('signupError'); e.style.display = 'none'; e.style.color = '#ef4444';
-  if (!name || !email || !password) { e.textContent = 'Preencha todos os campos'; e.style.display = 'block'; return; }
-  if (password.length < 6) { e.textContent = 'Senha deve ter no mínimo 6 caracteres'; e.style.display = 'block'; return; }
-  document.getElementById('btnSignup').disabled = true; document.getElementById('btnSignup').textContent = 'Criando...';
-  try {
-    const d = await apiFetch('/auth/signup', { method: 'POST', body: JSON.stringify({ email, password, name }) });
-    if (d.session) {
-      sessionToken = d.session.access_token; currentUser = d.user;
-      saveSession({ token: d.session.access_token, user: d.user, exp: Date.now() + 3600000 });
-      await loginSuccess();
-    } else { e.textContent = '📧 Conta criada! Verifique seu email.'; e.style.color = '#4ade80'; e.style.display = 'block'; }
-  } catch (err) { e.textContent = err.message || 'Erro ao criar conta.'; e.style.display = 'block'; }
-  finally { document.getElementById('btnSignup').disabled = false; document.getElementById('btnSignup').textContent = 'CRIAR CONTA GRÁTIS'; }
-}
-
-async function handleGoogleLogin() {
-  const redirectUrl = window.location.origin;
-  window.location.href = `${SUPABASE_URL}/auth/v1/authorize?provider=google&redirect_to=${encodeURIComponent(redirectUrl)}`;
-}
-
-async function handleLogout() {
-  try { if (sessionToken) await apiFetch('/reset', { method: 'POST', body: JSON.stringify({ sessionId: sessionToken }) }); } catch {}
-  sessionToken = null; currentUser = null; saveSession(null); clearTrialTimer();
-  document.getElementById('userMenu')?.classList.remove('active');
-  showScreen('onboarding'); document.getElementById('btnStart').onclick = () => showScreen('login');
-}
-
-async function handleAuthCallback() {
-  const hash = window.location.hash.substring(1);
-  const params = new URLSearchParams(hash);
-  const token = params.get('access_token');
-  if (token) {
-    try {
-      const res = await apiFetch('/auth/session', { headers: { 'Authorization': `Bearer ${token}` } });
-      if (res.authenticated) {
-        sessionToken = token; currentUser = res.user;
-        saveSession({ token, user: res.user, exp: Date.now() + 3600000 });
-        await loginSuccess(); window.location.hash = '';
-      }
-    } catch {}
-  }
-}
-
-// ==========================================
-// LOGIN - PÓS SUCESSO
-// ==========================================
-
-async function loginSuccess() {
-  document.getElementById('btnStart').onclick = () => showScreen('categories');
-  const meta = currentUser?.user_metadata || currentUser?.identities?.[0]?.identity_data || {};
-  const userName = meta?.full_name || meta?.name || currentUser?.email?.split('@')[0] || 'Felipe';
-  document.getElementById('greetingMsg').innerHTML = `Bom dia <strong>${userName}</strong> 🌅<br><span style="color:var(--soft-gray);font-size:13px;">O que você gostaria de compartilhar hoje?</span>`;
-  document.getElementById('menuEmail').textContent = currentUser?.email || '';
-  await startTrial();
-  startTrialTimer();
-  showScreen('categories');
-}
-
-// ==========================================
-// TRIAL DE 24H
-// ==========================================
-
-async function startTrial() {
-  try {
-    await fetch(`${API_URL}/trial/start`, {
-      method: 'POST',
-      headers: { Authorization: `Bearer ${sessionToken}` }
-    });
-  } catch (e) {
-    // Se já existe, ignora
-  }
-}
-
-async function startTrialTimer() {
-  if (!sessionToken) return;
-  try {
-    const res = await fetch(`${API_URL}/trial/status`, {
-      headers: { Authorization: `Bearer ${sessionToken}` }
-    });
-    const data = await res.json();
-
-    if (data.can_chat && data.remaining_ms > 0) {
-      // Timer regressivo real
-      updateTrialTimer(data.remaining_ms);
-      if (trialTimer) clearInterval(trialTimer);
-      trialTimer = setInterval(() => {
-        const banner = document.querySelector('.countdown');
-        if (banner) {
-          const timerEl = document.getElementById('timer');
-          let current = parseTimer(timerEl?.textContent);
-          if (current > 0) {
-            current--;
-            timerEl.textContent = formatTime(current);
-          }
-        }
-      }, 1000);
-    } else if (data.is_premium) {
-      document.getElementById('timer').textContent = '♾️';
-      document.getElementById('trialLabel').textContent = 'Premium';
-    } else {
-      document.getElementById('timer').textContent = 'EXPIRADO';
-      document.getElementById('trialLabel').textContent = '⛔ Trial';
-    }
-  } catch (e) {
-    // Fallback para timer visual
-    startFakeTimer();
-  }
-}
-
-function updateTrialTimer(remainingMs) {
-  const totalSeconds = Math.floor(remainingMs / 1000);
-  const timerEl = document.getElementById('timer');
-  if (timerEl) timerEl.textContent = formatTime(totalSeconds);
-}
-
-function parseTimer(str) {
-  if (!str) return 0;
-  const parts = str.split(':');
-  if (parts.length === 3) {
-    return parseInt(parts[0]) * 3600 + parseInt(parts[1]) * 60 + parseInt(parts[2]);
-  }
-  return 0;
-}
-
-function formatTime(totalSec) {
-  const h = Math.floor(totalSec / 3600);
-  const m = Math.floor((totalSec % 3600) / 60);
-  const s = totalSec % 60;
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
-}
-
-function startFakeTimer() {
-  let secs = 86399;
-  if (trialTimer) clearInterval(trialTimer);
-  trialTimer = setInterval(() => {
-    secs--;
-    if (secs < 0) secs = 0;
-    document.getElementById('timer').textContent = formatTime(secs);
-  }, 1000);
-}
-
-function clearTrialTimer() {
-  if (trialTimer) {
-    clearInterval(trialTimer);
-    trialTimer = null;
-  }
-}
-
-// ==========================================
-// NAVEGAÇÃO ENTRE TELAS
-// ==========================================
 function showScreen(screen) {
-  document.querySelectorAll('.screen').forEach(s => s.style.display = 'none');
-  document.getElementById('userMenu')?.classList.remove('active');
-
-  const screens = {
-    'onboarding': 'screen-onboarding',
-    'login': 'screen-login',
-    'signup': 'screen-signup',
-    'categories': 'screen-categories',
-    'chat': 'screen-chat',
-    'plans': 'screen-plans'
-  };
-
-  const el = document.getElementById(screens[screen]);
-  if (el) {
-    el.style.display = screen === 'onboarding' || screen === 'login' || screen === 'signup' ? 'flex' : 'block';
-    el.scrollTop = 0;
-  }
+var els = document.querySelectorAll('.screen');
+for (var i = 0; i < els.length; i++) { els[i].style.display = 'none'; }
+var el = document.getElementById('screen-' + screen);
+if (el) {
+if (screen === 'onboarding' || screen === 'login' || screen === 'signup') { el.style.display = 'flex'; }
+else { el.style.display = 'block'; }
+el.scrollTop = 0;
+}
 }
 
 function toggleMenu() {
-  document.getElementById('userMenu').classList.toggle('active');
+var m = document.getElementById('userMenu');
+if (m) m.classList.toggle('active');
 }
 
-// Fechar menu ao clicar fora
-document.addEventListener('click', (e) => {
-  const menu = document.getElementById('userMenu');
-  const avatar = document.getElementById('avatarBtn');
-  if (menu?.classList.contains('active') && !avatar?.contains(e.target) && !menu.contains(e.target)) {
-    menu.classList.remove('active');
-  }
+function saveSession(s) {
+if (s) { localStorage.setItem('polaris_session', JSON.stringify({ token: s.token, user: s.user, exp: Date.now() + 3600000 })); }
+else { localStorage.removeItem('polaris_session'); }
+}
+
+function loadSession() {
+try {
+var d = JSON.parse(localStorage.getItem('polaris_session'));
+if (d && d.exp > Date.now()) return d;
+localStorage.removeItem('polaris_session');
+return null;
+} catch(e) { return null; }
+}
+
+function apiFetch(path, opts) {
+opts = opts || {};
+var hdrs = { 'Content-Type': 'application/json' };
+if (opts.headers) {
+for (var k in opts.headers) { hdrs[k] = opts.headers[k]; }
+}
+return fetch(API_URL + path, { method: opts.method || 'GET', headers: hdrs, body: opts.body || null }).then(function(r) { return r.json(); }).then(function(d) { if (d.error) throw new Error(d.error); return d; });
+}
+
+function checkSession() {
+var saved = loadSession();
+if (saved && saved.token) {
+return apiFetch('/auth/session', { headers: { 'Authorization': 'Bearer ' + saved.token } }).then(function(res) {
+if (res.authenticated && res.user) {
+sessionToken = saved.token; currentUser = res.user;
+document.getElementById('btnStart').onclick = function() { showScreen('categories'); };
+startTrialTimer(); return true;
+} else { saveSession(null); return false; }
+}).catch(function() { saveSession(null); return false; });
+} else {
+document.getElementById('btnStart').onclick = function() { showScreen('login'); };
+return Promise.resolve(false);
+}
+}
+
+function handleLogin() {
+var email = document.getElementById('loginEmail').value;
+var pass = document.getElementById('loginPassword').value;
+var ed = document.getElementById('loginError'); ed.style.display = 'none';
+if (!email || !pass) { ed.textContent = 'Preencha email e senha'; ed.style.display = 'block'; return; }
+document.getElementById('btnLogin').disabled = true; document.getElementById('btnLogin').textContent = 'Entrando...';
+apiFetch('/auth/login', { method: 'POST', body: JSON.stringify({ email: email, password: pass }) }).then(function(d) {
+sessionToken = d.session.access_token; currentUser = d.user;
+saveSession({ token: d.session.access_token, user: d.user });
+loginSuccess();
+}).catch(function(err) { ed.textContent = err.message || 'Erro'; ed.style.display = 'block'; }).finally(function() {
+document.getElementById('btnLogin').disabled = false; document.getElementById('btnLogin').textContent = 'ENTRAR';
 });
-
-// ==========================================
-// BACKEND - STATUS
-// ==========================================
-async function checkBackend() {
-  const dot = document.getElementById('backendDot');
-  const status = document.getElementById('backendStatus');
-  dot.className = 'dot loading';
-  status.textContent = 'Verificando conexão...';
-
-  try {
-    const res = await fetch(`${API_URL}/health`);
-    if (res.ok) {
-      const data = await res.json();
-      dot.className = 'dot online';
-      status.textContent = `🟢 Conectado (${data.model})`;
-      return true;
-    }
-  } catch (e) {
-    dot.className = 'dot offline';
-    status.textContent = '🔴 Offline';
-    return false;
-  }
 }
 
-// ==========================================
-// CHAT COM IA
-// ==========================================
-async function openChat(category) {
-  // Se não tiver logado, pede login
-  if (!sessionToken) {
-    showScreen('login');
-    return;
-  }
-
-  currentCategory = category;
-  currentSessionId = null;
-  document.getElementById('chatMessages').innerHTML = '';
-  document.getElementById('errorMsg').style.display = 'none';
-
-  addMessage('ai', '✨ Conectando ao Polaris...');
-
-  try {
-    const res = await fetch(`${API_URL}/start`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${sessionToken}`
-      },
-      body: JSON.stringify({ category })
-    });
-
-    if (res.status === 403) {
-      // Trial expirado
-      document.getElementById('chatMessages').innerHTML = '';
-      addMessage('ai', '⏳ Seu período grátis de 24h expirou.');
-      addMessage('ai', 'Mas não se preocupe! Você pode assinar o Polaris por apenas <strong>R$ 29,90/mês</strong> e continuar recebendo conselhos ilimitados. <br><br><a href="#" onclick="showScreen(\'plans\')" style="color:var(--accent-gold);">👉 Ver planos</a>');
-      showScreen('chat');
-      document.getElementById('chatInput').disabled = true;
-      return;
-    }
-
-    if (!res.ok) throw new Error('Erro ao conectar');
-
-    const data = await res.json();
-    currentSessionId = data.sessionId;
-    document.getElementById('chatMessages').innerHTML = '';
-    addMessage('ai', formatMessage(data.message));
-    document.getElementById('chatInput').disabled = false;
-    showScreen('chat');
-    document.getElementById('chatInput').focus();
-
-  } catch (e) {
-    // Modo offline
-    document.getElementById('chatMessages').innerHTML = '';
-    addMessage('ai', '🔄 Tentando reconectar...');
-    setTimeout(() => {
-      const greetings = {
-        financeiro: "💰 Vamos falar sobre finanças. Compartilhe sua situação.",
-        amoroso: "❤️ Vamos falar sobre amor. 'O amor é paciente' (1 Coríntios 13:4).",
-        espiritual: "🙏 Vamos falar sobre sua fé. 'Andamos por fé, não por vista' (2 Coríntios 5:7).",
-        profissional: "💼 Vamos falar sobre carreira. Compartilhe seus desafios.",
-        familiar: "👨‍👩‍👧‍👦 'Quanto a mim e à minha casa, serviremos ao Senhor' (Josué 24:15).",
-        pessoal: "🧠 'Não andeis ansiosos' (Filipenses 4:6). Me conta."
-      };
-      addMessage('ai', greetings[category] || 'Como posso te ajudar?');
-      document.getElementById('chatInput').disabled = false;
-    }, 1000);
-    showScreen('chat');
-    document.getElementById('chatInput').focus();
-  }
+function handleSignup() {
+var name = document.getElementById('signupName').value;
+var email = document.getElementById('signupEmail').value;
+var pass = document.getElementById('signupPassword').value;
+var ed = document.getElementById('signupError'); ed.style.display = 'none';
+if (!name || !email || !pass) { ed.textContent = 'Preencha tudo'; ed.style.display = 'block'; return; }
+if (pass.length < 6) { ed.textContent = 'Minimo 6 caracteres'; ed.style.display = 'block'; return; }
+document.getElementById('btnSignup').disabled = true; document.getElementById('btnSignup').textContent = 'Criando...';
+apiFetch('/auth/signup', { method: 'POST', body: JSON.stringify({ email: email, password: pass, name: name }) }).then(function(d) {
+if (d.session) {
+sessionToken = d.session.access_token; currentUser = d.user;
+saveSession({ token: d.session.access_token, user: d.user });
+loginSuccess();
+} else { ed.textContent = 'Conta criada! Verifique seu email.'; ed.style.color = '#4ade80'; ed.style.display = 'block'; }
+}).catch(function(err) { ed.textContent = err.message; ed.style.display = 'block'; }).finally(function() {
+document.getElementById('btnSignup').disabled = false; document.getElementById('btnSignup').textContent = 'CRIAR CONTA';
+});
 }
 
-function addMessage(type, text, delay = 0) {
-  const messages = document.getElementById('chatMessages');
-  const div = document.createElement('div');
-  div.className = `message message-${type}`;
-  div.innerHTML = text;
-  if (delay > 0) {
-    setTimeout(() => { messages.appendChild(div); messages.scrollTop = messages.scrollHeight; }, delay);
-  } else {
-    messages.appendChild(div);
-    messages.scrollTop = messages.scrollHeight;
-  }
+function handleLogout() {
+sessionToken = null; currentUser = null; saveSession(null); clearTrialTimer();
+if (document.getElementById('userMenu')) document.getElementById('userMenu').classList.remove('active');
+showScreen('onboarding'); document.getElementById('btnStart').onclick = function() { showScreen('login'); };
 }
 
-function handleKey(e) {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); }
+function loginSuccess() {
+document.getElementById('btnStart').onclick = function() { showScreen('categories'); };
+var meta = currentUser.user_metadata || {};
+var name = meta.full_name || currentUser.email.split('@')[0] || 'Felipe';
+var msg = document.getElementById('greetingMsg');
+msg.innerHTML = 'Bom dia <strong>' + name + '</strong><br><span style="color:var(--soft-gray);font-size:13px;">O que compartilhar hoje?</span>';
+document.getElementById('menuEmail').textContent = currentUser.email || '';
+startTrial(); startTrialTimer(); showScreen('categories');
 }
 
-async function sendMessage() {
-  const input = document.getElementById('chatInput');
-  const text = input.value.trim();
-  if (!text || isWaitingResponse || input.disabled) return;
-
-  addMessage('user', text);
-  input.value = '';
-  document.getElementById('errorMsg').style.display = 'none';
-
-  const typing = document.getElementById('typingIndicator');
-  typing.classList.add('active');
-  isWaitingResponse = true;
-
-  try {
-    if (sessionToken) {
-      const res = await fetch(`${API_URL}/chat`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${sessionToken}`
-        },
-        body: JSON.stringify({
-          message: text,
-          category: currentCategory,
-          sessionId: currentSessionId
-        })
-      });
-
-      typing.classList.remove('active');
-
-      if (res.status === 403) {
-        addMessage('ai', '⏳ Seu período grátis expirou. <a href="#" onclick="showScreen(\'plans\')" style="color:var(--accent-gold);">Assine aqui</a>');
-        document.getElementById('chatInput').disabled = true;
-        return;
-      }
-
-      if (!res.ok) throw new Error('Erro');
-      const data = await res.json();
-      if (data.sessionId) currentSessionId = data.sessionId;
-      addMessage('ai', formatMessage(data.reply));
-
-    } else {
-      // Offline
-      setTimeout(() => {
-        typing.classList.remove('active');
-        const r = getLocalResponse(text);
-        addMessage('ai', r.text);
-        if (r.verse) {
-          setTimeout(() => {
-            addMessage('ai', `<div class="bible-verse">"${r.verse}"<span class="bible-ref">— ${r.ref}</span></div>`);
-          }, 800);
-        }
-      }, 1500);
-    }
-  } catch (e) {
-    document.getElementById('typingIndicator').classList.remove('active');
-    document.getElementById('errorMsg').textContent = '⚠️ Erro ao conectar. Usando modo offline.';
-    document.getElementById('errorMsg').style.display = 'block';
-
-    setTimeout(() => {
-      const r = getLocalResponse(text);
-      addMessage('ai', r.text);
-      if (r.verse) {
-        setTimeout(() => {
-          addMessage('ai', `<div class="bible-verse">"${r.verse}"<span class="bible-ref">— ${r.ref}</span></div>`);
-        }, 800);
-      }
-    }, 1000);
-  } finally {
-    isWaitingResponse = false;
-  }
+function startTrial() {
+if (!sessionToken) return;
+apiFetch('/trial/start', { method: 'POST', headers: { 'Authorization': 'Bearer ' + sessionToken } }).catch(function() {});
 }
 
-function formatMessage(text) {
-  text = text.replace(/"([^"]+)"\s*\(([^)]+)\)/g,
-    '<div class="bible-verse">"$1"<span class="bible-ref">— $2</span></div>');
-  text = text.replace(/\n\n/g, '<br><br>');
-  text = text.replace(/\n/g, '<br>');
-  return text;
+function startTrialTimer() {
+if (!sessionToken) { startFakeTimer(); return; }
+apiFetch('/trial/status', { headers: { 'Authorization': 'Bearer ' + sessionToken } }).then(function(data) {
+if (data.can_chat && data.remaining_ms > 0) {
+var totalSec = Math.floor(data.remaining_ms / 1000);
+document.getElementById('timer').textContent = fmtTime(totalSec);
+if (trialTimer) clearInterval(trialTimer);
+trialTimer = setInterval(function() {
+var el = document.getElementById('timer');
+if (el) {
+var p = el.textContent.split(':');
+var sec = parseInt(p[0])*3600 + parseInt(p[1])*60 + parseInt(p[2]);
+if (sec > 0) { sec--; el.textContent = fmtTime(sec); }
+}
+}, 1000);
+} else if (data.is_premium) {
+document.getElementById('timer').textContent = 'INFINITO';
+} else {
+document.getElementById('timer').textContent = 'EXPIRADO';
+}
+}).catch(function() { startFakeTimer(); });
+}
+
+function fmtTime(s) {
+var h = Math.floor(s/3600), m = Math.floor((s%3600)/60), sec = s%60;
+return (h<10?'0':'')+h+':'+(m<10?'0':'')+m+':'+(sec<10?'0':'')+sec;
+}
+
+function startFakeTimer() {
+var secs = 86399;
+if (trialTimer) clearInterval(trialTimer);
+trialTimer = setInterval(function() { secs--; if (secs<0) secs=0; document.getElementById('timer').textContent = fmtTime(secs); }, 1000);
+}
+
+function clearTrialTimer() { if (trialTimer) { clearInterval(trialTimer); trialTimer = null; } }
+
+function checkBackend() {
+var dot = document.getElementById('backendDot');
+var st = document.getElementById('backendStatus');
+dot.className = 'dot loading'; st.textContent = 'Verificando...';
+fetch(API_URL + '/health').then(function(r) { return r.json(); }).then(function(d) {
+dot.className = 'dot online'; st.textContent = 'Conectado';
+}).catch(function() { dot.className = 'dot offline'; st.textContent = 'Offline'; });
+}
+
+function openChat(cat) {
+if (!sessionToken) { showScreen('login'); return; }
+currentCategory = cat; currentSessionId = null;
+document.getElementById('chatMessages').innerHTML = '';
+document.getElementById('errorMsg').style.display = 'none';
+addMsg('ai', 'Conectando...');
+fetch(API_URL + '/start', {
+method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionToken },
+body: JSON.stringify({ category: cat })
+}).then(function(r) {
+if (r.status === 403) { showTrialExpired(); throw new Error('expired'); }
+return r.json();
+}).then(function(d) {
+currentSessionId = d.sessionId;
+document.getElementById('chatMessages').innerHTML = '';
+addMsg('ai', d.message);
+document.getElementById('chatInput').disabled = false;
+showScreen('chat'); document.getElementById('chatInput').focus();
+}).catch(function(e) {
+if (e.message === 'expired') return;
+document.getElementById('chatMessages').innerHTML = '';
+addMsg('ai', 'Modo offline...');
+setTimeout(function() {
+var g = { financeiro: 'Vamos falar de financas.', amoroso: 'Vamos falar de amor.', espiritual: 'Vamos falar de fe.', profissional: 'Vamos falar de carreira.', familiar: 'Vamos falar de familia.', pessoal: 'Vamos falar de voce.' };
+addMsg('ai', g[cat] || 'Como posso ajudar?');
+document.getElementById('chatInput').disabled = false;
+}, 1000);
+showScreen('chat');
+});
+}
+
+function showTrialExpired() {
+document.getElementById('chatMessages').innerHTML = '';
+addMsg('ai', 'Suas 24h gratuitas expiraram.');
+document.getElementById('chatInput').disabled = true; showScreen('chat');
+}
+
+function addMsg(type, text, delay) {
+delay = delay || 0;
+var msgs = document.getElementById('chatMessages');
+var div = document.createElement('div');
+div.className = 'message message-' + type; div.innerHTML = text;
+if (delay > 0) { setTimeout(function() { msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight; }, delay); }
+else { msgs.appendChild(div); msgs.scrollTop = msgs.scrollHeight; }
+}
+
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } }
+
+function sendMessage() {
+var input = document.getElementById('chatInput');
+var text = input.value.trim();
+if (!text || isWaitingResponse || input.disabled) return;
+addMsg('user', text); input.value = '';
+document.getElementById('errorMsg').style.display = 'none';
+document.getElementById('typingIndicator').classList.add('active');
+isWaitingResponse = true;
+if (sessionToken) {
+fetch(API_URL + '/chat', {
+method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionToken },
+body: JSON.stringify({ message: text, category: currentCategory, sessionId: currentSessionId })
+}).then(function(r) {
+document.getElementById('typingIndicator').classList.remove('active');
+if (r.status === 403) { addMsg('ai', 'Trial expirado.'); document.getElementById('chatInput').disabled = true; return null; }
+return r.json();
+}).then(function(d) {
+if (d && d.reply) { if (d.sessionId) currentSessionId = d.sessionId; addMsg('ai', d.reply); }
+}).catch(function() {
+document.getElementById('typingIndicator').classList.remove('active');
+document.getElementById('errorMsg').textContent = 'Erro. Usando modo offline.'; document.getElementById('errorMsg').style.display = 'block';
+setTimeout(function() { var r = getLocalResponse(text); addMsg('ai', r.text); if (r.verse) { setTimeout(function() { addMsg('ai', '<div class="bible-verse">"'+r.verse+'"<span class="bible-ref">- '+r.ref+'</span></div>'); }, 800); } }, 1000);
+}).finally(function() { isWaitingResponse = false; });
+} else {
+setTimeout(function() {
+document.getElementById('typingIndicator').classList.remove('active');
+var r = getLocalResponse(text); addMsg('ai', r.text);
+if (r.verse) { setTimeout(function() { addMsg('ai', '<div class="bible-verse">"'+r.verse+'"<span class="bible-ref">- '+r.ref+'</span></div>'); }, 800); }
+}, 1500);
+}
 }
 
 function getLocalResponse(text) {
-  const l = text.toLowerCase();
-  if (l.includes('divida')||l.includes('dinheiro')||l.includes('conta')||l.includes('banco')||l.includes('emprego')||l.includes('carro')||l.includes('aluguel'))
-    return {text: "Isso pesa, né? Olhar as contas e sentir que não vai dar conta... já vi isso tantas vezes. Mas deixa eu te dizer uma coisa: o seu valor não está na sua conta bancária. Você não é suas dívidas. E sabe o que mais? Deus não está te ignorando nessa situação — Ele está te ensinando a confiar de um jeito que você nunca aprendeu antes. Vamos começar com o que você tem, não com o que te falta. O primeiro passo é organizar, mesmo que seja só uma planilha no papel. Depois a gente ora sobre cada entrada e saída.", verse: "O meu Deus suprirá todas as vossas necessidades segundo as suas riquezas na glória em Cristo Jesus.", ref: "Filipenses 4:19"};
-  if (l.includes('amor')||l.includes('termin')||l.includes('sozin')||l.includes('namor')||l.includes('cas')||l.includes('solidao')||l.includes('paixão'))
-    return {text: "Seu coração está doendo agora, e eu não vou fingir que entendo exatamente o que você sente — mas sei que Dói. Sabe o que eu aprendi sobre esses momentos? Eles não são o fim da história. Deus não está contra o seu desejo de amar. Ele está contra o que está te destruindo. Talvez esse vazio que você sente agora não seja ausência de alguém, mas um convite pra se encontrar com Ele de um jeito novo. Não apresse a dor. Deixa ela vir, deixa ela passar. E enquanto passa, você não está sozinho.", verse: "Tudo tem o seu tempo determinado, e há tempo para todo propósito debaixo do céu.", ref: "Eclesiastes 3:1"};
-  if (l.includes('deus')||l.includes('fé')||l.includes('oração')||l.includes('igreja')||l.includes('crente')||l.includes('bíblia'))
-    return {text: "Sabe o que mais me alegra? É que mesmo no meio da confusão, você está buscando. Isso já é fé em movimento. Muita gente acha que fé é não ter dúvidas — mas fé é justamente continuar mesmo quando as dúvidas vêm. Deus não está assustado com suas perguntas. Ele não tá bravo porque você não entende o que está acontecendo. Ele está perto. Mais perto do que você imagina. Continua buscando. A resposta vem. Pode não ser no formato que você espera, mas ela vem.", verse: "Não temas, porque eu sou contigo; não te assombres, porque eu sou teu Deus; eu te fortaleço, e te ajudo, e te sustento com a destra da minha justiça.", ref: "Isaías 41:10"};
-  if (l.includes('ansiedade')||l.includes('medo')||l.includes('preocup')||l.includes('pânico')||l.includes('dormir')||l.includes('stress'))
-    return {text: "Essa sensação de que o peito vai explodir... de que algo ruim está prestes a acontecer... eu sei como isso é paralisante. Mas escuta: a ansiedade mente pra você. Ela faz você acreditar que está sozinho, que não vai dar conta, que o pior vai acontecer. E nada disso é verdade. Você já passou por tantas tempestades e está aqui. Essa também vai passar. Respira fundo agora. Inspira contando até 4, segura 4, solta 4. Depois a gente conversa sobre o que está pesando.", verse: "Não andeis ansiosos por coisa alguma; antes, em tudo, sejam conhecidas as vossas petições diante de Deus pela oração e pela súplica, com ação de graças. E a paz de Deus, que excede todo entendimento, guardará os vossos corações.", ref: "Filipenses 4:6-7"};
-  return {text: "Sabe o que mais me toca em você? Que mesmo sem saber exatamente o que dizer, você está aqui. Buscando. Isso já diz muito sobre o seu coração. Deus está ouvindo antes mesmo de você terminar de falar — e Ele já está preparando a resposta. Não no seu timing, no dEle. E o timing dEle é perfeito, mesmo quando a gente não enxerga. Vamos orar sobre isso?", verse: "Clama a mim, e responder-te-ei, e anunciar-te-ei coisas grandes e ocultas, que não sabes.", ref: "Jeremias 33:3"};
+var l = text.toLowerCase();
+if (l.indexOf('divida')>=0||l.indexOf('dinheiro')>=0||l.indexOf('conta')>=0||l.indexOf('banco')>=0||l.indexOf('emprego')>=0)
+return {text:"Deus e o seu provedor. Nao desista.", verse:"O meu Deus suprira todas as vossas necessidades.", ref:"Filipenses 4:19"};
+if (l.indexOf('amor')>=0||l.indexOf('termin')>=0||l.indexOf('sozin')>=0||l.indexOf('namor')>=0)
+return {text:"Deus conhece seu coracao. Confie no tempo Dele.", verse:"Tudo tem o seu tempo determinado.", ref:"Eclesiastes 3:1"};
+if (l.indexOf('deus')>=0||l.indexOf('fe')>=0||l.indexOf('oracao')>=0||l.indexOf('igreja')>=0)
+return {text:"Sua fe ja e uma vitoria. Continue firme.", verse:"Nao temas, porque eu sou contigo.", ref:"Isaias 41:10"};
+if (l.indexOf('ansiedade')>=0||l.indexOf('medo')>=0||l.indexOf('preocup')>=0)
+return {text:"Entregue esse fardo a Deus.", verse:"Nao andeis ansiosos por coisa alguma.", ref:"Filipenses 4:6-7"};
+return {text:"Deus esta ouvindo sua oracao.", verse:"Clama a mim, e responder-te-ei.", ref:"Jeremias 33:3"};
 }
 
-// ==========================================
-// PWA - SERVICE WORKER
-// ==========================================
 if ('serviceWorker' in navigator) {
-  window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js')
-      .then(reg => console.log('✅ Polaris PWA pronto!'))
-      .catch(err => console.log('PWA:', err));
-  });
+window.addEventListener('load', function() { navigator.serviceWorker.register('/sw.js').catch(function() {}); });
 }
 
-// ==========================================
-// INIT
-// ==========================================
-async function init() {
-  // Verificar se voltou do Google OAuth
-  if (window.location.hash?.includes('access_token')) {
-    await handleAuthCallback();
-  }
-
-  const logged = await checkSession();
-  showScreen('onboarding');
-  checkBackend();
-
-  if (logged) {
-    document.getElementById('btnStart').onclick = () => showScreen('categories');
-  } else {
-    document.getElementById('btnStart').onclick = () => showScreen('login');
-  }
-
-  // Se tem hash de callback do Google, processa
-  if (window.location.hash?.includes('type=recovery') || window.location.hash?.includes('type=signup')) {
-    await handleAuthCallback();
-  }
-}
-
-init();
+checkSession().then(function(logged) {
+showScreen('onboarding'); checkBackend();
+if (!logged) { document.getElementById('btnStart').onclick = function() { showScreen('login'); }; }
+});
 </script>
 </body>
 </html>

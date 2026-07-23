@@ -761,10 +761,6 @@ startRecognition();
 
 function speakText(text) {
 if (!synth) return;
-if (avatarInitialized) { avatarSpeaking = true; }
-var checkSpeechEnd = setInterval(function() {
-if (!synth.speaking) { avatarSpeaking = false; clearInterval(checkSpeechEnd); }
-}, 200);
 synth.cancel();
 var clean = text.replace(/<[^>]*>/g, '').replace(/[&;#0-9]+;/g, '').replace(/[""''\u{1F300}-\u{1FFFF}]/gu, '');
 var utterance = new SpeechSynthesisUtterance(clean);

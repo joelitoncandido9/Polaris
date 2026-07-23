@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Polaris V2 - Dashboard</title>
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+--bg:#06081a; --surface:#0a0e27; --card:#131837; --gold:#d4a853; --gold-light:#f0d080;
+--white:#f0f2ff; --gray:#8b8fa3; --success:#4ade80; --danger:#ef4444; --info:#60a5fa;
+}
+body { font-family:Inter,sans-serif; background:var(--bg); color:var(--white); display:flex; justify-content:center; min-height:100vh; padding:20px; }
+
+.container { max-width:800px; width:100%; }
+
+/* Header */
+.header { display:flex; justify-content:space-between; align-items:center; padding:20px 0; border-bottom:1px solid rgba(255,255,255,0.05); }
+.logo { font-size:24px; font-weight:800; color:var(--white); }
+.logo span { color:var(--gold); }
+.user-section { display:flex; align-items:center; gap:12px; }
+.user-name { color:var(--gray); font-size:14px; }
+.avatar { width:40px; height:40px; border-radius:50%; background:var(--gold); display:flex; align-items:center; justify-content:center; font-size:18px; cursor:pointer; }
+
+/* Grid */
+.grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:24px 0; }
+
+/* Cards */
+.card { background:var(--card); border:1px solid rgba(212,168,83,0.08); border-radius:20px; padding:20px; }
+.card-full { grid-column:1/-1; }
+.card-title { color:var(--gray); font-size:12px; font-weight:600; text-transform:uppercase; letter-spacing:1px; margin-bottom:12px; }
+
+/* Life Score */
+.score-circle { width:120px; height:120px; border-radius:50%; border:4px solid var(--gold); display:flex; flex-direction:column; align-items:center; justify-content:center; margin:0 auto 16px; }
+.score-number { font-size:36px; font-weight:800; color:var(--white); }
+.score-label { font-size:11px; color:var(--gray); text-transform:uppercase; }
+
+/* Progress Bar */
+.progress-bar { height:6px; background:rgba(255,255,255,0.05); border-radius:3px; overflow:hidden; margin:8px 0; }
+.progress-fill { height:100%; border-radius:3px; background:linear-gradient(90deg,var(--gold),var(--gold-light)); transition:width .5s ease; }
+
+/* Stats Row */
+.stats-row { display:flex; justify-content:space-between; padding:8px 0; border-bottom:1px solid rgba(255,255,255,0.03); }
+.stat-label { color:var(--gray); font-size:13px; }
+.stat-value { color:var(--white); font-weight:600; font-size:13px; }
+
+/* Goals */
+.goal-item { padding:12px; background:rgba(255,255,255,0.02); border-radius:12px; margin-bottom:8px; }
+.goal-header { display:flex; justify-content:space-between; align-items:flex-start; }
+.goal-title { font-size:14px; font-weight:600; }
+.goal-category { font-size:11px; color:var(--gray); margin-top:2px; }
+.goal-status { font-size:11px; padding:2px 10px; border-radius:10px; }
+.goal-status.active { background:rgba(74,222,128,0.1); color:var(--success); }
+.goal-status.completed { background:rgba(100,116,139,0.1); color:var(--gray); }
+
+/* Buttons */
+.btn { padding:10px 24px; border-radius:50px; border:none; font-size:14px; font-weight:600; cursor:pointer; transition:all .2s; display:inline-flex; align-items:center; gap:8px; }
+.btn-primary { background:linear-gradient(135deg,var(--gold),var(--gold-light)); color:var(--bg); }
+.btn-primary:hover { transform:translateY(-1px); box-shadow:0 4px 20px rgba(212,168,83,0.3); }
+.btn-outline { background:transparent; border:1px solid rgba(212,168,83,0.2); color:var(--white); }
+.btn-outline:hover { border-color:var(--gold); }
+
+/* Inline add form */
+.add-form { display:flex; gap:8px; margin:12px 0; }
+.add-form input { flex:1; padding:10px 14px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; color:var(--white); font-family:Inter,sans-serif; font-size:13px; outline:none; }
+.add-form input:focus { border-color:var(--gold); }
+.add-form select { padding:10px; background:var(--card); border:1px solid rgba(255,255,255,0.08); border-radius:12px; color:var(--white); font-family:Inter,sans-serif; font-size:13px; outline:none; }
+
+/* Nav tabs */
+.nav-tabs { display:flex; gap:4px; background:var(--surface); padding:4px; border-radius:12px; margin-bottom:24px; }
+.nav-tab { flex:1; padding:10px; text-align:center; font-size:13px; font-weight:500; border-radius:10px; cursor:pointer; transition:all .2s; color:var(--gray); border:none; background:none; font-family:Inter,sans-serif; }
+.nav-tab.active { background:var(--gold); color:var(--bg); font-weight:600; }
+.nav-tab:hover:not(.active) { color:var(--white); }
+
+/* Sections */
+.section { display:none; }
+.section.active { display:block; }
+
+/* Life Profile */
+.profile-field { margin-bottom:16px; }
+.profile-field label { font-size:11px; color:var(--gray); text-transform:uppercase; letter-spacing:1px; display:block; margin-bottom:4px; }
+.profile-field textarea, .profile-field input { width:100%; padding:10px 14px; background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08); border-radius:12px; color:var(--white); font-family:Inter,sans-serif; font-size:13px; outline:none; resize:vertical; }
+.profile-field textarea:focus, .profile-field input:focus { border-color:var(--gold); }
+
+.tag-grid { display:flex; gap:6px; flex-wrap:wrap; margin:8px 0; }
+.tag { padding:4px 12px; border-radius:20px; border:1px solid rgba(212,168,83,0.15); font-size:12px; color:var(--gray); cursor:pointer; transition:all .2s; background:none; font-family:Inter,sans-serif; }
+.tag:hover, .tag.active { border-color:var(--gold); color:var(--gold); background:rgba(212,168,83,0.05); }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="header">
+<div class="logo">Polaris<span>.</span></div>
+<div class="user-section">
+<span class="user-name" id="userName">Carregando...</span>
+<a href="https://polaris-web-lemon.vercel.app" class="btn btn-primary" style="font-size:12px;padding:6px 16px;">Voltar ao App</a>
+</div>
+</div>
+
+<div class="nav-tabs">
+<button class="nav-tab active" onclick="switchTab('dashboard')">Dashboard</button>
+<button class="nav-tab" onclick="switchTab('goals')">Objetivos</button>
+<button class="nav-tab" onclick="switchTab('profile')">Perfil</button>
+</div>
+
+<!-- DASHBOARD -->
+<div class="section active" id="section-dashboard">
+<div class="grid">
+<div class="card" style="text-align:center;">
+<div class="card-title">Life Score</div>
+<div class="score-circle">
+<span class="score-number" id="lifeScore">--</span>
+<span class="score-label">de 100</span>
+</div>
+<div class="stats-row"><span class="stat-label">Objetivos concluidos</span><span class="stat-value" id="completedGoals">0</span></div>
+<div class="stats-row"><span class="stat-label">Conversas</span><span class="stat-value" id="totalChats">0</span></div>
+<div class="stats-row"><span class="stat-label">Engajamento</span><span class="stat-value" id="engagementScore">0%</span></div>
+<button class="btn btn-primary" style="margin-top:16px;width:100%;" onclick="switchTab('goals')">Definir Objetivos</button>
+</div>
+
+<div class="card">
+<div class="card-title">Objetivos Ativos</div>
+<div id="activeGoalsList">
+<p style="color:var(--gray);font-size:13px;">Nenhum objetivo ativo ainda.</p>
+</div>
+<button class="btn btn-outline" style="margin-top:12px;width:100%;font-size:12px;padding:8px;" onclick="switchTab('goals')">+ Novo Objetivo</button>
+</div>
+
+<div class="card card-full">
+<div class="card-title">Proximo passo recomendado</div>
+<p style="color:var(--gray);font-size:14px;line-height:1.6;" id="nextStep">
+Defina seu primeiro objetivo para comecar a evoluir seu Life Score.
+</p>
+</div>
+</div>
+</div>
+
+<!-- OBJETIVOS -->
+<div class="section" id="section-goals">
+<div class="card card-full">
+<div class="card-title">Novo Objetivo</div>
+<div class="add-form">
+<input type="text" id="goalTitle" placeholder="O que voce quer conquistar?">
+<select id="goalCategory">
+<option value="financeiro">Financeiro</option>
+<option value="saude">Saude</option>
+<option value="carreira">Carreira</option>
+<option value="estudos">Estudos</option>
+<option value="pessoal">Pessoal</option>
+<option value="relacionamento">Relacionamento</option>
+<option value="espiritual">Espiritual</option>
+</select>
+<button class="btn btn-primary" onclick="createGoal()" style="padding:10px 20px;">Criar</button>
+</div>
+</div>
+<div class="card card-full" style="margin-top:16px;">
+<div class="card-title">Meus Objetivos</div>
+<div id="allGoalsList">
+<p style="color:var(--gray);font-size:13px;">Nenhum objetivo cadastrado.</p>
+</div>
+</div>
+</div>
+
+<!-- PERFIL -->
+<div class="section" id="section-profile">
+<div class="card card-full">
+<div class="card-title">Life Profile</div>
+<p style="color:var(--gray);font-size:13px;margin-bottom:16px;">Quanto mais eu souber sobre voce, melhores serao meus conselhos.</p>
+
+<div class="profile-field">
+<label>Profissao / Area de atuacao</label>
+<input type="text" id="p_profissao" placeholder="Ex: desenvolvedor, advogado, empreendedor...">
+</div>
+
+<div class="profile-field">
+<label>Objetivos de vida atuais</label>
+<textarea id="p_objetivos" rows="2" placeholder="O que voce mais deseja conquistar agora?"></textarea>
+</div>
+
+<div class="profile-field">
+<label>Maiores desafios no momento</label>
+<textarea id="p_desafios" rows="2" placeholder="O que esta te impedindo de avancar?"></textarea>
+</div>
+
+<div class="profile-field">
+<label>Interesses e hobbies</label>
+<input type="text" id="p_interesses" placeholder="Ex: leitura, academia, musica...">
+</div>
+
+<div class="profile-field">
+<label>Como voce se descreveria?</label>
+<div class="tag-grid" id="personalityTags">
+<button class="tag" onclick="toggleTag(this)">Ansioso</button>
+<button class="tag" onclick="toggleTag(this)">Calmo</button>
+<button class="tag" onclick="toggleTag(this)">Disciplinado</button>
+<button class="tag" onclick="toggleTag(this)">Criativo</button>
+<button class="tag" onclick="toggleTag(this)">Analitico</button>
+<button class="tag" onclick="toggleTag(this)">Comunicativo</button>
+<button class="tag" onclick="toggleTag(this)">Timido</button>
+<button class="tag" onclick="toggleTag(this)">Determinado</button>
+<button class="tag" onclick="toggleTag(this)">Espiritual</button>
+<button class="tag" onclick="toggleTag(this)">Pragmatico</button>
+</div>
+</div>
+
+<div class="profile-field">
+<label>Area que mais quer desenvolver</label>
+<div class="tag-grid" id="focusTags">
+<button class="tag" onclick="toggleTag(this)">Financas</button>
+<button class="tag" onclick="toggleTag(this)">Saude</button>
+<button class="tag" onclick="toggleTag(this)">Carreira</button>
+<button class="tag" onclick="toggleTag(this)">Relacionamentos</button>
+<button class="tag" onclick="toggleTag(this)">Espiritualidade</button>
+<button class="tag" onclick="toggleTag(this)">Estudos</button>
+<button class="tag" onclick="toggleTag(this)">Produtividade</button>
+</div>
+</div>
+
+<button class="btn btn-primary" onclick="saveProfile()" style="margin-top:16px;">Salvar Perfil</button>
+<span id="profileStatus" style="color:var(--success);font-size:13px;margin-left:12px;display:none;">Salvo!</span>
+</div>
+</div>
+
+</div>
+
+<script>
+var API_URL = 'https://polaris-backend-747y.onrender.com/api';
+var token = null;
+var currentProfile = {};
+var currentGoals = [];
+
+function loadSession() {
+try {
+var d = JSON.parse(localStorage.getItem('polaris_session'));
+if (d && d.exp > Date.now()) { token = d.token; return true; }
+return false;
+} catch(e) { return false; }
+}
+
+function apiFetch(path, opts) {
+opts = opts || {};
+var hdrs = { 'Content-Type': 'application/json' };
+if (opts.headers) { for (var k in opts.headers) hdrs[k] = opts.headers[k]; }
+return fetch(API_URL + path, { method: opts.method || 'GET', headers: hdrs, body: opts.body }).then(function(r) { return r.json(); });
+}
+
+function switchTab(tab) {
+document.querySelectorAll('.section').forEach(function(s) { s.classList.remove('active'); });
+document.getElementById('section-' + tab).classList.add('active');
+document.querySelectorAll('.nav-tab').forEach(function(t) { t.classList.remove('active'); });
+document.querySelector('.nav-tab[onclick*="' + tab + '"]').classList.add('active');
+if (tab === 'goals') loadGoals();
+if (tab === 'dashboard') loadDashboard();
+if (tab === 'profile') loadProfile();
+}
+
+function toggleTag(el) { el.classList.toggle('active'); }
+
+// Life Score
+function loadDashboard() {
+if (!token) return;
+apiFetch('/lifescore', { headers: { 'Authorization': 'Bearer ' + token } }).then(function(d) {
+document.getElementById('lifeScore').textContent = d.lifeScore || '--';
+document.getElementById('completedGoals').textContent = d.completedGoals || 0;
+document.getElementById('totalChats').textContent = d.totalConversations || 0;
+document.getElementById('engagementScore').textContent = (d.engagementScore || 0) + '%';
+});
+loadGoals();
+}
+
+// Goals
+function loadGoals() {
+if (!token) return;
+apiFetch('/goals/list', { headers: { 'Authorization': 'Bearer ' + token } }).then(function(d) {
+currentGoals = d.goals || [];
+renderGoals();
+});
+}
+
+function renderGoals() {
+var activeEl = document.getElementById('activeGoalsList');
+var allEl = document.getElementById('allGoalsList');
+var active = currentGoals.filter(function(g) { return g.status === 'active'; });
+var others = currentGoals;
+
+activeEl.innerHTML = '';
+allEl.innerHTML = '';
+
+if (active.length === 0) {
+activeEl.innerHTML = '<p style="color:var(--gray);font-size:13px;">Nenhum objetivo ativo.</p>';
+} else {
+active.forEach(function(g) {
+activeEl.innerHTML += '<div class="goal-item"><div class="goal-header"><div><div class="goal-title">' + g.title + '</div><div class="goal-category">' + g.category + '</div></div><span class="goal-status active">' + g.progress + '%</span></div><div class="progress-bar"><div class="progress-fill" style="width:' + g.progress + '%;"></div></div></div>';
+});
+}
+
+if (others.length === 0) {
+allEl.innerHTML = '<p style="color:var(--gray);font-size:13px;">Nenhum objetivo cadastrado. Crie seu primeiro objetivo acima.</p>';
+} else {
+others.forEach(function(g) {
+allEl.innerHTML += '<div class="goal-item"><div class="goal-header"><div><div class="goal-title">' + g.title + '</div><div class="goal-category">' + g.category + ' - ' + g.status + '</div></div><span class="goal-status ' + g.status + '">' + g.progress + '%</span></div></div>';
+});
+}
+}
+
+function createGoal() {
+var title = document.getElementById('goalTitle').value.trim();
+var category = document.getElementById('goalCategory').value;
+if (!title) { alert('Digite um objetivo'); return; }
+if (!token) { alert('Faca login primeiro'); return; }
+
+apiFetch('/goals/create', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify({ title: title, category: category }) }).then(function(d) {
+if (d.goal) {
+document.getElementById('goalTitle').value = '';
+loadGoals();
+loadDashboard();
+}
+});
+}
+
+// Profile
+function loadProfile() {
+if (!token) return;
+apiFetch('/profile/load', { headers: { 'Authorization': 'Bearer ' + token } }).then(function(d) {
+if (d.profile) {
+currentProfile = d.profile;
+if (d.profile.profissao) document.getElementById('p_profissao').value = d.profile.profissao;
+if (d.profile.objetivos) document.getElementById('p_objetivos').value = d.profile.objetivos;
+if (d.profile.desafios) document.getElementById('p_desafios').value = d.profile.desafios;
+if (d.profile.interesses) document.getElementById('p_interesses').value = d.profile.interesses;
+}
+});
+}
+
+function saveProfile() {
+var profile = {
+profissao: document.getElementById('p_profissao').value.trim(),
+objetivos: document.getElementById('p_objetivos').value.trim(),
+desafios: document.getElementById('p_desafios').value.trim(),
+interesses: document.getElementById('p_interesses').value.trim(),
+personalidade: Array.from(document.querySelectorAll('#personalityTags .tag.active')).map(function(t) { return t.textContent; }),
+foco: Array.from(document.querySelectorAll('#focusTags .tag.active')).map(function(t) { return t.textContent; }),
+};
+
+apiFetch('/profile/save', { method: 'POST', headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' }, body: JSON.stringify(profile) }).then(function() {
+var status = document.getElementById('profileStatus');
+status.style.display = 'inline';
+setTimeout(function() { status.style.display = 'none'; }, 3000);
+});
+}
+
+// Init
+if (loadSession()) {
+apiFetch('/auth/session', { headers: { 'Authorization': 'Bearer ' + token } }).then(function(d) {
+if (d.authenticated && d.user) {
+var name = (d.user.user_metadata && d.user.user_metadata.full_name) || d.user.email.split('@')[0] || 'Usuario';
+document.getElementById('userName').textContent = name;
+loadDashboard();
+loadProfile();
+} else {
+document.body.innerHTML = '<div style="text-align:center;padding:60px;color:var(--gray);"><p>Faça login no Polaris primeiro.</p><a href="https://polaris-web-lemon.vercel.app" class="btn btn-primary" style="margin-top:20px;">Ir para o Polaris</a></div>';
+}
+});
+} else {
+document.body.innerHTML = '<div style="text-align:center;padding:60px;color:var(--gray);"><p>Faça login no Polaris primeiro.</p><a href="https://polaris-web-lemon.vercel.app" class="btn btn-primary" style="margin-top:20px;">Ir para o Polaris</a></div>';
+}
+</script>
+</body>
+</html>

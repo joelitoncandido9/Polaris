@@ -818,7 +818,6 @@ localStorage.setItem('polaris_settings', JSON.stringify(userSettings));
 }
 
 // ========== AVATAR IA REALISTA (D-ID) ==========
-var didAgent = null;
 var didLoaded = false;
 
 function toggleAvatar() {
@@ -828,7 +827,6 @@ if (panel.classList.contains('active')) {
 panel.classList.remove('active');
 btn.classList.remove('active');
 btn.innerHTML = '&#128100;';
-if (didAgent) { didAgent.pause(); }
 } else {
 panel.classList.add('active');
 btn.classList.add('active');
@@ -847,23 +845,14 @@ alert('Configuracao salva! Abra o chat e clique no icone de rosto para ativar.')
 }
 
 function loadAvatar() {
-if (didLoaded) { if (didAgent) { didAgent.resume(); } return; }
-var key = localStorage.getItem('polaris_did_key');
+if (didLoaded) { return; }
 var agentId = localStorage.getItem('polaris_did_agent');
 var container = document.getElementById('avatarContainer');
-if (!key || !agentId) {
-container.innerHTML = '<p style="color:var(--soft-gray);font-size:13px;text-align:center;padding:20px;">Configure sua chave D-ID nas Configuracoes.<br><br><a href="#" onclick="showScreen(\'settings\')" style="color:var(--accent-gold);">Ir para Configuracoes</a></p>';
+if (!agentId) {
+container.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:20px;text-align:center;"><p style="color:var(--soft-gray);font-size:14px;margin-bottom:16px;">Configure o avatar D-ID</p><a href="#" onclick="showScreen(\'settings\')" style="color:var(--accent-gold);font-size:13px;">Ir para Configuracoes</a></div>';
 return;
 }
-// D-ID Agent embed iframe
-var iframe = document.createElement('iframe');
-iframe.src = 'https://agent.d-id.com/embed/' + agentId + '?apiKey=' + encodeURIComponent(key);
-iframe.style.width = '100%';
-iframe.style.height = '100%';
-iframe.style.border = 'none';
-iframe.allow = 'microphone; camera; autoplay';
-container.innerHTML = '';
-container.appendChild(iframe);
+container.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100%;padding:20px;text-align:center;"><p style="color:var(--soft-gray);font-size:14px;">&#128100; Avatar D-ID configurado</p></div>';
 didLoaded = true;
 }
 
@@ -957,30 +946,8 @@ return {text:"Deus esta ouvindo sua oracao.", verse:"Clama a mim, e responder-te
 }
 
 // ==========================================
-// ========== AVATAR D-ID ==========
-var didLoaded = false;
+function dummy(){} // D-ID placeholder removed
 
-function loadAvatar() {
-var agentId = localStorage.getItem('polaris_did_agent');
-var container = document.getElementById('avatarContainer');
-if (!agentId) {
-container.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:20px;text-align:center;"><p style="color:var(--soft-gray);font-size:14px;margin-bottom:16px;">Configure seu agente D-ID nas Configuracoes</p><a href="#" onclick="showScreen(\'settings\')" style="color:var(--accent-gold);font-size:13px;">Ir para Configuracoes</a></div>';
-return;
-}
-container.innerHTML = '<iframe src="https://agent.d-id.com/embed/'+agentId+'" style="width:100%;height:100%;border:none;" allow="microphone;camera;autoplay"></iframe>';
-didLoaded = true;
-}
-
-function toggleAvatar() {
-var panel = document.getElementById('avatarPanel');
-var btn = document.getElementById('avatarToggle');
-if (panel.classList.contains('active')) {
-panel.classList.remove('active'); btn.classList.remove('active'); btn.innerHTML = '&#128100;';
-} else {
-panel.classList.add('active'); btn.classList.add('active'); btn.innerHTML = '&#128100;';
-loadAvatar();
-}
-}
 if ('serviceWorker' in navigator) {
 window.addEventListener('load', function() { navigator.serviceWorker.register('/sw.js').catch(function() {}); });
 }

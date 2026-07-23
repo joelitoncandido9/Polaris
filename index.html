@@ -465,18 +465,20 @@ body { font-family:Inter,sans-serif; background:#06081a; display:flex; justify-c
 </div>
 
 <div class="sett-section">
-<h3>&#128100; Avatar D-ID</h3>
+<h3>&#128100; Avatar IA Realista (D-ID)</h3>
 <div class="sett-row" style="flex-direction:column;align-items:stretch;gap:8px;">
 <span style="font-size:12px;color:var(--soft-gray);line-height:1.5;">
-1. Crie um agente em studio.d-id.com/agents<br>
-2. Clique nos 3 pontos do agente &gt; &lt;/&gt; Embed<br>
-3. Copie o <strong>Agent ID</strong> e cole abaixo
+Crie um agente em studio.d-id.com, copie o Agent ID e cole abaixo.
 </span>
 <div class="input-group" style="max-width:100%;">
-<label>Agent ID (ex: agt_xxxxx)</label>
+<label>Agent ID (ex: ag_xxxxx)</label>
 <input type="text" id="didAgentId" placeholder="Cole o Agent ID aqui">
 </div>
-<button class="btn-plan primary" onclick="saveDIDSettings()" style="font-size:13px;padding:10px;">SALVAR</button>
+<div class="input-group" style="max-width:100%;">
+<label>API Key (se precisar)</label>
+<input type="password" id="didApiKey" placeholder="Opcional">
+</div>
+<button class="btn-plan primary" onclick="saveDIDSettings()" style="font-size:13px;padding:10px;">SALVAR D-ID</button>
 </div>
 </div>
 
@@ -815,17 +817,157 @@ function saveSettings() {
 localStorage.setItem('polaris_settings', JSON.stringify(userSettings));
 }
 
+// ========== AVATAR IA REALISTA (D-ID) ==========
+var didAgent = null;
+var didLoaded = false;
+
+function toggleAvatar() {
+var panel = document.getElementById('avatarPanel');
+var btn = document.getElementById('avatarToggle');
+if (panel.classList.contains('active')) {
+panel.classList.remove('active');
+btn.classList.remove('active');
+btn.innerHTML = '&#128100;';
+if (didAgent) { didAgent.pause(); }
+} else {
+panel.classList.add('active');
+btn.classList.add('active');
+btn.innerHTML = '&#128100;';
+loadAvatar();
+}
+}
+
+function saveDIDSettings() {
+var agentId = document.getElementById('didAgentId').value.trim();
+if (!agentId) { alert('Preencha o ID do agente D-ID'); return; }
+var key = document.getElementById('didApiKey').value.trim();
+if (key) localStorage.setItem('polaris_did_key', key);
+localStorage.setItem('polaris_did_agent', agentId);
+alert('Configuracao salva! Abra o chat e clique no icone de rosto para ativar.');
+}
+
+function loadAvatar() {
+if (didLoaded) { if (didAgent) { didAgent.resume(); } return; }
+var key = localStorage.getItem('polaris_did_key');
+var agentId = localStorage.getItem('polaris_did_agent');
+var container = document.getElementById('avatarContainer');
+if (!key || !agentId) {
+container.innerHTML = '<p style="color:var(--soft-gray);font-size:13px;text-align:center;padding:20px;">Configure sua chave D-ID nas Configuracoes.<br><br><a href="#" onclick="showScreen(\'settings\')" style="color:var(--accent-gold);">Ir para Configuracoes</a></p>';
+return;
+}
+// D-ID Agent embed iframe
+var iframe = document.createElement('iframe');
+iframe.src = 'https://agent.d-id.com/embed/' + agentId + '?apiKey=' + encodeURIComponent(key);
+iframe.style.width = '100%';
+iframe.style.height = '100%';
+iframe.style.border = 'none';
+iframe.allow = 'microphone; camera; autoplay';
+container.innerHTML = '';
+container.appendChild(iframe);
+didLoaded = true;
+}
+
+function setSpeed(val) {
+userSettings.speed = val; saveSettings();
+var btns = document.querySelectorAll('#speedBtns .sett-btn');
+for (var i = 0; i < btns.length; i++) { btns[i].classList.toggle('active', parseFloat(btns[i].dataset.speed) === val); }
+}
+
+function setVoice(val) {
+userSettings.voice = val; saveSettings();
+var btns = document.querySelectorAll('#voiceBtns .sett-btn');
+for (var i = 0; i < btns.length; i++) { btns[i].classList.toggle('active', btns[i].dataset.voice === val); }
+}
+
+function setAvatarStyle(skin, hair) {
+userSettings.skinTone = skin; userSettings.hairColor = hair; saveSettings();
+var btns = document.querySelectorAll('#avatarPicker .av-btn');
+for (var i = 0; i < btns.length; i++) {
+btns[i].classList.toggle('active', btns[i].dataset.sk === skin && btns[i].dataset.hr === hair);
+}
+updateAvatar();
+}
+
+function updateAvatar() {
+var el = document.getElementById('avatarBtn');
+if (!el) return;
+var sk = userSettings.skinTone || 'f5d0a9';
+var hr = userSettings.hairColor || '5c3a21';
+el.innerHTML = '<svg viewBox="0 0 100 100"><defs><radialGradient id="s" cx="50%" cy="40%" r="50%"><stop offset="0%" stop-color="#'+sk+'"/><stop offset="100%" stop-color="#'+(sk === 'f5d0a9' ? 'e8b88a' : sk === 'e8c499' ? 'd4a574' : sk === 'd4a574' ? 'b8895c' : 'e8c8a0')+'"/></radialGradient></defs><ellipse cx="50" cy="38" rx="38" ry="40" fill="#'+hr+'"/><ellipse cx="14" cy="58" rx="5" ry="8" fill="url(#s)"/><ellipse cx="86" cy="58" rx="5" ry="8" fill="url(#s)"/><ellipse cx="50" cy="58" rx="33" ry="38" fill="url(#s)"/><rect x="40" y="88" width="20" height="8" rx="4" fill="url(#s)"/><ellipse cx="38" cy="52" rx="5" ry="5.5" fill="#fff"/><ellipse cx="62" cy="52" rx="5" ry="5.5" fill="#fff"/><circle cx="38" cy="52" r="3" fill="#4a3520"/><circle cx="62" cy="52" r="3" fill="#4a3520"/><circle cx="37" cy="50" r="1.2" fill="#fff"/><circle cx="61" cy="50" r="1.2" fill="#fff"/><path d="M30 44 Q38 41 46 44" stroke="#3d2513" stroke-width="1.5" fill="none"/><path d="M54 44 Q62 41 70 44" stroke="#3d2513" stroke-width="1.5" fill="none"/><path d="M47 56 Q50 62 53 56" stroke="#d4a080" stroke-width="1" fill="none"/><path d="M38 68 Q50 74 62 68" stroke="#c47070" stroke-width="1.5" fill="none"/><path d="M15 48 Q15 20 30 14 Q50 6 70 14 Q85 20 85 48" fill="#'+hr+'"/></svg>';
+}
+
+function loadSettingsUI() {
+var btns = document.querySelectorAll('#speedBtns .sett-btn');
+for (var i = 0; i < btns.length; i++) { btns[i].classList.toggle('active', parseFloat(btns[i].dataset.speed) === userSettings.speed); }
+var vbtns = document.querySelectorAll('#voiceBtns .sett-btn');
+for (var i = 0; i < vbtns.length; i++) { vbtns[i].classList.toggle('active', vbtns[i].dataset.voice === userSettings.voice); }
+var abtns = document.querySelectorAll('#avatarPicker .av-btn');
+for (var i = 0; i < abtns.length; i++) { abtns[i].classList.toggle('active', abtns[i].dataset.sk === userSettings.skinTone && abtns[i].dataset.hr === userSettings.hairColor); }
+// D-ID settings
+var didKey = document.getElementById('didApiKey');
+var didAgent = document.getElementById('didAgentId');
+if (didKey) didKey.value = localStorage.getItem('polaris_did_key') || '';
+if (didAgent) didAgent.value = localStorage.getItem('polaris_did_agent') || '';
+}
+
+
+function sendMessage() {
+var input = document.getElementById('chatInput');
+var text = input.value.trim();
+if (!text || isWaitingResponse || input.disabled) return;
+addMsg('user', text); input.value = '';
+document.getElementById('errorMsg').style.display = 'none';
+document.getElementById('typingIndicator').classList.add('active');
+isWaitingResponse = true;
+if (sessionToken) {
+fetch(API_URL + '/chat', {
+method: 'POST', headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + sessionToken },
+body: JSON.stringify({ message: text, category: currentCategory, sessionId: currentSessionId })
+}).then(function(r) {
+document.getElementById('typingIndicator').classList.remove('active');
+if (r.status === 403) { addMsg('ai', 'Trial expirado.'); document.getElementById('chatInput').disabled = true; return null; }
+return r.json();
+}).then(function(d) {
+if (d && d.reply) { if (d.sessionId) currentSessionId = d.sessionId; addMsg('ai', d.reply); }
+}).catch(function() {
+document.getElementById('typingIndicator').classList.remove('active');
+document.getElementById('errorMsg').textContent = 'Erro. Usando modo offline.'; document.getElementById('errorMsg').style.display = 'block';
+setTimeout(function() { var r = getLocalResponse(text); addMsg('ai', r.text); if (r.verse) { setTimeout(function() { addMsg('ai', '<div class="bible-verse">"'+r.verse+'"<span class="bible-ref">- '+r.ref+'</span></div>'); }, 800); } }, 1000);
+}).finally(function() { isWaitingResponse = false; });
+} else {
+setTimeout(function() {
+document.getElementById('typingIndicator').classList.remove('active');
+var r = getLocalResponse(text); addMsg('ai', r.text);
+if (r.verse) { setTimeout(function() { addMsg('ai', '<div class="bible-verse">"'+r.verse+'"<span class="bible-ref">- '+r.ref+'</span></div>'); }, 800); }
+}, 1500);
+}
+}
+
+function getLocalResponse(text) {
+var l = text.toLowerCase();
+if (l.indexOf('divida')>=0||l.indexOf('dinheiro')>=0||l.indexOf('conta')>=0||l.indexOf('banco')>=0||l.indexOf('emprego')>=0)
+return {text:"Deus e o seu provedor. Nao desista.", verse:"O meu Deus suprira todas as vossas necessidades.", ref:"Filipenses 4:19"};
+if (l.indexOf('amor')>=0||l.indexOf('termin')>=0||l.indexOf('sozin')>=0||l.indexOf('namor')>=0)
+return {text:"Deus conhece seu coracao. Confie no tempo Dele.", verse:"Tudo tem o seu tempo determinado.", ref:"Eclesiastes 3:1"};
+if (l.indexOf('deus')>=0||l.indexOf('fe')>=0||l.indexOf('oracao')>=0||l.indexOf('igreja')>=0)
+return {text:"Sua fe ja e uma vitoria. Continue firme.", verse:"Nao temas, porque eu sou contigo.", ref:"Isaias 41:10"};
+if (l.indexOf('ansiedade')>=0||l.indexOf('medo')>=0||l.indexOf('preocup')>=0)
+return {text:"Entregue esse fardo a Deus.", verse:"Nao andeis ansiosos por coisa alguma.", ref:"Filipenses 4:6-7"};
+return {text:"Deus esta ouvindo sua oracao.", verse:"Clama a mim, e responder-te-ei.", ref:"Jeremias 33:3"};
+}
+
+// ==========================================
 // ========== AVATAR D-ID ==========
 var didLoaded = false;
 
 function loadAvatar() {
-var container = document.getElementById('avatarContainer');
 var agentId = localStorage.getItem('polaris_did_agent');
+var container = document.getElementById('avatarContainer');
 if (!agentId) {
-container.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:20px;text-align:center;"><p style="color:var(--soft-gray);font-size:14px;margin-bottom:12px;">Configure o avatar D-ID</p><a href="#" onclick="showScreen(\'settings\')" style="color:var(--accent-gold);font-size:13px;">Configuracoes</a></div>';
+container.innerHTML = '<div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;padding:20px;text-align:center;"><p style="color:var(--soft-gray);font-size:14px;margin-bottom:16px;">Configure seu agente D-ID nas Configuracoes</p><a href="#" onclick="showScreen(\'settings\')" style="color:var(--accent-gold);font-size:13px;">Ir para Configuracoes</a></div>';
 return;
 }
-container.innerHTML = '<iframe src="https://agent.d-id.com/embed/'+agentId+'" style="width:100%;height:100%;border:none;border-radius:0;" allow="microphone;camera;autoplay"></iframe>';
+container.innerHTML = '<iframe src="https://agent.d-id.com/embed/'+agentId+'" style="width:100%;height:100%;border:none;" allow="microphone;camera;autoplay"></iframe>';
 didLoaded = true;
 }
 
@@ -838,13 +980,6 @@ panel.classList.remove('active'); btn.classList.remove('active'); btn.innerHTML 
 panel.classList.add('active'); btn.classList.add('active'); btn.innerHTML = '&#128100;';
 loadAvatar();
 }
-}
-
-function saveDIDSettings() {
-var agentId = document.getElementById('didAgentId').value.trim();
-if (!agentId) { alert('Cole o ID do agente D-ID'); return; }
-localStorage.setItem('polaris_did_agent', agentId);
-alert('Salvo! Abra o chat e clique no icone de rosto.');
 }
 if ('serviceWorker' in navigator) {
 window.addEventListener('load', function() { navigator.serviceWorker.register('/sw.js').catch(function() {}); });
